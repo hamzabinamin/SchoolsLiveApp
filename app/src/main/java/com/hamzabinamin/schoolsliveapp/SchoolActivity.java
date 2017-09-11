@@ -201,8 +201,6 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
                 String url = String.format("http://schools-live.com/getOneSchool.php?name=%s", schoolName);
-                progressDialog.setMessage("Please Wait");
-                progressDialog.show();
                 sendGET(url);
 
             } catch (UnsupportedEncodingException e) {
@@ -753,6 +751,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
+                        progressDialog.dismiss();
                         result = result.replace("Got Result<br>","");
                         JSONArray arr = null;
                         try {
@@ -783,7 +782,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         } */
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -908,6 +907,9 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         super.onResume();
 
         if(getSchoolSharedPreferences()) {
+            customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
+            listView.setAdapter(customAdapter);
+
             progressDialog.setMessage("Please Wait");
             progressDialog.show();
             try {

@@ -23,11 +23,14 @@ import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Hamza on 10/15/2016.
@@ -139,7 +142,7 @@ public class CustomAdapter extends BaseAdapter {
             holder.awayTeamSchoolType.setText(splitArray[1]);
             holder.teamScore.setText(list.get(position).getScore());
             holder.lastUpdateBy.setText(list.get(position).getLastUpdateBy());
-            holder.time.setText(list.get(position).getStartTime());
+            holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
         }
         else {
             holder.currentOver.setVisibility(View.VISIBLE);
@@ -153,7 +156,7 @@ public class CustomAdapter extends BaseAdapter {
             holder.awayTeamSchoolType.setText(splitArray[1]);
             holder.teamScore.setText(list.get(position).getScore());
             holder.lastUpdateBy.setText(list.get(position).getLastUpdateBy());
-            holder.time.setText(list.get(position).getStartTime());
+            holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
             String[] stringArray = list.get(position).getScore().split("/");
             holder.currentOver.setText(stringArray[4]);
             if(list.get(position).getHomeSchoolName().equals(stringArray[2])) {
@@ -188,6 +191,20 @@ public class CustomAdapter extends BaseAdapter {
 
     }
 
+    public String convertUTCTimeInToLocal(String dateString) {
+        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;
+        String formattedDate = null;
+        try {
+            date = df.parse(dateString);
+            df.setTimeZone(TimeZone.getDefault());
+            formattedDate = df.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedDate;
+    }
 
     private class ViewHolder {
         TextView gameType;

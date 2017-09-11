@@ -127,11 +127,11 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         sportSpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<String>(this,
-                R.layout.spinner, ageGroupArray);
+                android.R.layout.simple_dropdown_item_1line, ageGroupArray);
         ageGroupSpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<String>(this,
-                R.layout.spinner, teamArray);
+                android.R.layout.simple_dropdown_item_1line, teamArray);
         teamSpinner.setAdapter(adapter);
 
         monthNumberPicker.setMinValue(1);
@@ -340,12 +340,12 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("New record created successfully")) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "New Game Created Successfully", Toast.LENGTH_SHORT).show();
 
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -379,6 +379,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.addGameButton:
                 if(validation()) {
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.show();
                     String schoolA =  schoolASpinner.getSelectedItem().toString();
                     String schoolB =  schoolBSpinner.getSelectedItem().toString();
                    String schoolsType = "";
@@ -395,6 +397,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         ampm = "PM";
                     }
                     String starttime = String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
+                    starttime = convertStringIntoUTC(starttime);
                     String weather = "";
                     String temperature = "";
                     String status = "";
@@ -448,8 +451,6 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     String url = String.format("http://www.schools-live.com/insertGame.php?homeschool=%s&awayschool=%s&schoolstype=%s&field=%s&sport=%s&agegroup=%s&team=%s&starttime=%s&weather=%s&temperature=%s&status=%s&score=%s&updateby=%s&updatetime=%s&homeschoollogo=%s&awayschoollogo=%s", schoolA, schoolB, schoolsType, field, sport, agegroup, team, starttime, weather, temperature, status, score, updateBy, updateTime, homeSchoolURL, awaySchoolURL);
 
                     try {
-                        progressDialog.setMessage("Please Wait");
-                        progressDialog.show();
                         sendGETAddGame(url);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -459,18 +460,19 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    public String convertStringIntoUTC(String string) {
+    public String convertStringIntoUTC(String dateString) {
+        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        df.setTimeZone( TimeZone.getDefault());
+        Date date = null;
+        String formattedDate = null;
         try {
-             Calendar calendar = Calendar.getInstance();
-             calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-             SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy / hh:mm a");
-             calendar.setTime(sdf.parse(string));
-             String dateAsString = sdf.format(calendar.getTime());
-             return dateAsString;
-            } catch (ParseException e) {
+            date = df.parse(dateString);
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+            formattedDate = df.format(date);
+        } catch (ParseException e) {
             e.printStackTrace();
-         }
-        return null;
+        }
+        return formattedDate;
     }
 
     public School getSchoolItem(List<School> schoolList, String name) {

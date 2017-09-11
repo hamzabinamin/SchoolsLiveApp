@@ -104,11 +104,10 @@
             android:layout_height="80dp"
             android:layout_below="@id/menuFrameLayout"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/pretorialogo"/>
+            android:layout_marginLeft="30dp" />
 
         <TextView
-            android:id="@+id/schoolTypeTextView"
+            android:id="@+id/schoolType1TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/school1Logo"
@@ -119,10 +118,10 @@
             android:textColor="@color/colorBlack"/>
 
         <TextView
-            android:id="@+id/schoolNameTextView"
+            android:id="@+id/schoolName1TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/schoolTypeTextView"
+            android:layout_below="@id/schoolType1TextView"
             android:layout_marginLeft="15dp"
             android:text="Pretoria Boys"
             android:textSize="18dp"
@@ -135,8 +134,7 @@
             android:layout_below="@id/menuFrameLayout"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/afrikaanslogo"/>
+            android:layout_marginRight="30dp" />
 
         <TextView
             android:id="@+id/schoolType2TextView"
@@ -154,7 +152,7 @@
             android:id="@+id/schoolName2TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/schoolTypeTextView"
+            android:layout_below="@id/schoolType1TextView"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
             android:text="Afrikaans Boys"
@@ -198,7 +196,7 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/schoolNameTextView"
+            android:layout_below="@id/schoolName1TextView"
             android:background="@color/colorGray">
 
             <TextView

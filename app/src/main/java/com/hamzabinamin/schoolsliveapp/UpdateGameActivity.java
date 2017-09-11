@@ -71,6 +71,10 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     Button submitButton;
     TextView schoolTypeTextView;
     TextView schoolNameTextView;
+    TextView schoolType1TextView;
+    TextView schoolName1TextView;
+    TextView schoolType2TextView;
+    TextView schoolName2TextView;
     TextView schoolLocationTextView;
     TextView schoolLinkTextView;
     TextView temperatureTextView;
@@ -120,6 +124,10 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         submitButton = (Button) findViewById(R.id.submitButton);
         schoolTypeTextView = (TextView) findViewById(R.id.schoolTypeTextView);
         schoolNameTextView = (TextView) findViewById(R.id.schoolNameTextView);
+        schoolType1TextView = (TextView) findViewById(R.id.schoolType1TextView);
+        schoolName1TextView = (TextView) findViewById(R.id.schoolName1TextView);
+        schoolType2TextView = (TextView) findViewById(R.id.schoolType2TextView);
+        schoolName2TextView = (TextView) findViewById(R.id.schoolName2TextView);
         schoolLocationTextView = (TextView) findViewById(R.id.schoolLocationTextView);
         schoolLinkTextView = (TextView) findViewById(R.id.schoolLinkTextView);
         teamNameTextView = (TextView) findViewById(R.id.teamNameTextView);
@@ -203,9 +211,14 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 schoolNameTextView.setText(school.getSchoolName());
                 schoolLocationTextView.setText(school.getSchoolLocation());
                 schoolLinkTextView.setText(school.getSchoolWebsite());
+
+                schoolType1TextView.setText(game.getSchoolsType());
+                schoolName1TextView.setText(game.getHomeSchoolName());
+                schoolType2TextView.setText(game.getSchoolsType());
+                schoolName2TextView.setText(game.getAwaySchoolName());
                 teamNameTextView.setText(game.getSport() + " " + game.getAgeGroup() + "/" + game.getTeam());
                 temperatureTextView.setText(game.getTemperature());
-                timeTextView.setText(game.getStartTime());
+                timeTextView.setText(convertUTCTimeInToLocal(game.getStartTime()));
                 weather2TextView.setText(game.getWeather());
                 scoreTextView.setText(game.getScore());
                 statusTextView.setText(game.getStatus());
