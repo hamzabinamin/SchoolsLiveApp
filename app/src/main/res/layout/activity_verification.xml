@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_verification"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hamzabinamin.schoolsliveapp.VerificationActivity">
+
+    <TextView
+        android:id="@+id/OTPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:text="We have sent an OTP to your entered \n mobile number. Please enter it here."
+        android:textSize="20dp"/>
+
+    <ImageView
+        android:id="@+id/horizontalLineAbove"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/OTPTextView"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@color/colorPrimaryDark"/>
+
+    <ImageView
+        android:id="@+id/lockImageView"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@id/horizontalLineAbove"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/lockgray"/>
+
+    <LinearLayout
+        android:id="@+id/verficationCodeLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/horizontalLineAbove"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp">
+
+        <EditText
+            android:id="@+id/codeEditText1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:hint=""
+            style="@style/pin_edittext_style"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/codeEditText2"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:hint=""
+            style="@style/pin_edittext_style"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/codeEditText3"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:hint=""
+            style="@style/pin_edittext_style"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/codeEditText4"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:hint=""
+            style="@style/pin_edittext_style"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/pin_hidden_edittext"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:password="true"
+        android:maxLength="5"
+        android:textColor="#00000000" />
+
+    <ImageView
+        android:id="@+id/horizontalLineBelow"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/lockImageView"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@color/colorPrimaryDark"/>
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/verficationCodeLinearLayout"
+        android:layout_marginTop="60dp"
+        android:text="Submit"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/roundedgreen"/>
+
+    <TextView
+        android:id="@+id/didntGetCodeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/submitButton"
+        android:layout_marginTop="20dp"
+        android:text="Didn't get the code? Send it again"
+        android:textSize="18dp"/>
+
+
+
+
+</RelativeLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/all_menu_item"
+        android:title="ALL GAMES" />
+
+    <item android:id="@+id/rugby_menu_item"
+        android:title="RUGBY" />
+
+    <item android:id="@+id/cricket_menu_item"
+        android:title="CRICKET" />
+
+    <item android:id="@+id/hockey_menu_item"
+        android:title="HOCKEY" />
+
+    <item android:id="@+id/netball_menu_item"
+        android:title="NETBALL" />
+
+    <item android:id="@+id/basket_menu_item"
+        android:title="BASKETBALL" />
+
+    <item android:id="@+id/soccer_menu_item"
+        android:title="SOCCER" />
+
+    <item android:id="@+id/waterpolo_menu_item"
+        android:title="WATERPOLO" />
+
+</menu>

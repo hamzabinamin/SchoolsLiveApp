@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1065569083242",
+    "firebase_url": "https://personal-project-160607.firebaseio.com",
+    "project_id": "personal-project-160607",
+    "storage_bucket": "personal-project-160607.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065569083242:android:8afdd8e4709b306b",
+        "android_client_info": {
+          "package_name": "com.hamzabinamin.schoolsliveapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1065569083242-3o7bdh7kjdfdlfqfu0qb3iie7t6jntak.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hamzabinamin.schoolsliveapp",
+            "certificate_hash": "5cb10940f9a22ab7294f0e1f79a1ec4d1e1b7f54"
+          }
+        },
+        {
+          "client_id": "1065569083242-q70deursk8ac6loq7mokaa342bg64pve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkle-MJSbJ1GHScpWOVv-vkC2pZqx4IiE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065569083242-q70deursk8ac6loq7mokaa342bg64pve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/thisschool_menu_item"
+        android:title="THIS SCHOOLS LEADERBOARD" />
+
+    <item android:id="@+id/overall_menu_item"
+        android:title="OVERALL LEADERBOARD" />
+
+</menu>

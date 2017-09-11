@@ -1,0 +1,201 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/overAndWicketsFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Overs and Wickets"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/currentOverTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/overAndWicketsFrameLayout"
+        android:text="Current Over"
+        android:textSize="16dp"
+        android:textColor="@color/colorBlack"/>
+
+    <Spinner
+        android:id="@+id/currentOverSpinner"
+        android:layout_width="90dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/currentOverTextView">
+    </Spinner>
+
+    <TextView
+        android:id="@+id/wicketsTakenTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/overAndWicketsFrameLayout"
+        android:layout_alignParentRight="true"
+        android:text="Wickets Taken"
+        android:textSize="16dp"
+        android:textColor="@color/colorBlack"/>
+
+    <Spinner
+        android:id="@+id/wicketsTakenSpinner"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/wicketsTakenTextView"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <FrameLayout
+        android:id="@+id/battingFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/wicketsTakenSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Batting Team"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/battingSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/battingFrameLayout"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <FrameLayout
+        android:id="@+id/bowlingFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/battingSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Bowling Team"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/bowlingSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/bowlingFrameLayout"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <FrameLayout
+        android:id="@+id/gameStatusFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/bowlingSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Game Status"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/gameStatusSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/gameStatusFrameLayout"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <FrameLayout
+        android:id="@+id/scoreFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/gameStatusSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Score"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/scoreLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreFrameLayout"
+        android:layout_centerHorizontal="true">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"/>
+
+        <NumberPicker
+            android:id="@+id/numberPicker1"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreLinearLayout"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentLeft="true"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreLinearLayout"
+        android:layout_marginRight="80dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentRight="true"
+        android:text="Update" />
+
+</RelativeLayout>

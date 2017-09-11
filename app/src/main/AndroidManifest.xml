@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hamzabinamin.schoolsliveapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <receiver android:name=".NotificationPublisher" />
+
+        <service
+            android:name=".ScheduledService"
+            android:enabled="true" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.Activity"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:windowSoftInputMode="adjustPan"
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="5c54c821185271f6d3565e10f038a12e01a11c78" />
+
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.accountkit.ApplicationName"
+            android:value="@string/app_name" />
+        <meta-data
+            android:name="com.facebook.accountkit.ClientToken"
+            android:value="@string/ACCOUNT_KIT_CLIENT_TOKEN" />
+
+        <activity android:name="com.facebook.accountkit.ui.AccountKitActivity" />
+        <activity android:name=".FacebookVerificationActivity" />
+        <activity android:name=".LogInActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".NumberRegistrationActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".VerificationActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".SchoolActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".AddGameActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".UpdateGameActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".LearderboardActivity"  android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ManageSchoolsActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".AddSchoolActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".EditSchoolActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".ChangeSchoolActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".EditSelectSchoolActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".AccountActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".UpdateAccountActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".LiveNowActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".ResultsActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".TwitterActivity"  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".FacebookActivity"  android:windowSoftInputMode="adjustPan"></activity>
+    </application>
+
+</manifest>

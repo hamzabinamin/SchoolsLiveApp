@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_log_in"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hamzabinamin.schoolsliveapp.LogInActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/splash"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/twitterFrameLayout"
+        android:layout_marginBottom="15dp"
+        android:text="Sign Up or Log In with"
+        android:textSize="16dp"
+        android:textColor="@color/colorWhite" />
+
+    <Button
+        android:id="@+id/phoneNumberButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="Phone Number"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/roundedgreen"/>
+
+    <FrameLayout
+        android:id="@+id/twitterFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@id/phoneNumberButton"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/roundedblue">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="120dp"
+            android:background="@drawable/twitter"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Twitter"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"/>
+
+    </FrameLayout>
+
+
+
+
+</RelativeLayout>

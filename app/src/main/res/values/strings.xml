@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Schools Live App</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="facebook_app_id">348334155585112</string>
+    <string name="FACEBOOK_APP_ID">348334155585112</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">4dbe3e27c0bb75c8b1127a0bda966193</string>
+
+</resources>

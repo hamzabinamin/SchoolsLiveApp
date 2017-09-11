@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/gameStatusFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/wicketsTakenSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Game Status"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/gameStatusSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/gameStatusFrameLayout"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <FrameLayout
+        android:id="@+id/scoreFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/gameStatusSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Score"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/scoreLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scoreFrameLayout"
+        android:layout_centerHorizontal="true">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <NumberPicker
+            android:id="@+id/numberPicker1"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="104dp"
+            android:background="@color/colorBlack"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <NumberPicker
+            android:id="@+id/numberPicker2"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreLinearLayout"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentLeft="true"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreLinearLayout"
+        android:layout_marginRight="80dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentRight="true"
+        android:text="Update" />
+
+</RelativeLayout>

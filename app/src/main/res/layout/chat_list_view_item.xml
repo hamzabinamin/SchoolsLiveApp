@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Great Game"
+        android:maxLines="5"
+        android:textSize="14dp"
+        android:textColor="@color/colorBlack"/>
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Sherlock Homes"
+        android:maxLines="5"
+        android:textSize="12dp"
+        android:textColor="@color/colorBlack"/>
+
+    <TextView
+        android:id="@+id/timeAndDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameTextView"
+        android:layout_alignParentRight="true"
+        android:text="8/20/2017 5:16 pm"
+        android:textSize="12dp"
+        android:textColor="@color/colorBlack"/>
+
+</RelativeLayout>
