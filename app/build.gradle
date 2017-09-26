@@ -34,9 +34,11 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.facebook.android:account-kit-sdk:4.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.kyleduo.switchbutton:library:1.4.6'
     apply plugin: 'com.google.gms.google-services'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 

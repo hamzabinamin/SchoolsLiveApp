@@ -74,8 +74,8 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
         //  .addTestDevice("1E9E1DA0C4E19BA422D51AF125310542").build();
         adView.loadAd(adRequest);
 
-        thisOrOverallDropDown = (Button) findViewById(R.id.thisOrOverallDropDown);
-        monthOrWeekDropDown = (Button) findViewById(R.id.monthOrWeekDropDown);
+       //thisOrOverallDropDown = (Button) findViewById(R.id.thisOrOverallDropDown);
+       //monthOrWeekDropDown = (Button) findViewById(R.id.monthOrWeekDropDown);
         schoolTypeTextView = (TextView) findViewById(R.id.schoolTypeTextView);
         schoolNameTextView = (TextView) findViewById(R.id.schoolNameTextView);
         schoolLocationTextView = (TextView) findViewById(R.id.schoolLocationTextView);
@@ -99,7 +99,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
 
                     case R.id.notifications:
                         finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
@@ -287,7 +287,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
 
         switch (v.getId()) {
 
-            case R.id.thisOrOverallDropDown:
+           /* case R.id.thisOrOverallDropDown:
                 PopupMenu popup = new PopupMenu(LearderboardActivity.this, thisOrOverallDropDown);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater()
@@ -307,7 +307,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.monthOrWeekDropDown:
 
-                break;
+                break; */
         }
     }
 }

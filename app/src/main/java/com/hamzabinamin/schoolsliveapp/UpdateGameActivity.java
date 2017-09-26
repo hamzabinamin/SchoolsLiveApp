@@ -82,6 +82,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     TextView teamNameTextView;
     TextView weather2TextView;
     TextView scoreTextView;
+    TextView currentOverTextView;
+    TextView batbowl2TextView;
+    TextView batbowlTextView;
     TextView statusTextView;
     TextView lastUpdateByTextView;
     TextView lastUpdateTimeTextView;
@@ -100,6 +103,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     String overs;
     String batting;
     String bowling;
+    String utcTime;
     User user;
     private static final String USER_AGENT = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
 
@@ -135,6 +139,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         timeTextView = (TextView) findViewById(R.id.timeTextView);
         weather2TextView = (TextView) findViewById(R.id.weather2TextView);
         scoreTextView = (TextView) findViewById(R.id.scoreTextView);
+        currentOverTextView = (TextView) findViewById(R.id.currentOverTextView);
+        batbowl2TextView = (TextView) findViewById(R.id.batbowl2TextView);
+        batbowlTextView = (TextView) findViewById(R.id.batbowlTextView);
         statusTextView = (TextView) findViewById(R.id.matchStatusTextView);
         lastUpdateByTextView = (TextView) findViewById(R.id.lastUpdateTextView);
         lastUpdateTimeTextView = (TextView) findViewById(R.id.lastUpdateTimeTextView);
@@ -160,8 +167,8 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         break;
 
                     case R.id.notifications:
-                        //finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        finish();
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
@@ -220,7 +227,26 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 temperatureTextView.setText(game.getTemperature());
                 timeTextView.setText(convertUTCTimeInToLocal(game.getStartTime()));
                 weather2TextView.setText(game.getWeather());
-                scoreTextView.setText(game.getScore());
+                String[] stringArray = game.getScore().split("/");
+                if(stringArray.length == 5) {
+                    currentOverTextView.setText("Curr. Over: " + stringArray[4]);
+                    scoreTextView.setText(stringArray[0].trim() + " / " + stringArray[1].trim());
+                    if (schoolName1TextView.getText().toString().equals(stringArray[2])) {
+                        batbowl2TextView.setText("(Batting)");
+                        batbowlTextView.setText("(Bowling)");
+                    } else {
+                        batbowl2TextView.setText("(Bowling)");
+                        batbowlTextView.setText("(Batting)");
+                    }
+                }
+                else {
+                    scoreTextView.setText(game.getScore());
+                    batbowlTextView.setVisibility(View.INVISIBLE);
+                    batbowl2TextView.setVisibility(View.INVISIBLE);
+                    currentOverTextView.setVisibility(View.INVISIBLE);
+                }
+
+                //scoreTextView.setText(game.getScore());
                 statusTextView.setText(game.getStatus());
                 lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(game.getLastUpdateTime()));
                 lastUpdateByTextView.setText(game.getLastUpdateBy());
@@ -299,11 +325,20 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
 
             case R.id.updateGameButton:
-                if(game.getSport().equals("Cricket")) {
-                    numberPickerDialogScoreCricket();
+                if(!statusTextView.getText().toString().equals("HALF TIME")) {
+                    if(!statusTextView.getText().toString().equals("NOT STARTED")) {
+                        if (game.getSport().equals("Cricket")) {
+                            numberPickerDialogScoreCricket();
+                        } else {
+                            numberPickerDialogScore();
+                        }
+                    }
+                    else {
+                        Toast.makeText(getBaseContext(), "Please update the Game Status to 1st Half before updating Score", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else {
-                    numberPickerDialogScore();
+                    Toast.makeText(getBaseContext(), "You can't update score during Half Time", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -316,25 +351,30 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.submitButton:
-                progressDialog.setMessage("Please Wait");
-                progressDialog.show();
-                try {
-                    String phone = user.getPhoneNumber();
-                    phone = URLEncoder.encode(phone, "UTF-8");
-                    String name = user.getName();
-                    name = URLEncoder.encode(name, "UTF-8");
-                    String message = chatEditText.getText().toString();
-                    message = URLEncoder.encode(message, "UTF-8");
-                    String time = getLocalTime();
-                    time = URLEncoder.encode(time, "UTF-8");
-                    String gameid = game.getGameID();
-                    gameid = URLEncoder.encode(gameid, "UTF-8");
-                    String url = String.format("http://schools-live.com/insertMessage.php?phone=%s&name=%s&message=%s&time=%s&gameid=%s", phone, name, message, time, gameid);
-                    sendGETInsertChat(url);
+                if(chatEditText.getText().toString().length() > 0) {
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.show();
+                    try {
+                        String phone = user.getPhoneNumber();
+                        phone = URLEncoder.encode(phone, "UTF-8");
+                        String name = user.getName();
+                        name = URLEncoder.encode(name, "UTF-8");
+                        String message = chatEditText.getText().toString();
+                        message = URLEncoder.encode(message, "UTF-8");
+                        String time = getLocalTime();
+                        time = URLEncoder.encode(time, "UTF-8");
+                        String gameid = game.getGameID();
+                        gameid = URLEncoder.encode(gameid, "UTF-8");
+                        String url = String.format("http://schools-live.com/insertMessage.php?phone=%s&name=%s&message=%s&time=%s&gameid=%s", phone, name, message, time, gameid);
+                        sendGETInsertChat(url);
                     } catch (UnsupportedEncodingException e) {
-                      e.printStackTrace();
+                        e.printStackTrace();
                     } catch (IOException e) {
-                    e.printStackTrace();
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "Please type a message first", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -491,7 +531,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             score = scoreTextView.getText().toString();
         }
         String updateBy = lastUpdateByTextView.getText().toString();
-        String updateTime =  lastUpdateTimeTextView.getText().toString();
+        String updateTime = utcTime;
         try {
             weather = URLEncoder.encode(weather, "UTF-8");
             temperature = URLEncoder.encode(temperature, "UTF-8");
@@ -569,13 +609,13 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
     public void numberPickerDialogGameStatus() {
         final Dialog d = new Dialog(UpdateGameActivity.this);
-        d.setTitle("Update Weather");
+        d.setTitle("Update Game");
         d.setContentView(R.layout.dialog);
         Button b1 = (Button) d.findViewById(R.id.button1);
         Button b2 = (Button) d.findViewById(R.id.button2);
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
         final String[] weatherArray = new String[] { "NOT STARTED", "1st HALF", "HALF TIME" , "2nd HALF", "ENDED"};
-        np.setMaxValue(3);
+        np.setMaxValue(4);
         np.setMinValue(0);
         np.setDisplayedValues(weatherArray);
         np.setWrapSelectorWheel(false);
@@ -596,7 +636,20 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 else if(np.getValue() == 3) {
                     statusTextView.setText(weatherArray[3]);
                 }
-                updateGame();
+                else if(np.getValue() == 4) {
+                    statusTextView.setText(weatherArray[4]);
+                }
+
+                try {
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.show();
+                    String status = statusTextView.getText().toString();
+                    status = URLEncoder.encode(status, "UTF-8");
+                    String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s", game.getGameID(), status);
+                    sendGETUpdateGame(url);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 d.dismiss();
 
             }
@@ -669,19 +722,19 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         d.setContentView(R.layout.score_dialog);
         Button b1 = (Button) d.findViewById(R.id.button1);
         Button b2 = (Button) d.findViewById(R.id.button2);
-        final Spinner gameStatusSpinner = (Spinner) d.findViewById(R.id.gameStatusSpinner);
+        //final Spinner gameStatusSpinner = (Spinner) d.findViewById(R.id.gameStatusSpinner);
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
         final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
 
-        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "NOT STARTED", "", "FIRST HALF", "SECOND HALF", "FINISHED" });
-        gameStatusSpinner.setAdapter(adapter);
+        //ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "NOT STARTED", "1st HALF", "HALF TIME" , "2nd HALF", "ENDED" });
+        //gameStatusSpinner.setAdapter(adapter);
 
-        np.setMaxValue(99);
+        np.setMaxValue(999);
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
-        np2.setMaxValue(99);
+        np2.setMaxValue(999);
         np2.setMinValue(0);
         np2.setWrapSelectorWheel(false);
         np2.setOnValueChangedListener(this);
@@ -692,8 +745,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 String homeScore = String.valueOf(np.getValue());
                 String awayScore = String.valueOf(np2.getValue());
                 scoreTextView.setText(homeScore + " - " + awayScore);
-                lastUpdateTimeTextView.setText(GetUTCdatetimeAsString());
-                statusTextView.setText(gameStatusSpinner.getSelectedItem().toString());
+                utcTime = GetUTCdatetimeAsString();
+                lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
+                //statusTextView.setText(gameStatusSpinner.getSelectedItem().toString());
                 updateGame();
                 d.dismiss();
             }
@@ -720,7 +774,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         final Spinner wicketsTakenSpinner = (Spinner) d.findViewById(R.id.wicketsTakenSpinner);
         final Spinner battingSpinner = (Spinner) d.findViewById(R.id.battingSpinner);
         final Spinner bowlingSpinner = (Spinner) d.findViewById(R.id.bowlingSpinner);
-        final Spinner gameStatusSpinner = (Spinner) d.findViewById(R.id.gameStatusSpinner);
+        //final Spinner gameStatusSpinner = (Spinner) d.findViewById(R.id.gameStatusSpinner);
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
 
         ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50"  });
@@ -735,10 +789,10 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { game.getHomeSchoolName(), game.getAwaySchoolName()});
         bowlingSpinner.setAdapter(adapter);
 
-        adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "NOT STARTED", "FIRST HALF", "SECOND HALF", "ENDED" });
-        gameStatusSpinner.setAdapter(adapter);
+        //adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "NOT STARTED", "1st HALF", "HALF TIME" , "2nd HALF", "ENDED" });
+       // gameStatusSpinner.setAdapter(adapter);
 
-        np.setMaxValue(99);
+        np.setMaxValue(500);
         np.setMinValue(0);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
@@ -748,13 +802,24 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View v) {
                 String score = String.valueOf(np.getValue());
                 String wickets = String.valueOf(wicketsTakenSpinner.getSelectedItem());
-                String gameStatus = String.valueOf(gameStatusSpinner.getSelectedItem());
+                //String gameStatus = String.valueOf(gameStatusSpinner.getSelectedItem());
                 overs = currentOverSpinner.getSelectedItem().toString();
                 batting = battingSpinner.getSelectedItem().toString();
                 bowling = bowlingSpinner.getSelectedItem().toString();
-                scoreTextView.setText(score + "/" + wickets );
-                lastUpdateTimeTextView.setText(GetUTCdatetimeAsString());
-                statusTextView.setText(gameStatus);
+                currentOverTextView.setVisibility(View.VISIBLE);
+                currentOverTextView.setText("Curr. Over: " + overs);
+                if (schoolName1TextView.getText().toString().equals(batting)) {
+                    batbowl2TextView.setText("(Batting)");
+                    batbowlTextView.setText("(Bowling)");
+                } else {
+                    batbowl2TextView.setText("(Bowling)");
+                    batbowlTextView.setText("(Batting)");
+                }
+
+                scoreTextView.setText(score + " / " + wickets );
+                utcTime = GetUTCdatetimeAsString();
+                lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
+                //statusTextView.setText(gameStatus);
                 updateGame();
                 d.dismiss();
             }
@@ -890,7 +955,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                progressDialog.hide();
+                progressDialog.dismiss();
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
@@ -924,7 +989,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         listView.setAdapter(customAdapterChat);
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                      //   Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -983,12 +1048,12 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     System.out.println(result);
                     if(result.contains("Record updated successfully")) {
                         saveUserSharedPreferences(user);
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "Game updated successfully", Toast.LENGTH_SHORT).show();
 
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -1059,7 +1124,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "We couldn't save your message", Toast.LENGTH_SHORT).show();
                     }
                 }

@@ -27,7 +27,7 @@
             ads:adUnitId="ca-app-pub-2256526831296426/7083154391">
         </com.google.android.gms.ads.AdView>
 
-        <FrameLayout
+    <!--    <FrameLayout
             android:id="@+id/menuFrameLayout"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -43,7 +43,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true">
 
-               <!--     <TextView
+                    <TextView
                         android:id="@+id/weather1TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                         android:layout_height="20dp"
                         android:layout_weight="1"/> -->
 
-                    <Space
+            <!--         <Space
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"/>
@@ -141,13 +141,13 @@
 
                 </LinearLayout>
 
-        </FrameLayout>
+        </FrameLayout> -->
 
         <FrameLayout
             android:id="@+id/rankingFrameLayout"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_below="@id/menuFrameLayout"
+            android:layout_below="@id/navigation_action"
             android:background="@color/colorGray">
 
             <LinearLayout

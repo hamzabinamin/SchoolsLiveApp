@@ -1,10 +1,8 @@
 package com.hamzabinamin.schoolsliveapp;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -14,33 +12,22 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class FacebookActivity extends AppCompatActivity implements View.OnClickListener {
+public class NotificationActivity extends AppCompatActivity {
 
-    private WebView mWebView;
-    TextView schoolTypeTextView;
-    TextView schoolNameTextView;
-    TextView schoolLocationTextView;
-    TextView schoolLinkTextView;
-    TextView fixturesTextView;
-    TextView liveNowTextView;
-    TextView resultsTextView;
-    TextView facebookTextView;
-    TextView twitterTextView;
     ImageView imageView;
-    ProgressDialog progressDialog;
+    SwitchButton sb_tint_color_0;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     ActionBarDrawerToggle mActionBarToggle;
@@ -48,25 +35,18 @@ public class FacebookActivity extends AppCompatActivity implements View.OnClickL
     School school;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebook);
+        setContentView(R.layout.activity_notification);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        //  .addTestDevice("1E9E1DA0C4E19BA422D51AF125310542").build();
         adView.loadAd(adRequest);
 
-        schoolTypeTextView = (TextView) findViewById(R.id.schoolTypeTextView);
-        schoolNameTextView = (TextView) findViewById(R.id.schoolNameTextView);
-        schoolLocationTextView = (TextView) findViewById(R.id.schoolLocationTextView);
-        schoolLinkTextView = (TextView) findViewById(R.id.schoolLinkTextView);
-        fixturesTextView = (TextView) findViewById(R.id.fixturesTextView);
-        resultsTextView = (TextView) findViewById(R.id.resultsTextView);
-        liveNowTextView = (TextView) findViewById(R.id.liveNowTextView);
-        twitterTextView = (TextView) findViewById(R.id.twitterTextView);
-        facebookTextView = (TextView) findViewById(R.id.facebookTextView);
-        progressDialog = new ProgressDialog(this);
+
+        sb_tint_color_0 = (SwitchButton) findViewById(R.id.sb_tint_color_0);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActionBarToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
@@ -103,7 +83,6 @@ public class FacebookActivity extends AppCompatActivity implements View.OnClickL
 
         View hView = mNavigationView.getHeaderView(0);
         imageView = (ImageView) hView.findViewById(R.id.profile_image);
-        facebookTextView.setTextColor(getResources().getColor(R.color.colorRed));
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
@@ -112,17 +91,7 @@ public class FacebookActivity extends AppCompatActivity implements View.OnClickL
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        fixturesTextView.setOnClickListener(this);
-        resultsTextView.setOnClickListener(this);
-        facebookTextView.setOnClickListener(this);
-        twitterTextView.setOnClickListener(this);
-
         if(getSchoolSharedPreferences()) {
-            schoolTypeTextView.setText(school.getSchoolType());
-            schoolNameTextView.setText(school.getSchoolName());
-            schoolLocationTextView.setText(school.getSchoolLocation());
-            schoolLinkTextView.setText(school.getSchoolWebsite());
-
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
                     .showImageForEmptyUri(android.R.drawable.arrow_down_float)
@@ -130,17 +99,34 @@ public class FacebookActivity extends AppCompatActivity implements View.OnClickL
                     .showImageOnLoading(android.R.drawable.arrow_up_float).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
-
         }
 
-        String mUrl = getIntent().getStringExtra("mUrl");
+        if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
+            sb_tint_color_0.setChecked(true);
+        }
+        else if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Unchecked")) {
+            sb_tint_color_0.setChecked(false);
+        }
+        else {
+            sb_tint_color_0.setChecked(false);
+        }
 
-        mWebView = (WebView) findViewById(R.id.webView);
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        mWebView.loadUrl(mUrl);
-        mWebView.setWebViewClient(new WebViewClient());
-        mWebView.setWebViewClient(new MyAppWebViewClient());
+
+        sb_tint_color_0.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked) {
+                    Toast.makeText(getBaseContext(), "Notifications got activated", Toast.LENGTH_SHORT).show();
+                    saveNotificationSharedPreferences("Checked");
+                }
+                else {
+                    saveNotificationSharedPreferences("Unchecked");
+                }
+
+                Toast.makeText(getBaseContext(), "Toggle SwitchButton new check state: " + (isChecked ? "Checked" : "Unchecked"), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -168,54 +154,20 @@ public class FacebookActivity extends AppCompatActivity implements View.OnClickL
             return false;
     }
 
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
-            case R.id.fixturesTextView:
-                finish();
-                startActivity(new Intent(getBaseContext(), SchoolActivity.class));
-                break;
-
-            case R.id.resultsTextView:
-                finish();
-                startActivity(new Intent(getBaseContext(), ResultsActivity.class));
-                break;
-
-            case R.id.twitterTextView:
-                if(school.getSchoolTwitter().length() > 0) {
-                    System.out.println("Result: " + school.getSchoolTwitter());
-                    String newValue = school.getSchoolTwitter();
-                    Intent intent = new Intent(getApplicationContext(), TwitterActivity.class);
-                    intent.putExtra("mUrl", newValue);
-                    startActivity(intent);
-                }
-                break;
-
-            case R.id.liveNowTextView:
-                finish();
-                startActivity(new Intent(getBaseContext(), LiveNowActivity.class));
-                break;
-        }
+    public void saveNotificationSharedPreferences(String status) {
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("Notification", status).commit();
     }
 
-    public class MyAppWebViewClient extends WebViewClient {
+    public String getNotificationSharedPreferences() {
 
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            progressDialog.setMessage("Please wait");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-            view.loadUrl(url);
-            view.loadUrl(url);
-            return true;
-        }
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
 
-        @Override
-        public void onPageFinished(WebView view, final String url) {
-            progressDialog.dismiss();
+        if (sharedPreferences.getString("Notification", null) != null) {
+            return sharedPreferences.getString("Notification", null);
         }
+        else
+            return null;
     }
+
 }

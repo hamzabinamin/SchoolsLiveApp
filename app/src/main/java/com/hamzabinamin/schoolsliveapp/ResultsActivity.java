@@ -1,5 +1,6 @@
 package com.hamzabinamin.schoolsliveapp;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +12,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,11 +42,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity implements View.OnClickListener {
 
+    Button weekDropDown;
+    Button gameDropDown;
+    Button addGameDropDown;
+    TextView weekTextView;
+    TextView gameTextView;
     TextView schoolTypeTextView;
     TextView schoolNameTextView;
     TextView schoolLocationTextView;
@@ -62,6 +73,9 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     Toolbar mToolBar;
     School school;
     List<String> schoolNames = new ArrayList<>();
+    String date1;
+    String date2;
+    boolean firstDialogOpened;
     private static final String USER_AGENT = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
 
     @Override
@@ -74,6 +88,11 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
 
+        weekDropDown = (Button) findViewById(R.id.weekDropDown);
+        gameDropDown = (Button) findViewById(R.id.gameDropDown);
+        addGameDropDown = (Button) findViewById(R.id.addGameDropDown);
+        weekTextView = (TextView)findViewById(R.id.weekTextView);
+        gameTextView = (TextView) findViewById(R.id.gameTextView);
         schoolTypeTextView = (TextView) findViewById(R.id.schoolTypeTextView);
         schoolNameTextView = (TextView) findViewById(R.id.schoolNameTextView);
         schoolLocationTextView = (TextView) findViewById(R.id.schoolLocationTextView);
@@ -100,8 +119,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         break;
 
                     case R.id.notifications:
-                        //  finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        finish();
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
@@ -129,6 +148,9 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        weekDropDown.setOnClickListener(this);
+        gameDropDown.setOnClickListener(this);
+        addGameDropDown.setOnClickListener(this);
         fixturesTextView.setOnClickListener(this);
         liveNowTextView.setOnClickListener(this);
         resultsTextView.setOnClickListener(this);
@@ -136,7 +158,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         twitterTextView.setOnClickListener(this);
 
         if(getSchoolSharedPreferences()) {
-            progressDialog.setMessage("Please Wait");
+           /* progressDialog.setMessage("Please Wait");
             progressDialog.show();
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
@@ -149,7 +171,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            } */
             schoolTypeTextView.setText(school.getSchoolType());
             schoolNameTextView.setText(school.getSchoolName());
             schoolLocationTextView.setText(school.getSchoolLocation());
@@ -174,6 +196,117 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public String getLocalTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance();
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimePreviousWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, - 7);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimeNextWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, + 7);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimeFirstDayOfCurrentWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimeLastDayOfCurrentWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        calendar.add(Calendar.DATE, 7);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public void openCalendar() {
+        Calendar mcurrentDate=Calendar.getInstance();
+        int mYear=mcurrentDate.get(Calendar.YEAR);
+        int mMonth=mcurrentDate.get(Calendar.MONTH);
+        int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog mDatePicker=new DatePickerDialog(ResultsActivity.this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                // TODO Auto-generated method stub
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(selectedyear, selectedmonth, selectedday);
+                date1 = sdf.format(calendar.getTime());
+                firstDialogOpened = true;
+                openCalendar2();
+
+            }
+        },mYear, mMonth, mDay);
+        mDatePicker.setTitle("Select Date");
+        mDatePicker.show();
+    }
+
+    public void openCalendar2() {
+        Calendar mcurrentDate=Calendar.getInstance();
+        int mYear=mcurrentDate.get(Calendar.YEAR);
+        int mMonth=mcurrentDate.get(Calendar.MONTH);
+        int mDay=mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+        final DatePickerDialog mDatePicker=new DatePickerDialog(ResultsActivity.this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                // TODO Auto-generated method stub
+                if(firstDialogOpened) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(selectedyear, selectedmonth, selectedday);
+                    date2 = sdf.format(calendar.getTime());
+
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.show();
+
+                    String range1 = null;
+                    try {
+                        String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
+                        String sport = URLEncoder.encode(gameTextView.getText().toString(), "UTF-8");
+                        System.out.println("Sport: " + sport);
+                        range1 = URLEncoder.encode(date1, "UTF-8");
+                        String range2 = URLEncoder.encode(date2, "UTF-8");
+                        if(sport.contains("ALL+GAMES")) {
+                            String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                            sendGETforGames(url);
+                        }
+                        else {
+                            String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                            sendGETforGames(url);
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "Please select the starting Date first", Toast.LENGTH_SHORT).show();
+                }
+            }
+        },mYear, mMonth, mDay);
+        mDatePicker.setTitle("Select Date");
+        mDatePicker.show();
     }
 
     public boolean getSchoolSharedPreferences() {
@@ -267,7 +400,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -323,7 +456,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 if(result != null) {
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
                         result = result.replace("Got Result<br>","");
@@ -374,7 +507,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         listView.setAdapter(customAdapter);
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -390,6 +523,184 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
 
         switch (v.getId()) {
+
+            case R.id.weekDropDown:
+                PopupMenu popup = new PopupMenu(ResultsActivity.this, weekDropDown);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.popup2, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().toString().equals("CUSTOM DATE RANGE")) {
+                            weekTextView.setText("C.D. RANGE");
+                        }
+                        else {
+                            weekTextView.setText(item.getTitle().toString());
+                        }
+                        customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
+                        listView.setAdapter(customAdapter);
+
+                        try {
+                            String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
+                            String sport = URLEncoder.encode(gameTextView.getText().toString(), "UTF-8");
+
+                            if(item.getTitle().toString().equals("THIS WEEK")) {
+                                progressDialog.setMessage("Please Wait");
+                                progressDialog.show();
+                                String range1 = URLEncoder.encode(getLocalTimeFirstDayOfCurrentWeek(), "UTF-8");
+                                String range2 = URLEncoder.encode(getLocalTimeLastDayOfCurrentWeek(), "UTF-8");
+                                System.out.println("Sport: " + sport);
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                            }
+                            else if(item.getTitle().toString().equals("LAST WEEK")) {
+                                progressDialog.setMessage("Please Wait");
+                                progressDialog.show();
+                                String range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
+                                String range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                                System.out.println("Sport: " + sport);
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                            }
+                            else if(item.getTitle().toString().equals("NEXT WEEK")) {
+                                progressDialog.setMessage("Please Wait");
+                                progressDialog.show();
+                                String range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                                String range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+                                System.out.println("Sport: " + sport);
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+
+                            }
+                            else if(item.getTitle().toString().equals("C.D. RANGE")) {
+                                openCalendar();
+                            }
+
+                            else {
+                                String url = String.format("http://schools-live.com/getEndedGameBySport.php?home=%s&away=%s&sport=%s", schoolName, schoolName, sport);
+                                sendGETforGames(url);
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        return true;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+                break;
+
+
+            case R.id.gameDropDown:
+                //Creating the instance of PopupMenu
+                popup = new PopupMenu(ResultsActivity.this, gameDropDown);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.popup, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        gameTextView.setText(item.getTitle().toString());
+                        customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
+                        listView.setAdapter(customAdapter);
+                        progressDialog.setMessage("Please Wait");
+                        progressDialog.show();
+                        try {
+                            String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
+                            String sport = URLEncoder.encode(item.getTitle().toString(), "UTF-8");
+                            String range1 = "";URLEncoder.encode(getLocalTime(), "UTF-8");
+                            String range2 = "";URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+
+                            if(weekTextView.getText().toString().equals("THIS WEEK")) {
+                                range1 = URLEncoder.encode(getLocalTimeFirstDayOfCurrentWeek(), "UTF-8");
+                                range2 = URLEncoder.encode(getLocalTimeLastDayOfCurrentWeek(), "UTF-8");
+
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                            }
+                            else if(weekTextView.getText().toString().equals("LAST WEEK")) {
+                                range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
+                                range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                            }
+                            else if(weekTextView.getText().toString().equals("NEXT WEEK")) {
+                                range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                                range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+
+                                if(sport.contains("ALL+GAMES")) {
+                                    String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                                else {
+                                    String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                                    sendGETforGames(url);
+                                }
+                            }
+                            else if(weekTextView.toString().trim().contains("C.D. RANGE")) {
+                                progressDialog.dismiss();
+                                openCalendar();
+                            }
+                            else {
+                                System.out.println("Week: " + weekTextView.getText().toString());
+                                Toast.makeText(getBaseContext(), "Nothing" , Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        return true;
+                    }
+                });
+
+                popup.show(); //showing popup menu
+                break;
+
+
+            case R.id.addGameDropDown:
+                finish();
+                startActivity(new Intent(getBaseContext(), AddGameActivity.class));
+                break;
 
             case R.id.fixturesTextView:
                 finish();
@@ -434,13 +745,62 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
             progressDialog.show();
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
-                String url = String.format("http://schools-live.com/getAllEndedGames.php?home=%s&away=%s", schoolName, schoolName);
-                sendGETforGames(url);
+                String sport = URLEncoder.encode(gameTextView.getText().toString(), "UTF-8");
+                String range1 = "";
+                String range2 = "";
+
+                if(weekTextView.getText().toString().equals("THIS WEEK")) {
+                    range1 = URLEncoder.encode(getLocalTimeFirstDayOfCurrentWeek(), "UTF-8");
+                    range2 = URLEncoder.encode(getLocalTimeLastDayOfCurrentWeek(), "UTF-8");
+
+
+                    if(sport.contains("ALL+GAMES")) {
+                        String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                        sendGETforGames(url);
+                    }
+                    else {
+                        String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                        sendGETforGames(url);
+                    }
+                }
+                else if(weekTextView.getText().toString().equals("LAST WEEK")) {
+                    range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
+                    range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+
+                    if(sport.contains("ALL+GAMES")) {
+                        String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                        sendGETforGames(url);
+                    }
+                    else {
+                        String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                        sendGETforGames(url);
+                    }
+                }
+                else if(weekTextView.getText().toString().equals("NEXT WEEK")) {
+                    range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                    range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+
+                    if(sport.contains("ALL+GAMES")) {
+                        String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
+                        sendGETforGames(url);
+                    }
+                    else {
+                        String url = String.format("http://schools-live.com/getEndedGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
+                        sendGETforGames(url);
+                    }
+                }
+                else if(weekTextView.toString().equals("C.D. RANGE")) {
+                    openCalendar();
+                }
+
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        /*    String url = String.format("http://schools-live.com/getAllEndedGames.php?home=%s&away=%s", schoolName, schoolName);
+            sendGETforGames(url); */
         }
         else {
             startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));

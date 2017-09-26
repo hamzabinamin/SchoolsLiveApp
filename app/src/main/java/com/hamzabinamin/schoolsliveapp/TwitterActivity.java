@@ -87,8 +87,8 @@ public class TwitterActivity extends AppCompatActivity implements View.OnClickLi
                         break;
 
                     case R.id.notifications:
-                        //  finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        finish();
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:

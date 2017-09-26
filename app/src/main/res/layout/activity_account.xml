@@ -109,4 +109,15 @@
         android:background="@drawable/roundedgreen"/>
 
 
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/addView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-2256526831296426/7083154391">
+    </com.google.android.gms.ads.AdView>
+
 </RelativeLayout>

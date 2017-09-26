@@ -157,7 +157,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
 
                     case R.id.notifications:
                         finish();
-                       // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
@@ -404,7 +404,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         if(item.getTitle().toString().equals("CUSTOM DATE RANGE")) {
-                            weekTextView.setText("C. DATE RANGE");
+                            weekTextView.setText("C.D. RANGE");
                         }
                         else {
                             weekTextView.setText(item.getTitle().toString());

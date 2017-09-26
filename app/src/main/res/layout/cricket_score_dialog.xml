@@ -106,36 +106,10 @@
     </Spinner>
 
     <FrameLayout
-        android:id="@+id/gameStatusFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_below="@id/bowlingSpinner"
-        android:background="@color/colorGray">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:text="Game Status"
-            android:textSize="18dp"
-            android:textColor="@color/colorBlack"/>
-
-    </FrameLayout>
-
-    <Spinner
-        android:id="@+id/gameStatusSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@id/gameStatusFrameLayout"
-        android:layout_alignParentRight="true">
-    </Spinner>
-
-    <FrameLayout
         android:id="@+id/scoreFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_below="@id/gameStatusSpinner"
+        android:layout_below="@id/bowlingSpinner"
         android:background="@color/colorGray">
 
         <TextView
@@ -179,23 +153,23 @@
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/scoreLinearLayout"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="40dp"
         android:layout_alignParentLeft="true"
-        android:text="Cancel" />
+        android:text="Update" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/scoreLinearLayout"
         android:layout_marginRight="80dp"
         android:layout_marginTop="40dp"
         android:layout_alignParentRight="true"
-        android:text="Update" />
+        android:text="Cancel" />
 
 </RelativeLayout>

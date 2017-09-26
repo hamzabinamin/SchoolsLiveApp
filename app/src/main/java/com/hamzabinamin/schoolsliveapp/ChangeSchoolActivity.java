@@ -84,7 +84,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
 
                     case R.id.notifications:
                         finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:

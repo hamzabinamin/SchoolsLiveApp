@@ -100,8 +100,8 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                         break;
 
                     case R.id.notifications:
-                      //  finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        finish();
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
@@ -135,7 +135,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
         twitterTextView.setOnClickListener(this);
 
         if(getSchoolSharedPreferences()) {
-            progressDialog.setMessage("Please Wait");
+          /*  progressDialog.setMessage("Please Wait");
             progressDialog.show();
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
@@ -148,7 +148,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            } */
             schoolTypeTextView.setText(school.getSchoolType());
             schoolNameTextView.setText(school.getSchoolName());
             schoolLocationTextView.setText(school.getSchoolLocation());
@@ -266,7 +266,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -322,7 +322,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 if(result != null) {
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
                         result = result.replace("Got Result<br>","");
@@ -373,7 +373,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                         listView.setAdapter(customAdapter);
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
                 }

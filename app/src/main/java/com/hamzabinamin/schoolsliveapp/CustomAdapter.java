@@ -41,6 +41,7 @@ public class CustomAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     Context context;
     public static  List<Game> list = null;
+    List<Game> notificationGameList = new ArrayList<Game>();
 
     public CustomAdapter(Context context, List<Game> l) {
 
@@ -114,10 +115,16 @@ public class CustomAdapter extends BaseAdapter {
             holder.currentOver = (TextView) convertView.findViewById(R.id.currentOverTextView);
             holder.batbowlTextView = (TextView) convertView.findViewById(R.id.batbowlTextView);
             holder.batbowl2TextView = (TextView) convertView.findViewById(R.id.batbowl2TextView);
+            holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
             convertView.setTag(holder);
         } else {
 
             holder = (ViewHolder) convertView.getTag();
+        }
+
+        if(list.get(position).getStatus().equals("ENDED")) {
+            holder.updateGame.setVisibility(View.INVISIBLE);
+            holder.addtoNotificationImageView.setVisibility(View.INVISIBLE);
         }
 
         if(!list.get(position).getSport().equals("Cricket")) {
@@ -154,19 +161,27 @@ public class CustomAdapter extends BaseAdapter {
             holder.homeTeamSchoolType.setText(splitArray[0]);
             holder.awayTeamSchoolName.setText(list.get(position).getAwaySchoolName());
             holder.awayTeamSchoolType.setText(splitArray[1]);
-            holder.teamScore.setText(list.get(position).getScore());
             holder.lastUpdateBy.setText(list.get(position).getLastUpdateBy());
             holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
             String[] stringArray = list.get(position).getScore().split("/");
-            holder.currentOver.setText(stringArray[4]);
-            if(list.get(position).getHomeSchoolName().equals(stringArray[2])) {
-                holder.batbowlTextView.setText("Batting");
-                holder.batbowl2TextView.setText("Bowling");
+            if(stringArray.length == 5) {
+                holder.currentOver.setText("Curr. Over: " + stringArray[4]);
+                holder.teamScore.setText(stringArray[0].trim() + " / " + stringArray[1].trim());
+                if (list.get(position).getHomeSchoolName().equals(stringArray[2])) {
+                    holder.batbowl2TextView.setText("(Batting)");
+                    holder.batbowlTextView.setText("(Bowling)");
+                } else {
+                    holder.batbowl2TextView.setText("(Bowling)");
+                    holder.batbowlTextView.setText("(Batting)");
+                }
             }
             else {
-                holder.batbowlTextView.setText("Bowling");
-                holder.batbowl2TextView.setText("Batting");
+                holder.teamScore.setText(list.get(position).getScore());
+                holder.batbowlTextView.setVisibility(View.INVISIBLE);
+                holder.batbowl2TextView.setVisibility(View.INVISIBLE);
+                holder.currentOver.setVisibility(View.INVISIBLE);
             }
+
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
                     .showImageForEmptyUri(android.R.drawable.arrow_down_float)
@@ -183,6 +198,23 @@ public class CustomAdapter extends BaseAdapter {
                 Game game = list.get(position);
                 saveGameSharedPreferences(game);
                 context.startActivity(new Intent(context, UpdateGameActivity.class));
+            }
+        });
+
+        holder.addtoNotificationImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Game game = list.get(position);
+
+                if(getGameListSharedPreferences()) {
+                    notificationGameList.add(game);
+                    saveGameListSharedPreferences(notificationGameList);
+                }
+                else {
+                    notificationGameList.add(game);
+                    saveGameListSharedPreferences(notificationGameList);
+                }
+                Toast.makeText(context, "Game Added to Notifications", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -221,6 +253,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView currentOver;
         TextView batbowlTextView;
         TextView batbowl2TextView;
+        ImageView addtoNotificationImageView;
     }
 
     public void saveGameSharedPreferences(Game game) {
@@ -229,4 +262,27 @@ public class CustomAdapter extends BaseAdapter {
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("Game", runnerString).commit();
     }
+
+    public void saveGameListSharedPreferences(List counterList) {
+        Gson gson = new Gson();
+        String gameString = gson.toJson(counterList);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("Notification Game List", gameString).commit();
+    }
+
+    public boolean getGameListSharedPreferences() {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        String gameString;
+        if (sharedPreferences.getString("Notification Game List", null) != null) {
+            gameString = sharedPreferences.getString("Notification Game List", null);
+            Gson gson = new Gson();
+            TypeToken<List<Game>> token = new TypeToken<List<Game>>() {};
+            notificationGameList = gson.fromJson(gameString, token.getType());
+            return true;
+        }
+        else
+            return false;
+    }
+
 }

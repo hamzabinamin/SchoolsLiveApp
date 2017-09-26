@@ -235,7 +235,6 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 if(result != null) {
-                    progressDialog.hide();
                     progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
@@ -282,7 +281,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     }
 
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -379,6 +378,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.addGameButton:
                 if(validation()) {
+                    progressDialog = new ProgressDialog(this);
                     progressDialog.setMessage("Please Wait");
                     progressDialog.show();
                     String schoolA =  schoolASpinner.getSelectedItem().toString();
@@ -432,10 +432,10 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         temperature = URLEncoder.encode("25°C", "UTF-8");
                         status = URLEncoder.encode("NOT STARTED", "UTF-8");
                         if(!sport.equals("Cricket")) {
-                            score = URLEncoder.encode("0-0", "UTF-8");
+                            score = URLEncoder.encode("0 - 0", "UTF-8");
                         }
                         else {
-                            score = URLEncoder.encode("0/0", "UTF-8");
+                            score = URLEncoder.encode("0 / 0", "UTF-8");
                         }
                        updateBy = URLEncoder.encode(user.getName(), "UTF-8");
                        updateTime = URLEncoder.encode(GetUTCdatetimeAsString() , "UTF-8");
@@ -501,8 +501,31 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         String sport = sportSpinner.getSelectedItem().toString();
         String agegroup = ageGroupSpinner.getSelectedItem().toString();
         String team = teamSpinner.getSelectedItem().toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        String ampm = "";
+        if(ampmNumberPicker.getValue() == 0) {
+            ampm = "AM";
+        }
+        else if(ampmNumberPicker.getValue() == 1) {
+            ampm = "PM";
+        }
+
 
         if(schoolA.length() > 0 && schoolB.length() > 0 && field.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
+            String starttime = String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
+            Calendar selectedCalendar = Calendar.getInstance();
+            try {
+                selectedCalendar.setTime(sdf.parse(starttime));
+                Calendar currentCalendar = Calendar.getInstance();
+
+                if(selectedCalendar.before(currentCalendar)) {
+                    Toast.makeText(getBaseContext(), "You can't select a date older than the current date", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         else {

@@ -87,7 +87,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
                     case R.id.notifications:
                         finish();
-                        // startActivity(new Intent(getBaseContext(), HistoryActivity.class));
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
                         break;
 
                     case R.id.leaderboard:
