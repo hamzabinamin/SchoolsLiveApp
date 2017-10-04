@@ -10,23 +10,37 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.DisplayMetrics;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +70,11 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class EditSchoolActivity extends AppCompatActivity implements View.OnClickListener {
 
+    ImageView imageView2;
+    DrawerLayout mDrawerLayout;
+    NavigationView mNavigationView;
+    ActionBarDrawerToggle mActionBarToggle;
+    Toolbar mToolBar;
     de.hdodenhof.circleimageview.CircleImageView imageView;
     Button editSchoolButton;
     EditText schoolNameEditText;
@@ -67,6 +86,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
     ProgressDialog progressDialog;
     String ImageTag = "image_tag" ;
     String ImageName = "image_data" ;
+    String SchoolName = "school_name";
     String ServerUploadPath ="http://schools-live.com/school-images/insertImage.php" ;
     ByteArrayOutputStream byteArrayOutputStream ;
     byte[] byteArray ;
@@ -81,7 +101,10 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
     Bitmap bitmapImage;
     String schoolID;
     String schoolName;
+    String schoolNameStore;
     String userChoosenTask;
+    School school;
+    School schoolStore;
     boolean check = true;
     boolean isImageCaptured;
     boolean isImageChosen;
@@ -92,13 +115,80 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_school);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_edit_school_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_edit_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         //  .addTestDevice("1E9E1DA0C4E19BA422D51AF125310542").build();
         adView.loadAd(adRequest);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActionBarToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                switch (id) {
+                    case R.id.manageSchools:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        break;
+
+                    case R.id.notifications:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), NotificationActivity.class));
+                        break;
+
+                    case R.id.leaderboard:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), LearderboardActivity.class));
+                        break;
+
+                    case R.id.settings:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
+                        break;
+                }
+                return false;
+            }
+        });
+
+        View hView = mNavigationView.getHeaderView(0);
+        imageView2 = (ImageView) hView.findViewById(R.id.profile_image);
+        mNavigationView.setItemIconTintList(null);
+        mToolBar = (Toolbar) findViewById(R.id.navigation_action);
+        setSupportActionBar(mToolBar);
+        mDrawerLayout.addDrawerListener(mActionBarToggle);
+        mActionBarToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(getSchoolSharedPreferences()) {
+            DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                    .cacheOnDisk(true).resetViewBeforeLoading(true)
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+            imageLoader.displayImage(school.getSchoolImage(), imageView2, options);
+        }
 
         imageView = (de.hdodenhof.circleimageview.CircleImageView) findViewById(R.id.profile_image);
         editSchoolButton = (Button) findViewById(R.id.editSchoolButton);
@@ -120,6 +210,40 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 String url = String.format("http://schools-live.com/getOneSchool.php?name=%s", schoolName);
 
                 progressDialog.setMessage("Please Wait");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+                sendGET(url);
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(mActionBarToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+ /*   @Override
+    protected void onResume() {
+        super.onResume();
+        if(getEditSchoolSharedPreferences()) {
+            try {
+                schoolName = URLEncoder.encode(schoolName, "UTF-8");
+                String url = String.format("http://schools-live.com/getOneSchool.php?name=%s", schoolName);
+
+                progressDialog.setMessage("Please Wait");
                 progressDialog.show();
                 sendGET(url);
 
@@ -130,7 +254,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
             }
 
         }
-    }
+    } */
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -151,6 +275,22 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         return super.dispatchTouchEvent(ev);
     }
 
+    public boolean getSchoolSharedPreferences() {
+
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+
+        if (sharedPreferences.getString("School String", null) != null) {
+            String serviceProviderString = sharedPreferences.getString("School String", null);
+            Gson gson = new Gson();
+            TypeToken<School> token = new TypeToken<School>() {};
+            school = gson.fromJson(serviceProviderString, token.getType());
+            schoolStore = gson.fromJson(serviceProviderString, token.getType());
+            return true;
+        }
+        else
+            return false;
+    }
+
     public static void hideKeyboard(Activity activity) {
         if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -164,6 +304,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
         if (sharedPreferences.getString("School Name", null) != null) {
             schoolName = sharedPreferences.getString("School Name", null);
+            schoolNameStore = sharedPreferences.getString("School Name", null);
             return true;
         }
         else
@@ -214,7 +355,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 if(result != null) {
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
                         result = result.replace("Got Result<br>","");
@@ -256,17 +397,17 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         schoolTypeSpinner.setAdapter(adapter);
 
                         if(scholType.equals("High School")) {
-                            schoolTypeSpinner.setSelection(0);
+                            schoolTypeSpinner.setSelection(1);
                         }
                         else if(scholType.equals("Primary School")) {
-                            schoolTypeSpinner.setSelection(1);
+                            schoolTypeSpinner.setSelection(0);
                         }
 
                         httpDownloadImages task = new httpDownloadImages();
                         task.execute();
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -290,6 +431,10 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
             case R.id.editSchoolButton:
                 if(validation()) {
                     progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
                     String schoolName = schoolNameEditText.getText().toString();
                     String schoolLocation = schoolLocationEditText.getText().toString();
@@ -307,7 +452,14 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         schoolType = URLEncoder.encode(schoolType, "UTF-8");
                         String url = String.format("http://schools-live.com/updateSchool.php?id=%s&name=%s&type=%s&website=%s&twitter=%s&facebook=%s&location=%s", schoolID, schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation);
 
-                        sendGET(url, BitMapToString(bitmapImage));
+                        if(bitmapImage != null) {
+                            sendGET(url, BitMapToString(bitmapImage));
+                        }
+                        else {
+                            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+                            Bitmap bitmap = drawable.getBitmap();
+                            sendGET(url, BitMapToString(bitmap));
+                        }
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -316,14 +468,11 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
 
                 }
-                else {
-                    if(bitmapImage == null && (!isImageCaptured || !isImageChosen)) {
+              /*  else {
+                   /* if(bitmapImage == null && (!isImageCaptured || !isImageChosen)) {
                         Toast.makeText(getBaseContext(), "Please select an image for your School", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getBaseContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                    } */
+
                 break;
 
         }
@@ -338,13 +487,28 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
         if(schoolNameEditText.getText().toString().length() > 0 && schoolLocationEditText.getText().toString().length() > 0 && schoolWebsiteEditText.getText().toString().length() > 0 && schoolTwitterEditText.getText().toString().length() > 0 && schoolFacebookEditText.getText().toString().length() > 0 && schoolType.length() > 0) {
 
-            if(bitmapImage == null && (!isImageCaptured || !isImageChosen)) {
+
+            if(imageView.getDrawable() == null) {
+                Toast.makeText(getBaseContext(), "Please choose an Image first", Toast.LENGTH_SHORT);
                 return false;
             }
-
+         /*   else (bitmapImage == null && (!isImageCaptured || !isImageChosen)) {
+                return false;
+            } */
+            if(!schoolFacebookEditText.getText().toString().contains("www.facebook.com")) {
+                System.out.println("Facebook");
+                Toast.makeText(getBaseContext(), "Please write the Facebook URL in correct format", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if(!schoolTwitterEditText.getText().toString().contains("www.twitter.com")) {
+                System.out.println("Twitter");
+                Toast.makeText(getBaseContext(), "Please write the Twitter URL in correct format", Toast.LENGTH_SHORT).show();
+                return false;
+            }
             return true;
         }
         else {
+            Toast.makeText(getBaseContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -462,6 +626,10 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         }
 
@@ -471,8 +639,9 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 System.out.println("Here in Do In Background");
                 //       for(int i=1; i<=10; i++){
                    // schoolName = URLEncoder.encode(schoolName, "UTF-8");
-                    String src = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8").replace("+","%20").replace("B","0") + ".png";
-                System.out.println("URL: " + "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8").replace("+","%20").replace("B","0") + ".png" );
+                 //URLEncoder.encode(schoolName, "UTF-8").replace("+","%20").replace("B","0")
+                    String src = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8") + ".png";
+                System.out.println("URL: " + "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8") + ".png" );
                     java.net.URL url = new java.net.URL(src);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
@@ -498,8 +667,10 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            progressDialog.dismiss();
+            System.out.println("Got the logo: " + s);
             imageView.setImageBitmap(StringToBitMap(s));
-            progressDialog.hide();
+
         }
     }
 
@@ -547,7 +718,14 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
                 progressDialog.dismiss();
 
-                Toast.makeText(EditSchoolActivity.this, "School Updated Successfully", Toast.LENGTH_LONG).show();
+
+                if(schoolStore.getSchoolName().equals(schoolNameStore)) {
+                    Toast.makeText(getBaseContext(), "You Updated your current selected School. Please select it again from Change School Settings to reapply the update on the app.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(EditSchoolActivity.this, "School Updated Successfully", Toast.LENGTH_LONG).show();
+                }
+
                 System.out.println("String1: " + string1 );
             }
 
@@ -558,13 +736,21 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
 
-                HashMapParams.put(ImageTag, schoolName);
+                try {
+                    String store = URLEncoder.encode(schoolName, "UTF-8");
+                    HashMapParams.put(ImageTag, store);
 
-                HashMapParams.put(ImageName, ConvertImage);
+                    HashMapParams.put(ImageName, ConvertImage);
 
-                String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
+                    HashMapParams.put(SchoolName, schoolName);
 
-                return FinalData;
+                    String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
+
+                    return FinalData;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
         }
         AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
@@ -702,7 +888,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         UploadImageToServer(StringToBitMap(bm));
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }

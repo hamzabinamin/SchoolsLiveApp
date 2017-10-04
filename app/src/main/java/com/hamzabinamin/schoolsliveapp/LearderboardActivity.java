@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +68,20 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_learderboard);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_learderboard_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_learderboard);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -126,9 +141,6 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        thisOrOverallDropDown.setOnClickListener(this);
-        monthOrWeekDropDown.setOnClickListener(this);
-
         //addList();
         //customAdapter = new CustomAdapterRanking(this, arrayList);
        //listView.setAdapter(customAdapter);
@@ -136,10 +148,11 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
             schoolTypeTextView.setText(school.getSchoolType());
@@ -150,6 +163,10 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
             String url = "http://schools-live.com/getNoOfUpdates.php";
             try {
                 progressDialog.setMessage("Please Wait");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.show();
                 sendGET(url);
             } catch (IOException e) {
@@ -241,7 +258,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         result = result.replace("Got Result<br>","");
                         JSONArray arr = null;
                         try {
@@ -255,8 +272,12 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
                                 String name = arr.getJSONObject(i).getString("Name");
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String totalUpdates = arr.getJSONObject(i).getString("Total_Updates");
-
-                                arrayList.add(new Rank(++j, name, lastUpdateTime, Integer.parseInt(totalUpdates)));
+                                if(totalUpdates.length() == 0) {
+                                    arrayList.add(new Rank(++j, name, lastUpdateTime, 0));
+                                }
+                                else {
+                                    arrayList.add(new Rank(++j, name, lastUpdateTime, Integer.parseInt(totalUpdates)));
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -270,7 +291,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
                         listView.setAdapter(customAdapter);
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }

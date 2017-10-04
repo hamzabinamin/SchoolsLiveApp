@@ -81,6 +81,10 @@ public class FacebookVerificationActivity extends AppCompatActivity {
                 try {
                     phoneNumber2 = URLEncoder.encode(phoneNumberString, "UTF-8");
                     progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
                     String url = String.format("http://schools-live.com/getUser.php?phonenumber=%s", phoneNumber2);
                     sendGET(url);
@@ -161,7 +165,7 @@ public class FacebookVerificationActivity extends AppCompatActivity {
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         result = result.replace("Got Result<br>","");
                         try {
                             JSONArray jsonArray = new JSONArray(result);
@@ -190,7 +194,7 @@ public class FacebookVerificationActivity extends AppCompatActivity {
 
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Intent intent = new Intent(getBaseContext(), AccountActivity.class);
                         intent.putExtra("Phone Number", phoneNumberString);
                         finish();

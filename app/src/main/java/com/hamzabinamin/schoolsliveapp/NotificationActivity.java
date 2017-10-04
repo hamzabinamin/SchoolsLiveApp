@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -23,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -37,7 +39,20 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_notification_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_notification);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -94,10 +109,11 @@ public class NotificationActivity extends AppCompatActivity {
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
         }
 
@@ -123,8 +139,6 @@ public class NotificationActivity extends AppCompatActivity {
                 else {
                     saveNotificationSharedPreferences("Unchecked");
                 }
-
-                Toast.makeText(getBaseContext(), "Toggle SwitchButton new check state: " + (isChecked ? "Checked" : "Unchecked"), Toast.LENGTH_SHORT).show();
             }
         });
     }

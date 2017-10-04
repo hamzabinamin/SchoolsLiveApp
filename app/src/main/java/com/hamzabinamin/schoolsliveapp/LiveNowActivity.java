@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,8 +24,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +72,20 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_live_now);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_live_now_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_live_now);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -154,12 +172,26 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
             schoolLocationTextView.setText(school.getSchoolLocation());
             schoolLinkTextView.setText(school.getSchoolWebsite());
 
+            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                    .cacheOnDisc(true).cacheInMemory(true)
+                    .imageScaleType(ImageScaleType.EXACTLY)
+                    .displayer(new FadeInBitmapDisplayer(300)).build();
+
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                    getApplicationContext())
+                    .defaultDisplayImageOptions(defaultOptions)
+                    .memoryCache(new WeakMemoryCache())
+                    .diskCacheSize(100 * 1024 * 1024).build();
+
+            ImageLoader.getInstance().init(config);
+
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
@@ -410,7 +442,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
 
-            case R.id.twitterFrameLayout:
+            case R.id.twitterTextView:
                 if(school.getSchoolTwitter().length() > 0) {
                     System.out.println("Result: " + school.getSchoolTwitter());
                     String newValue = school.getSchoolTwitter();
@@ -428,6 +460,10 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
 
         if(getSchoolSharedPreferences()) {
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");

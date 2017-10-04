@@ -78,7 +78,7 @@ public class CustomAdapterRanking extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             if(getScreenSize() <= 4)
-                convertView = mInflater.inflate(R.layout.list_view_item_ranking, parent, false);
+                convertView = mInflater.inflate(R.layout.list_view_item_ranking_small, parent, false);
             else
                 convertView = mInflater.inflate(R.layout.list_view_item_ranking, parent, false);
             holder = new ViewHolder();

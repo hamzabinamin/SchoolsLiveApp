@@ -40,12 +40,13 @@
 
     <AutoCompleteTextView
         android:id="@+id/nameEditText"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/headingTextView"
         android:layout_marginTop="40dp"
         android:layout_toRightOf="@id/locationImageView"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="15dp"
         android:hint="Name"
         android:textSize="20dp"
         android:textColor="@color/colorBlack" />
@@ -74,11 +75,12 @@
 
     <TextView
         android:id="@+id/phoneNumberTextView"
-        android:layout_width="230dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/nameEditText"
         android:layout_marginTop="38dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="15dp"
         android:layout_toRightOf="@id/countryCodeEditText"
         android:hint="Mobile Number"
         android:textSize="20dp"
@@ -86,11 +88,13 @@
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="320dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/phoneNumberTextView"
         android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:text="SAVE"
         android:textColor="@color/colorWhite"
         android:background="@drawable/roundedgreen"/>

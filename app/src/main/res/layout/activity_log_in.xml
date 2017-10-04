@@ -11,16 +11,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/splash"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/twitterFrameLayout"
-        android:layout_marginBottom="15dp"
-        android:text="Sign Up or Log In with"
-        android:textSize="16dp"
-        android:textColor="@color/colorWhite" />
-
     <Button
         android:id="@+id/phoneNumberButton"
         android:layout_width="match_parent"
@@ -34,7 +24,17 @@
         android:textColor="@color/colorWhite"
         android:background="@drawable/roundedgreen"/>
 
-    <FrameLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/phoneNumberButton"
+        android:layout_marginBottom="15dp"
+        android:text="Sign Up or Log In with"
+        android:textSize="16dp"
+        android:textColor="@color/colorWhite" />
+
+<!--    <FrameLayout
         android:id="@+id/twitterFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -59,9 +59,7 @@
             android:textSize="18dp"
             android:textColor="@color/colorWhite"/>
 
-    </FrameLayout>
-
-
+    </FrameLayout> -->
 
 
 </RelativeLayout>

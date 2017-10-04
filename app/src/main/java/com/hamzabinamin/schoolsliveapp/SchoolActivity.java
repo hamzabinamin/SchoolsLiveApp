@@ -27,6 +27,7 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -111,7 +112,20 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_school);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_school_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -197,6 +211,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
 
         if(getSchoolSharedPreferences()) {
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             try {
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
@@ -215,10 +233,11 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
@@ -357,6 +376,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                        date2 = sdf.format(calendar.getTime());
 
                        progressDialog.setMessage("Please Wait");
+                       progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                       progressDialog.setIndeterminate(true);
+                       progressDialog.setCancelable(false);
+                       progressDialog.setCanceledOnTouchOutside(false);
                        progressDialog.show();
 
                        String range1 = null;
@@ -418,6 +441,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
 
                             if(item.getTitle().toString().equals("THIS WEEK")) {
                                 progressDialog.setMessage("Please Wait");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
                                 String range1 = URLEncoder.encode(getLocalTimeFirstDayOfCurrentWeek(), "UTF-8");
                                 String range2 = URLEncoder.encode(getLocalTimeLastDayOfCurrentWeek(), "UTF-8");
@@ -433,6 +460,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                             }
                             else if(item.getTitle().toString().equals("LAST WEEK")) {
                                 progressDialog.setMessage("Please Wait");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
                                 String range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
                                 String range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
@@ -448,6 +479,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                             }
                             else if(item.getTitle().toString().equals("NEXT WEEK")) {
                                 progressDialog.setMessage("Please Wait");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
                                 String range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
                                 String range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
@@ -497,6 +532,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
                         listView.setAdapter(customAdapter);
                         progressDialog.setMessage("Please Wait");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setCancelable(false);
+                        progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                         try {
                             String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
@@ -543,8 +582,12 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                     sendGETforGames(url);
                                 }
                             }
-                            else if(weekTextView.toString().equals("C.D. RANGE")) {
+                            else if(weekTextView.getText().toString().equals("C.D. RANGE")) {
+                                progressDialog.dismiss();
                                 openCalendar();
+                            }
+                            else {
+                                Toast.makeText(getBaseContext(), "Got Here", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (UnsupportedEncodingException e) {
@@ -623,6 +666,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         }
 
@@ -682,7 +729,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             imageView.setImageBitmap(StringToBitMap(s));
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
@@ -837,9 +884,9 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                progressDialog.hide();
+                progressDialog.dismiss();
                 if(result != null) {
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
                         result = result.replace("Got Result<br>","");
@@ -890,7 +937,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         listView.setAdapter(customAdapter);
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -911,6 +958,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             listView.setAdapter(customAdapter);
 
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             try {
             /*    String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");

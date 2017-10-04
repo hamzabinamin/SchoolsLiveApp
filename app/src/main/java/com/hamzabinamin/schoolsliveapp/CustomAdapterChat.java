@@ -81,7 +81,7 @@ public class CustomAdapterChat extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             if(getScreenSize() <= 4)
-                convertView = mInflater.inflate(R.layout.chat_list_view_item, parent, false);
+                convertView = mInflater.inflate(R.layout.chat_list_view_item_small, parent, false);
             else
                 convertView = mInflater.inflate(R.layout.chat_list_view_item, parent, false);
             holder = new ViewHolder();

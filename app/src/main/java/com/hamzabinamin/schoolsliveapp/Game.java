@@ -23,6 +23,7 @@ public class Game {
     private String lastUpdateTime;
     private String homeSchoolImageURL;
     private String awaySchoolImageURL;
+    private boolean selectedForNotification;
 
     public Game() {
         this.gameID = "";
@@ -40,6 +41,7 @@ public class Game {
         this.score = "";
         this.lastUpdateBy = "";
         this.lastUpdateTime = "";
+        this.selectedForNotification = false;
     }
 
     public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String field, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL) {
@@ -60,6 +62,7 @@ public class Game {
         this.lastUpdateTime = lastUpdateTime;
         this.homeSchoolImageURL = homeSchoolImageURL;
         this.awaySchoolImageURL = awaySchoolImageURL;
+        this.selectedForNotification = false;
     }
 
     public void setWeather(String weather) {
@@ -71,7 +74,7 @@ public class Game {
     }
 
     public void setStatus(String status) {
-        this.startTime = status;
+        this.status = status;
     }
 
     public void setScore(String score) {
@@ -83,6 +86,8 @@ public class Game {
     }
 
     public void setLastUpdateTime(String lastUpdateTime) { this.lastUpdateTime = lastUpdateTime; }
+
+    public void setSelectedForNotification(boolean selectedForNotification) { this.selectedForNotification = selectedForNotification; }
 
     public String getGameID() { return this.gameID; }
 
@@ -139,6 +144,8 @@ public class Game {
     public String getHomeSchoolImageURL() { return this.homeSchoolImageURL; }
 
     public String getAwaySchoolImageURL() { return this.awaySchoolImageURL; }
+
+    public boolean getSelectedForNotification() { return this.selectedForNotification; }
 
     @Override
     public int hashCode() {

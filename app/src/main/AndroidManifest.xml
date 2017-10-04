@@ -101,11 +101,10 @@
             android:name=".ResultsActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".TwitterActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:name=".TwitterActivity" />
         <activity
-            android:name=".FacebookActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:name=".FacebookActivity" />
+
         <activity android:name=".NotificationActivity"></activity>
     </application>
 

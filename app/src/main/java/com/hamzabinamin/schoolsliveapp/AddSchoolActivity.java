@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 
 import java.io.BufferedInputStream;
@@ -76,6 +78,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
     String userChoosenTask;
     String ImageTag = "image_tag" ;
     String ImageName = "image_data" ;
+    String SchoolName = "school_name" ;
     String ServerUploadPath ="http://schools-live.com/school-images/insertImage.php" ;
     String schoolName = "";
     ProgressDialog progressDialog ;
@@ -109,7 +112,20 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_school);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_add_school_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_add_school);
 
         addSchoolButton = (Button) findViewById(R.id.addSchoolButton);
         schoolNameEditText = (EditText) findViewById(R.id.schoolNameEditText);
@@ -192,10 +208,11 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
         }
     }
@@ -269,6 +286,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
             case R.id.schoolWebsiteEditText:
                 schoolWebsiteEditText.setFocusableInTouchMode(true);
                 schoolWebsiteEditText.requestFocus();
+
                 break;
 
             case R.id.schoolTwitterEditText:
@@ -284,6 +302,10 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
             case R.id.addSchoolButton:
                 if(validation()) {
                     progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
                     String schoolName = schoolNameEditText.getText().toString();
                     String schoolLocation = schoolLocationEditText.getText().toString();
@@ -320,7 +342,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
 
-            case R.id.profile_image:
+            case R.id.profile_image2:
                 selectImage();
                 break;
 
@@ -338,12 +360,24 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
         if(schoolNameEditText.getText().toString().length() > 0 && schoolLocationEditText.getText().toString().length() > 0 && schoolWebsiteEditText.getText().toString().length() > 0 && schoolTwitterEditText.getText().toString().length() > 0 && schoolFacebookEditText.getText().toString().length() > 0 && schoolType.length() > 0) {
 
             if(bitmapImage == null && (!isImageCaptured || !isImageChosen)) {
+                System.out.println("No Image");
+                return false;
+            }
+            if(!schoolFacebookEditText.getText().toString().contains("www.facebook.com")) {
+                System.out.println("Facebook");
+                Toast.makeText(getBaseContext(), "Please write the Facebook URL in correct format", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            if(!schoolTwitterEditText.getText().toString().contains("www.twitter.com")) {
+                System.out.println("Twitter");
+                Toast.makeText(getBaseContext(), "Please write the Twitter URL in correct format", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             return true;
         }
         else {
+            System.out.println("Got in Else");
             return false;
         }
     }
@@ -392,10 +426,12 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
+                    if(userChoosenTask != null) {
+                        if (userChoosenTask.equals("Take Photo"))
+                            cameraIntent();
+                        else if (userChoosenTask.equals("Choose from Library"))
+                            galleryIntent();
+                    }
                 } else {
                     //code for deny
                 }
@@ -487,9 +523,23 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                 System.out.println("String1: " + string1 );
 
                 School school = new School(schoolNameEditText.getText().toString(), schoolTypeSpinner.getSelectedItem().toString(), schoolWebsiteEditText.getText().toString(), schoolTwitterEditText.getText().toString(), schoolFacebookEditText.getText().toString(), schoolLocationEditText.getText().toString());
+                String image = null;
+                try {
+                    image = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolNameEditText.getText().toString(), "UTF-8") + ".png";
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                school.setSchoolImage(image);
                 if(!getStatusSharedPreferences()) {
                     saveSchoolSharedPreferences(school);
                     saveStatusSharedPreferences("Yes");
+                    DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                            .cacheOnDisk(true).resetViewBeforeLoading(true)
+                            .showImageForEmptyUri(android.R.drawable.arrow_down_float)
+                            .showImageOnFail(android.R.drawable.ic_menu_report_image)
+                            .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    ImageLoader imageLoader = ImageLoader.getInstance();
+                    imageLoader.displayImage(school.getSchoolImage(), imageView, options);
                 }
             }
 
@@ -499,14 +549,21 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                 ImageProcessClass imageProcessClass = new ImageProcessClass();
 
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
+                try {
+                    String store = URLEncoder.encode(schoolName, "UTF-8");
+                    HashMapParams.put(ImageTag, store);
 
-                HashMapParams.put(ImageTag, schoolName);
+                    HashMapParams.put(ImageName, ConvertImage);
 
-                HashMapParams.put(ImageName, ConvertImage);
+                    HashMapParams.put(SchoolName, schoolName);
 
-                String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
+                    String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
 
-                return FinalData;
+                    return FinalData;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+               return null;
             }
         }
         AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
@@ -646,7 +703,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
 
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }

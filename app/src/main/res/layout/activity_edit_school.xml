@@ -24,7 +24,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
             ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-2256526831296426/7083154391">
+            ads:adUnitId="ca-app-pub-0229708555496599/9123381758">
         </com.google.android.gms.ads.AdView>
 
         <Button
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/navigation_action"
-            android:layout_above="@id/addSchoolButton"
+            android:layout_above="@id/editSchoolButton"
             android:layout_marginBottom="10dp">
 
             <RelativeLayout

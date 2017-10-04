@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_game"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hamzabinamin.schoolsliveapp.AddGameActivity">
+
+    <FrameLayout
+        android:id="@+id/addGameFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimaryDark">
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="ADD GAME"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"/>
+
+    </FrameLayout>
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/addView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-0229708555496599/9123381758">
+    </com.google.android.gms.ads.AdView>
+
+    <Button
+        android:id="@+id/addGameButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addView"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="ADD"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/roundedgreen"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/addGameButton"
+        android:layout_below="@id/addGameFrameLayout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/addGameFrameLayout">
+
+            <FrameLayout
+                android:id="@+id/schoolAFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="SCHOOL A"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"/>
+            </FrameLayout>
+
+            <Spinner
+                android:id="@+id/schoolASpinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/schoolAFrameLayout">
+            </Spinner>
+
+            <FrameLayout
+                android:id="@+id/schoolBFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/schoolASpinner"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="SCHOOL B"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"/>
+
+            </FrameLayout>
+
+            <Spinner
+                android:id="@+id/schoolBSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/schoolBFrameLayout">
+            </Spinner>
+
+            <FrameLayout
+                android:id="@+id/fieldFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/schoolBSpinner"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="FIELD"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"/>
+            </FrameLayout>
+
+            <Spinner
+                android:id="@+id/fieldSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/fieldFrameLayout">
+            </Spinner>
+
+            <FrameLayout
+                android:id="@+id/sportFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/fieldSpinner"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="SPORT"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"/>
+            </FrameLayout>
+
+            <Spinner
+                android:id="@+id/sportSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/sportFrameLayout">
+            </Spinner>
+
+            <FrameLayout
+                android:id="@+id/ageGroupANDTeamFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/sportSpinner"
+                android:background="@color/colorGray">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="AGE GROUP"
+                        android:textSize="14dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/ageGroupSpinner"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="TEAM"
+                        android:textSize="14dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/teamSpinner"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/startTimeFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/ageGroupANDTeamFrameLayout"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="START TIME"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/numberPickerLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startTimeFrameLayout">
+
+                <NumberPicker
+                    android:id="@+id/monthNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+                <NumberPicker
+                    android:id="@+id/dateNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+                <NumberPicker
+                    android:id="@+id/yearNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+                <NumberPicker
+                    android:id="@+id/hourNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+                <NumberPicker
+                    android:id="@+id/minNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+                <NumberPicker
+                    android:id="@+id/ampmNumberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/startTimeFrameLayout"
+                    android:layout_weight="1">
+                </NumberPicker>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

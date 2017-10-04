@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +38,20 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_account_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_account);
 
         backButton = (Button) findViewById(R.id.backButton);
         nextButton = (Button) findViewById(R.id.nextButton);
@@ -73,6 +87,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         String phoneNumber = phoneNumberTextView.getText().toString();
                         phoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");
                         progressDialog.setMessage("Please Wait");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setCancelable(false);
+                        progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.show();
                         String url = String.format("http://schools-live.com/insertUser.php?name=%s&phonenumber=%s", name, phoneNumber);
                         sendGET(url);
@@ -133,7 +151,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("New record created successfully")) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "Account Created Successfully", Toast.LENGTH_SHORT).show();
                         User user = new User(nameEditText.getText().toString(), phoneNumberTextView.getText().toString(), "", "0");
                         saveUserSharedPreferences(user);
@@ -141,7 +159,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         startActivity(new Intent(getBaseContext(), SchoolActivity.class));
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }

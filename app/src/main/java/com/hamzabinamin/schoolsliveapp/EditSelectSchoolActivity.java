@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +59,20 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_select_school);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_edit_select_school_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_edit_select_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -115,10 +130,11 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
         }
 
@@ -127,6 +143,10 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         String url = String.format("http://schools-live.com/getSchools.php");
         try {
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             sendGET(url);
         } catch (IOException e) {
@@ -208,7 +228,6 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
                 if(result != null) {
-                    progressDialog.hide();
                     progressDialog.dismiss();
                     System.out.println(result);
                     if(result.contains("Got Result")) {
@@ -239,8 +258,8 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
                     }
 
                     else {
-                        progressDialog.hide();
-                        Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(getBaseContext(), "No Schools have been added", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

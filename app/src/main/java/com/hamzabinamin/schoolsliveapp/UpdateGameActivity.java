@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -20,9 +21,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +45,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +101,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     ListView listView;
     CustomAdapterChat customAdapterChat;
     List<Chat> chatList = new ArrayList<Chat>();
+    List<Game> notificationGameList = new ArrayList<>();
     ProgressDialog progressDialog;
     School school;
     Game game;
@@ -115,7 +120,20 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_game);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_update_game_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_update_game);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -207,10 +225,11 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
             if (getGameSharedPreferences() && getSchoolSharedPreferences()) {
@@ -219,9 +238,10 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 schoolLocationTextView.setText(school.getSchoolLocation());
                 schoolLinkTextView.setText(school.getSchoolWebsite());
 
-                schoolType1TextView.setText(game.getSchoolsType());
+                String[] splitArray = game.getSchoolsType().split("/");
+                schoolType1TextView.setText(splitArray[0]);
                 schoolName1TextView.setText(game.getHomeSchoolName());
-                schoolType2TextView.setText(game.getSchoolsType());
+                schoolType2TextView.setText(splitArray[0]);
                 schoolName2TextView.setText(game.getAwaySchoolName());
                 teamNameTextView.setText(game.getSport() + " " + game.getAgeGroup() + "/" + game.getTeam());
                 temperatureTextView.setText(game.getTemperature());
@@ -229,14 +249,14 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 weather2TextView.setText(game.getWeather());
                 String[] stringArray = game.getScore().split("/");
                 if(stringArray.length == 5) {
-                    currentOverTextView.setText("Curr. Over: " + stringArray[4]);
-                    scoreTextView.setText(stringArray[0].trim() + " / " + stringArray[1].trim());
+                    currentOverTextView.setText("C. Over: " + stringArray[4]);
+                    scoreTextView.setText(stringArray[0].trim() + "/" + stringArray[1].trim());
                     if (schoolName1TextView.getText().toString().equals(stringArray[2])) {
-                        batbowl2TextView.setText("(Batting)");
-                        batbowlTextView.setText("(Bowling)");
+                        batbowl2TextView.setText("(Bat)");
+                        batbowlTextView.setText("(Bowl)");
                     } else {
-                        batbowl2TextView.setText("(Bowling)");
-                        batbowlTextView.setText("(Batting)");
+                        batbowl2TextView.setText("(Bowl)");
+                        batbowlTextView.setText("(Bat)");
                     }
                 }
                 else {
@@ -270,9 +290,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
                 options = new DisplayImageOptions.Builder().cacheInMemory(true)
                         .cacheOnDisk(true).resetViewBeforeLoading(true)
-                        .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                        .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                        .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                        .showImageForEmptyUri(R.drawable.placeholder)
+                        .showImageOnFail(R.drawable.placeholder)
+                        .showImageOnLoading(R.drawable.placeholder).build();
                 imageLoader = ImageLoader.getInstance();
                 ImageLoader imageLoader2 = ImageLoader.getInstance();
                 imageLoader.displayImage("http" + game.getHomeSchoolImageURL(), school1Logo, options);
@@ -360,6 +380,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         String name = user.getName();
                         name = URLEncoder.encode(name, "UTF-8");
                         String message = chatEditText.getText().toString();
+                        System.out.println("Message Before: " + message);
+                        message = message.replaceAll("'","\\\\'");;
+                        System.out.println("Message After: " + message);
                         message = URLEncoder.encode(message, "UTF-8");
                         String time = getLocalTime();
                         time = URLEncoder.encode(time, "UTF-8");
@@ -384,7 +407,19 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.uploadImageView:
-                showShareDialog(game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + game.getStatus() + " " +  "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1]);
+                if(!game.getSport().equals("Cricket")) {
+                    showShareDialog(game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + game.getStatus() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1]);
+                }
+                else {
+                    if(game.getScore().split("/").length == 5) {
+                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
+                        showShareDialog(text);
+                    }
+                    else {
+                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
+                        showShareDialog(text);
+                    }
+                }
                 break;
 
         }
@@ -526,9 +561,13 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         String score = "";
         if(game.getSport().equals("Cricket")) {
             score = scoreTextView.getText().toString() + "/" + batting + "/" + bowling + "/" + overs;
+            game.setScore(score);
+            saveGameSharedPreferences(game);
         }
         else {
             score = scoreTextView.getText().toString();
+            game.setScore(score);
+            saveGameSharedPreferences(game);
         }
         String updateBy = lastUpdateByTextView.getText().toString();
         String updateTime = utcTime;
@@ -548,6 +587,10 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
         try {
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             sendGETUpdateGame(url);
         } catch (IOException e) {
@@ -568,6 +611,25 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         np.setDisplayedValues(weatherArray);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
+
+        System.out.println("Game Weather: " + game.getWeather());
+
+        if(game.getWeather().equals("Rainy")) {
+            np.setValue(0);
+        }
+        else if(game.getWeather().equals("Cloudy")) {
+            np.setValue(1);
+        }
+        else if(game.getWeather().equals("Partly Cloudy")) {
+            np.setValue(2);
+        }
+        else if(game.getWeather().equals("Sunshine")) {
+            np.setValue(3);
+        }
+        else if(game.getWeather().equals("Strong Wind")) {
+            np.setValue(4);
+        }
+
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -592,6 +654,8 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     weatherImageView.setImageResource(R.drawable.windy);
                     weather2TextView.setText(weatherArray[4]);
                 }
+                game.setWeather(weather2TextView.getText().toString());
+                saveGameSharedPreferences(game);
                 d.dismiss();
                 numberPickerDialog2();
             }
@@ -620,6 +684,23 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         np.setDisplayedValues(weatherArray);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
+
+        if(game.getStatus().equals("NOT STARTED")) {
+            np.setValue(0);
+        }
+        else if(game.getStatus().equals("1st HALF")) {
+            np.setValue(1);
+        }
+        else if(game.getStatus().equals("HALF TIME")) {
+            np.setValue(2);
+        }
+        else if(game.getStatus().equals("2nd HALF")) {
+            np.setValue(3);
+        }
+        else if(game.getStatus().equals("ENDED")) {
+            np.setValue(4);
+        }
+
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -642,10 +723,20 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
                 try {
                     progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
+                    utcTime = GetUTCdatetimeAsString();
+                    lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
                     String status = statusTextView.getText().toString();
+                    game.setStatus(status);
+                    saveGameSharedPreferences(game);
                     status = URLEncoder.encode(status, "UTF-8");
-                    String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s", game.getGameID(), status);
+                    String updateBy = URLEncoder.encode(lastUpdateByTextView.getText().toString(), "UTF-8");
+                    String updateTime = URLEncoder.encode(utcTime, "UTF-8");
+                    String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s&updateby=%s&updatetime=%s", game.getGameID(), status,updateBy, updateTime);
                     sendGETUpdateGame(url);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -689,6 +780,24 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
         np2.setMaxValue(50);
         np2.setMinValue(0);
+        String store = "";
+
+        System.out.println("Game Temp: " + game.getTemperature());
+
+        if(game.getTemperature().contains("+")) {
+            np.setValue(0);
+            store = game.getTemperature().replace("+", "");
+            store = store.replace("°C", "");
+            np2.setValue(Integer.parseInt(store));
+        }
+        else {
+            np.setValue(1);
+            store = game.getTemperature().replace("-", "");
+            store = store.replace("°C", "");
+            np2.setValue(Integer.parseInt(store));
+        }
+
+
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -699,8 +808,28 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 else if(np.getValue() == 1) {
                     temperatureTextView.setText("-" + np2.getValue()+"°C");
                 }
+                game.setTemperature(temperatureTextView.getText().toString());
+                saveGameSharedPreferences(game);
                 lastUpdateTimeTextView.setText(GetUTCdatetimeAsString());
-                updateGame();
+                utcTime = GetUTCdatetimeAsString();
+                lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
+                try {
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+                    String updateBy = URLEncoder.encode(lastUpdateByTextView.getText().toString(), "UTF-8");
+                    String updateTime = URLEncoder.encode(utcTime, "UTF-8");
+                    String weather = URLEncoder.encode(weather2TextView.getText().toString(), "UTF-8");
+                    String temperature = URLEncoder.encode(temperatureTextView.getText().toString(), "UTF-8");
+                    String url = String.format("http://www.schools-live.com/updateGameWeatherAndTemp.php?id=%s&weather=%s&temp=%s&updateby=%s&updatetime=%s", game.getGameID(), weather, temperature, updateBy, updateTime);
+                    sendGETUpdateGame(url);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //updateGame();
                 d.dismiss();
             }
         });
@@ -736,6 +865,8 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
         np2.setMaxValue(999);
         np2.setMinValue(0);
+        np.setValue(Integer.parseInt(game.getScore().split("-")[0].trim()));
+        np2.setValue(Integer.parseInt(game.getScore().split("-")[1].trim()));
         np2.setWrapSelectorWheel(false);
         np2.setOnValueChangedListener(this);
 
@@ -794,6 +925,36 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
         np.setMaxValue(500);
         np.setMinValue(0);
+        if(game.getScore().split("/").length == 5) {
+            String homeTeam = game.getScore().split("/")[2].trim();
+            if(battingSpinner.getItemAtPosition(0).equals(homeTeam)) {
+                battingSpinner.setSelection(0);
+                bowlingSpinner.setSelection(1);
+            }
+            else {
+                battingSpinner.setSelection(1);
+                bowlingSpinner.setSelection(0);
+            }
+
+            String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
+            np.setValue(Integer.parseInt(game.getScore().split("/")[0].trim()));
+            if(game.getScore().split("/")[4].equals(0)) {
+                currentOverSpinner.setSelection(0);
+            }
+            else {
+                currentOverSpinner.setSelection(Integer.parseInt(game.getScore().split("/")[4].trim()));
+            }
+            if(game.getScore().split("/")[1].equals(0)) {
+                wicketsTakenSpinner.setSelection(0);
+            }
+            else {
+                wicketsTakenSpinner.setSelection(Integer.parseInt(game.getScore().split("/")[1].trim()));
+            }
+
+        }
+        else {
+
+        }
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(this);
 
@@ -807,16 +968,18 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 batting = battingSpinner.getSelectedItem().toString();
                 bowling = bowlingSpinner.getSelectedItem().toString();
                 currentOverTextView.setVisibility(View.VISIBLE);
-                currentOverTextView.setText("Curr. Over: " + overs);
+                currentOverTextView.setText("C. Over: " + overs);
+                batbowlTextView.setVisibility(View.VISIBLE);
+                batbowl2TextView.setVisibility(View.VISIBLE);
                 if (schoolName1TextView.getText().toString().equals(batting)) {
-                    batbowl2TextView.setText("(Batting)");
-                    batbowlTextView.setText("(Bowling)");
+                    batbowl2TextView.setText("(Bat)");
+                    batbowlTextView.setText("(Bowl)");
                 } else {
-                    batbowl2TextView.setText("(Bowling)");
-                    batbowlTextView.setText("(Batting)");
+                    batbowl2TextView.setText("(Bowl)");
+                    batbowlTextView.setText("(Bat)");
                 }
 
-                scoreTextView.setText(score + " / " + wickets );
+                scoreTextView.setText(score + "/" + wickets );
                 utcTime = GetUTCdatetimeAsString();
                 lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
                 //statusTextView.setText(gameStatus);
@@ -885,7 +1048,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         try {
                             String phoneNumber = user.getPhoneNumber();
                             phoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");
-                            String lastUpdate = lastUpdateTimeTextView.getText().toString();
+                            String lastUpdate = GetUTCdatetimeAsString();
                             lastUpdate = URLEncoder.encode(lastUpdate, "UTF-8");
                             String totalUpdates = user.getTotalUpdates();
                             totalUpdates = String.valueOf(Integer.parseInt(totalUpdates) + 1);
@@ -893,14 +1056,18 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                             user.setTotalUpdates(totalUpdates);
                             String url = String.format("http://www.schools-live.com/updateUser2.php?phonenumber=%s&lastupdate=%s&totalupdates=%s", phoneNumber, lastUpdate, totalUpdates);
                             progressDialog.setMessage("Please Wait");
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setCancelable(false);
+                            progressDialog.setCanceledOnTouchOutside(false);
                             progressDialog.show();
-                            sendGETUpdateGame2(url);
+                            sendGETUpdateGame2(url, game);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                     else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -959,7 +1126,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         result = result.replace("Got Result<br>","");
                         chatList = new ArrayList<>();
                         JSONArray arr = null;
@@ -987,6 +1154,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
                         customAdapterChat = new CustomAdapterChat(getBaseContext(), chatList);
                         listView.setAdapter(customAdapterChat);
+                        setListViewHeightBasedOnChildren(listView);
                     }
                     else {
                         progressDialog.dismiss();
@@ -1001,7 +1169,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         httpGetAsyncTask.execute(paramURL);
     }
 
-    public void sendGETUpdateGame2(String paramURL) throws IOException {
+    public void sendGETUpdateGame2(String paramURL, final Game game) throws IOException {
 
         class HttpGetAsyncTask extends AsyncTask<String, Void, String> {
 
@@ -1047,6 +1215,21 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Record updated successfully")) {
+                        if(game.getStatus().equals("ENDED")) {
+                            if (getGameListSharedPreferences()) {
+                                if (notificationGameList.indexOf(game) != -1) {
+                                    int index = notificationGameList.indexOf(game);
+                                    notificationGameList.remove(index);
+                                    saveGameListSharedPreferences(notificationGameList);
+
+                                    for(int i=0; i<notificationGameList.size(); i++) {
+                                        System.out.println("Game ID: " + notificationGameList.get(i).getGameID());
+                                        System.out.println("Game Type: " + notificationGameList.get(i).getSport());
+                                        System.out.println("Game Score: " + notificationGameList.get(i).getScore());
+                                    }
+                                }
+                            }
+                        }
                         saveUserSharedPreferences(user);
                         progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "Game updated successfully", Toast.LENGTH_SHORT).show();
@@ -1112,6 +1295,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     System.out.println(result);
                     if(result.contains("New record created successfully")) {
                         saveUserSharedPreferences(user);
+                        chatEditText.setText("");
                         String gameid = game.getGameID();
                         try {
                             gameid = URLEncoder.encode(gameid, "UTF-8");
@@ -1134,6 +1318,13 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         // Parameter we pass in the execute() method is relate to the first generic type of the AsyncTask
         // We are passing the connectWithHttpGet() method arguments to that
         httpGetAsyncTask.execute(paramURL);
+    }
+
+    public void saveGameSharedPreferences(Game game) {
+        Gson gson = new Gson();
+        String runnerString = gson.toJson(game);
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("Game", runnerString).commit();
     }
 
     public boolean getGameSharedPreferences() {
@@ -1186,6 +1377,48 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         String serviceProviderString = gson.toJson(user);
         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("User String", serviceProviderString).commit();
+    }
+
+    public void saveGameListSharedPreferences(List counterList) {
+        Gson gson = new Gson();
+        String gameString = gson.toJson(counterList);
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("Notification Game List", gameString).commit();
+    }
+
+    public boolean getGameListSharedPreferences() {
+
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        String gameString;
+        if (sharedPreferences.getString("Notification Game List", null) != null) {
+            gameString = sharedPreferences.getString("Notification Game List", null);
+            Gson gson = new Gson();
+            TypeToken<List<Game>> token = new TypeToken<List<Game>>() {};
+            notificationGameList = gson.fromJson(gameString, token.getType());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        CustomAdapterChat listAdapter = (CustomAdapterChat) listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
 }

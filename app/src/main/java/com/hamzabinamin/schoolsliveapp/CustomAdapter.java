@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,7 +98,7 @@ public class CustomAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             if(getScreenSize() <= 4)
-                convertView = mInflater.inflate(R.layout.list_view_item, parent, false);
+                convertView = mInflater.inflate(R.layout.list_view_item_small, parent, false);
             else
                 convertView = mInflater.inflate(R.layout.list_view_item, parent, false);
             holder = new ViewHolder();
@@ -127,6 +128,12 @@ public class CustomAdapter extends BaseAdapter {
             holder.addtoNotificationImageView.setVisibility(View.INVISIBLE);
         }
 
+        if(getGameListSharedPreferences()) {
+            if(notificationGameList.contains(list.get(position))) {
+                holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
+            }
+        }
+
         if(!list.get(position).getSport().equals("Cricket")) {
             holder.currentOver.setVisibility(View.INVISIBLE);
             holder.batbowlTextView.setVisibility(View.INVISIBLE);
@@ -138,9 +145,9 @@ public class CustomAdapter extends BaseAdapter {
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
             ImageLoader imageLoader2 = ImageLoader.getInstance();
             imageLoader.displayImage("http" + list.get(position).getHomeSchoolImageURL(), holder.homeTeamLogo, options);
@@ -165,14 +172,14 @@ public class CustomAdapter extends BaseAdapter {
             holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
             String[] stringArray = list.get(position).getScore().split("/");
             if(stringArray.length == 5) {
-                holder.currentOver.setText("Curr. Over: " + stringArray[4]);
-                holder.teamScore.setText(stringArray[0].trim() + " / " + stringArray[1].trim());
+                holder.currentOver.setText("C. Over: " + stringArray[4]);
+                holder.teamScore.setText(stringArray[0].trim() + "/" + stringArray[1].trim());
                 if (list.get(position).getHomeSchoolName().equals(stringArray[2])) {
-                    holder.batbowl2TextView.setText("(Batting)");
-                    holder.batbowlTextView.setText("(Bowling)");
+                    holder.batbowl2TextView.setText("(Bat)");
+                    holder.batbowlTextView.setText("(Bowl)");
                 } else {
-                    holder.batbowl2TextView.setText("(Bowling)");
-                    holder.batbowlTextView.setText("(Batting)");
+                    holder.batbowl2TextView.setText("(Bowl)");
+                    holder.batbowlTextView.setText("(Bat)");
                 }
             }
             else {
@@ -184,11 +191,13 @@ public class CustomAdapter extends BaseAdapter {
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
             ImageLoader imageLoader2 = ImageLoader.getInstance();
+            imageLoader2.init(ImageLoaderConfiguration.createDefault(context));
             imageLoader.displayImage("http" + list.get(position).getHomeSchoolImageURL(), holder.homeTeamLogo, options);
             imageLoader2.displayImage("http" + list.get(position).getAwaySchoolImageURL(), holder.awayTeamLogo, options);
         }
@@ -206,15 +215,39 @@ public class CustomAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Game game = list.get(position);
 
-                if(getGameListSharedPreferences()) {
+                if (getGameListSharedPreferences()) {
+                    if(notificationGameList.indexOf(game) != -1) {
+                        holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclock);
+                        int index = notificationGameList.indexOf(game);
+                        notificationGameList.remove(index);
+                        saveGameListSharedPreferences(notificationGameList);
+                        Toast.makeText(context, "Game Removed from Notifications", Toast.LENGTH_SHORT).show();
+
+                        for(int i=0; i<notificationGameList.size(); i++) {
+                            System.out.println("Game ID: " + notificationGameList.get(i).getGameID());
+                            System.out.println("Game Type: " + notificationGameList.get(i).getSport());
+                            System.out.println("Game Score: " + notificationGameList.get(i).getScore());
+                        }
+                    }
+                    else {
+                        holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
+                        game.setSelectedForNotification(true);
+                        notificationGameList.add(game);
+                        saveGameListSharedPreferences(notificationGameList);
+                        Toast.makeText(context, "Game Added to Notifications", Toast.LENGTH_SHORT).show();
+
+                        for(int i=0; i<notificationGameList.size(); i++) {
+                            System.out.println("Game ID: " + notificationGameList.get(i).getGameID());
+                            System.out.println("Game Type: " + notificationGameList.get(i).getSport());
+                            System.out.println("Game Score: " + notificationGameList.get(i).getScore());
+                        }
+                    }
+                } else {
+                    holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
                     notificationGameList.add(game);
                     saveGameListSharedPreferences(notificationGameList);
+                    Toast.makeText(context, "Game Added to Notifications", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    notificationGameList.add(game);
-                    saveGameListSharedPreferences(notificationGameList);
-                }
-                Toast.makeText(context, "Game Added to Notifications", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -167,16 +167,95 @@ public class ScheduledService extends Service {
 
     private void scheduleNotification(Notification notification, int delay) {
 
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        Intent notificationIntent = new Intent(this, LiveNowActivity.class);
         Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, m);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        //notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, m);
+        //notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, m, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.contentIntent = pendingIntent;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = (NotificationManager)getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(m, notification);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+   /*     long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent); */
+    }
+
+    public void showNotificationLive(String title, String message) {
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        int mNotificationId = m;
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(android.R.drawable.stat_notify_more)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setOngoing(true);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, LiveNowActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(contentIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+    }
+
+    public void showNotificationEnded(String title, String message) {
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        int mNotificationId = m;
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(android.R.drawable.stat_notify_more)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setOngoing(true);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, ResultsActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(contentIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+    }
+
+    public void showNotificationScoreUpdate(String title, String message) {
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        int mNotificationId = m;
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(android.R.drawable.stat_notify_more)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setOngoing(true);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, LiveNowActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(contentIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
     private Notification getNotification(String content) {
@@ -204,10 +283,6 @@ public class ScheduledService extends Service {
         builder.setSmallIcon(android.R.drawable.stat_notify_more);
         builder.setDefaults(Notification.DEFAULT_ALL);
         return builder.build();
-    }
-
-    public void showNotification(String title, String message) {
-
     }
 
     public void cancelAlarm() {
@@ -318,22 +393,24 @@ public class ScheduledService extends Service {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     if(!game.getSport().equals("Cricket")) {
                                                         String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
-                                                        scheduleNotification(getNotification(text), 0);
-
+                                                        //scheduleNotification(getNotification(text), 0);
+                                                        showNotificationLive("Live Game Right Now!", text);
                                                     }
                                                     else {
                                                         if(game.getScore().split("/").length == 5) {
                                                             String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
-                                                            scheduleNotification(getNotification(text), 0);
+                                                            //scheduleNotification(getNotification(text), 0);
+                                                            showNotificationLive("Live Game Right Now!", text);
                                                         }
                                                         else {
                                                             String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
-                                                            scheduleNotification(getNotification(text), 0);
+                                                            //scheduleNotification(getNotification(text), 0);
+                                                            showNotificationLive("Live Game Right Now!", text);
                                                         }
                                                     }
                                                 }
                                                 status = URLEncoder.encode("1st HALF", "UTF-8");
-                                                String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s", gameid, status);
+                                                String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
                                                 sendGETUpdateGame(url);
                                             }
 
@@ -516,8 +593,12 @@ public class ScheduledService extends Service {
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
                                 gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
 
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                                if(gameList.size() > 0) {
+                               if(gameList.size() > 0) {
                                     for (int j = 0; j < gameList.size(); j++) {
                                         Game game = gameList.get(j);
                                         String gameid = game.getGameID();
@@ -526,9 +607,17 @@ public class ScheduledService extends Service {
                                         Calendar calendar = Calendar.getInstance();
                                         String currentTime = getLocalTime().format(calendar.getTime());
                                         //calendar = getLocalTime().getCalendar();
-                                        calendar.setTime(getLocalTime().parse(currentTime));
+                                        try {
+                                            calendar.setTime(getLocalTime().parse(currentTime));
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                         Calendar gameCalendar = Calendar.getInstance();
-                                        gameCalendar.setTime(getLocalTime().parse(gamedate));
+                                        try {
+                                            gameCalendar.setTime(getLocalTime().parse(gamedate));
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                         System.out.println("Game Calendar: " + gameCalendar.getTime());
                                         System.out.println("Current Calendar: " + calendar.getTime());
 
@@ -542,25 +631,63 @@ public class ScheduledService extends Service {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     if(game.getScore().split("/").length == 5) {
                                                         String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
-                                                        scheduleNotification(getNotification2(text), 0);
+                                                        //scheduleNotification(getNotification2(text), 0);
+                                                        showNotificationEnded("Game Ended!", text);
                                                     }
                                                     else {
                                                         String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
-                                                        scheduleNotification(getNotification2(text), 0);
+                                                        //scheduleNotification(getNotification2(text), 0);
+                                                        showNotificationEnded("Game Ended!", text);
                                                     }
 
                                                  //   String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
                                                //     scheduleNotification(getNotification2(text), 0);
                                                 }
+                                                String status = null;
+                                                try {
+                                                    status = URLEncoder.encode("ENDED", "UTF-8");
+                                                    String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
+                                                    sendGETUpdateGame(url);
+                                                } catch (UnsupportedEncodingException e) {
+                                                    e.printStackTrace();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                if(getGameListSharedPreferences()) {
+                                                    if(notificationGameList.indexOf(game) != -1) {
+                                                        int index = notificationGameList.indexOf(game);
+                                                        notificationGameList.remove(index);
+                                                        saveGameListSharedPreferences(notificationGameList);
+                                                    }
+                                                }
+
                                             }
                                             else if (!game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(2)) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
-                                                    scheduleNotification(getNotification2(text), 0);
+                                                    //scheduleNotification(getNotification2(text), 0);
+                                                    showNotificationEnded("Game Ended!", text);
+                                                    System.out.println("Got Here Twise");
                                                 }
-                                                status = URLEncoder.encode("ENDED", "UTF-8");
-                                                String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s", gameid, status);
-                                                sendGETUpdateGame(url);
+                                                String status = null;
+                                                try {
+                                                    status = URLEncoder.encode("ENDED", "UTF-8");
+                                                    String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
+                                                    sendGETUpdateGame(url);
+                                                } catch (UnsupportedEncodingException e) {
+                                                    e.printStackTrace();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                if(getGameListSharedPreferences()) {
+                                                    if(notificationGameList.indexOf(game) != -1) {
+                                                        int index = notificationGameList.indexOf(game);
+                                                        notificationGameList.remove(index);
+                                                        saveGameListSharedPreferences(notificationGameList);
+                                                    }
+                                                }
                                             }
 
                                         else {
@@ -571,26 +698,6 @@ public class ScheduledService extends Service {
                                 else {
                                     stopSelf();
                                 }
-
-                             /*   if(!schoolNames.contains(homeSchoolName)) {
-                                    schoolNames.add(homeSchoolName);
-                                }
-                                if(!schoolNames.contains(awaySchoolName)) {
-                                    schoolNames.add(awaySchoolName);
-                                } */
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        //  System.out.println("Size: " + schoolNames.size());
                     }
                     else {
                         stopSelf();
@@ -692,16 +799,19 @@ public class ScheduledService extends Service {
                                         if(!sport.equals("Cricket")) {
                                             String text = sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("-")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("-")[1];
                                             //showNotification("Score Update!", text);
-                                            scheduleNotification(getNotification3(text), 0);
+                                            //scheduleNotification(getNotification3(text), 0);
+                                            showNotificationScoreUpdate("Score Update!", text);
                                         }
                                         else {
                                             if(score.split("/").length == 5) {
                                                 String text = sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + score.split("/")[0].trim() + "/" + score.split("/")[1].trim() + " " +  " " + "Overs: " + score.split("/")[4];
-                                                scheduleNotification(getNotification3(text), 0);
+                                                //scheduleNotification(getNotification3(text), 0);
+                                                showNotificationScoreUpdate("Score Update!", text);
                                             }
                                             else {
                                                 String text = sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("/")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("/")[1];
-                                                scheduleNotification(getNotification3(text), 0);
+                                                //scheduleNotification(getNotification3(text), 0);
+                                                showNotificationScoreUpdate("Score Update!", text);
                                             }
                                         }
                                     }

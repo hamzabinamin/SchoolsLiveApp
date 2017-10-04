@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -76,7 +77,20 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_game);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_add_game_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_add_game);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -143,7 +157,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         yearNumberPicker.setMinValue(2017);
         yearNumberPicker.setMaxValue(3000);
 
-        hourNumberPicker.setMinValue(0);
+        hourNumberPicker.setMinValue(1);
         hourNumberPicker.setMaxValue(12);
 
         minNumberPicker.setMinValue(0);
@@ -177,6 +191,10 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         String url = String.format("http://schools-live.com/getSchools.php");
         try {
             progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             sendGET(url);
         } catch (IOException e) {
@@ -380,6 +398,10 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 if(validation()) {
                     progressDialog = new ProgressDialog(this);
                     progressDialog.setMessage("Please Wait");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCancelable(false);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
                     String schoolA =  schoolASpinner.getSelectedItem().toString();
                     String schoolB =  schoolBSpinner.getSelectedItem().toString();
@@ -429,13 +451,13 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         team = URLEncoder.encode(team, "UTF-8");
                         starttime = URLEncoder.encode(starttime, "UTF-8");
                         weather = URLEncoder.encode("Sunshine", "UTF-8");
-                        temperature = URLEncoder.encode("25°C", "UTF-8");
+                        temperature = URLEncoder.encode("+25°C", "UTF-8");
                         status = URLEncoder.encode("NOT STARTED", "UTF-8");
                         if(!sport.equals("Cricket")) {
                             score = URLEncoder.encode("0 - 0", "UTF-8");
                         }
                         else {
-                            score = URLEncoder.encode("0 / 0", "UTF-8");
+                            score = URLEncoder.encode("0/0", "UTF-8");
                         }
                        updateBy = URLEncoder.encode(user.getName(), "UTF-8");
                        updateTime = URLEncoder.encode(GetUTCdatetimeAsString() , "UTF-8");

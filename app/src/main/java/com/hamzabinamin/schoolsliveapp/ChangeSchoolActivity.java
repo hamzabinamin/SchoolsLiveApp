@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,8 +25,14 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +64,20 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_school);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        double screenInches = Math.sqrt(x + y);
+        if (screenInches <= 4)
+            setContentView(R.layout.activity_change_school_small);
+        else if (screenInches >= 4)
+            setContentView(R.layout.activity_change_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
         AdRequest adRequest = new AdRequest.Builder()
@@ -113,10 +133,11 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
-                    .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                    .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                    .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                    .showImageForEmptyUri(R.drawable.placeholder)
+                    .showImageOnFail(R.drawable.placeholder)
+                    .showImageOnLoading(R.drawable.placeholder).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(this));
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
         }
 
@@ -124,6 +145,12 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
 
         String url = String.format("http://schools-live.com/getSchools.php");
         try {
+            progressDialog.setMessage("Please Wait");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
             sendGET(url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -202,6 +229,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                 if(result != null) {
                     System.out.println(result);
                     if(result.contains("Got Result")) {
+                        progressDialog.dismiss();
                         result = result.replace("Got Result<br>","");
                         JSONArray arr = null;
                         try {
@@ -241,8 +269,8 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                     }
 
                     else {
-                        progressDialog.hide();
-                        Toast.makeText(getBaseContext(), "There was an Error", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(getBaseContext(), "No Schools have been added", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -262,13 +290,33 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                 if(changeSchoolSpinner != null) {
                     if(changeSchoolSpinner.getSelectedItem().toString().length() > 0) {
                         School school = schoolList.get(changeSchoolSpinner.getSelectedItemPosition());
+
+                  /*      DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                                .cacheOnDisc(true).cacheInMemory(true)
+                                .imageScaleType(ImageScaleType.EXACTLY)
+                                .displayer(new FadeInBitmapDisplayer(300)).build();
+
+                        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                                getApplicationContext())
+                                .defaultDisplayImageOptions(defaultOptions)
+                                .memoryCache(new WeakMemoryCache())
+                                .diskCacheSize(100 * 1024 * 1024).build();
+
+                        ImageLoader.getInstance().init(config); */
+
+                        MemoryCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getMemoryCache());
+                        DiskCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getDiscCache());
+
                         DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                                 .cacheOnDisk(true).resetViewBeforeLoading(true)
-                                .showImageForEmptyUri(android.R.drawable.arrow_down_float)
-                                .showImageOnFail(android.R.drawable.ic_menu_report_image)
-                                .showImageOnLoading(android.R.drawable.arrow_up_float).build();
+                                .showImageForEmptyUri(R.drawable.placeholder)
+                                .showImageOnFail(R.drawable.placeholder)
+                                .showImageOnLoading(R.drawable.placeholder).build();
+
                         ImageLoader imageLoader = ImageLoader.getInstance();
+                        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
                         imageLoader.displayImage(school.getSchoolImage(), imageView, options);
+                        System.out.println("Change School: " + school.getSchoolImage());
                         saveSchoolSharedPreferences(school);
                         Toast.makeText(getBaseContext(), "School Changed Successfully", Toast.LENGTH_LONG).show();
                     }

@@ -24,7 +24,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
             ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-2256526831296426/7083154391">
+            ads:adUnitId="ca-app-pub-0229708555496599/9123381758">
         </com.google.android.gms.ads.AdView>
 
         <Button
@@ -75,7 +75,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/logopaarl"
+                    android:src="@drawable/placeholder"
                     app:border_color="@color/colorRing"
                     app:border_width="3dp"/>
 
@@ -204,6 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_below="@id/schoolTwitterFrameLayout"
+                    android:text="www.twitter.com/"
                     android:hint="Enter School's Twitter Handle">
                 </EditText>
 
@@ -230,6 +231,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_below="@id/schoolFacebookFrameLayout"
+                    android:text="www.facebook.com/"
                     android:hint="Enter School's Facebook ID">
                 </EditText>
 
