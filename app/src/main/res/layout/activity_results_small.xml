@@ -104,10 +104,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/menuFrameLayout"
                 android:layout_alignParentLeft="true"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
                 android:text="THIS WEEK"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:textColor="@color/colorBlack"
                 android:layout_weight="1"/>
 
@@ -133,10 +133,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/menuFrameLayout"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
                 android:text="ALL GAMES"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:textColor="@color/colorBlack"
                 android:layout_weight="1"/>
 
@@ -162,17 +162,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/menuFrameLayout"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginRight="5dp"
                 android:text="ADD GAMES"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 android:textColor="@color/colorBlack"
                 android:layout_weight="1"/>
 
             <Button
                 android:id="@+id/addGameDropDown"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:layout_below="@id/menuFrameLayout"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"

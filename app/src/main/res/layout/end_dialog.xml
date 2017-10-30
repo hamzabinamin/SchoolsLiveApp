@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+    <FrameLayout
+        android:id="@+id/teamFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_below="@id/wicketsTakenSpinner"
+        android:background="@color/colorGray">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Who won the match?"
+            android:textSize="18dp"
+            android:textColor="@color/colorBlack"/>
+
+    </FrameLayout>
+
+    <Spinner
+        android:id="@+id/teamSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/teamFrameLayout"
+        android:layout_alignParentRight="true">
+    </Spinner>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/teamSpinner"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentRight="true"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/teamSpinner"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentLeft="true"
+        android:text="Update" />
+
+</RelativeLayout>

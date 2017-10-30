@@ -1,9 +1,11 @@
 package com.hamzabinamin.schoolsliveapp;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -28,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +49,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
     Button editSchoolButton;
     ImageView imageView;
-    Spinner schoolNameSpinner;
+    SearchableSpinner schoolNameSpinner;
     ProgressDialog progressDialog;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
@@ -71,7 +74,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_edit_select_school_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_edit_select_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -81,7 +84,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         adView.loadAd(adRequest);
 
         editSchoolButton = (Button) findViewById(R.id.editSchoolButton);
-        schoolNameSpinner = (Spinner) findViewById(R.id.schoolNameSpinner);
+        schoolNameSpinner = (SearchableSpinner) findViewById(R.id.schoolNameSpinner);
 
         editSchoolButton.setOnClickListener(this);
 
@@ -95,9 +98,19 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -112,7 +125,16 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
                     case R.id.settings:
                         finish();
-                        //  startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+                        startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
+                        break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
                         break;
                 }
                 return false;
@@ -124,6 +146,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -161,9 +184,27 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
             case R.id.editSchoolButton:
                 if(schoolNameSpinner.getSelectedItem() != null) {
-                    saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString());
-                    finish();
-                    startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    if(schoolNameSpinner.getSelectedItem().toString().contains("High School")) {
+                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(High School)", "").trim());
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    }
+                    else if(schoolNameSpinner.getSelectedItem().toString().contains("Primary School")) {
+                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(Primary School)", "").trim());
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    }
+                    else if(schoolNameSpinner.getSelectedItem().toString().contains("College")) {
+                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(College)", "").trim());
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    }
+                    else if(schoolNameSpinner.getSelectedItem().toString().contains("Pri-High School")) {
+                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim());
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    }
+
                 }
                 break;
         }
@@ -182,6 +223,16 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchMarket() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            startActivity(myAppLinkToMarket);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Unable to find the market app", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void sendGET(String paramURL) throws IOException {
@@ -242,12 +293,14 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
                         List<String> idList = new ArrayList<>();
                         String schoolName = "";
                         String schoolID = "";
+                        String schoolType = "";
 
                         for (int i = 0; i < arr.length(); i++) {
                             try {
                                 schoolName = arr.getJSONObject(i).getString("School_Name");
                                 schoolID = arr.getJSONObject(i).getString("School_ID");
-                                list.add(schoolName);
+                                schoolType = arr.getJSONObject(i).getString("School_Type");
+                                list.add(schoolName + " " + "(" + schoolType + ")");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

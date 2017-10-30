@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int SPLASH_TIME_OUT = 2000;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.getInstance().init(config);
         // END - UNIVERSAL IMAGE LOADER SETUP
 
+     //   TestFairy.begin(this, "99448c57e7b9c657aee0287234c5771a5f0538d9");
 
         new Handler().postDelayed(new Runnable() {
 

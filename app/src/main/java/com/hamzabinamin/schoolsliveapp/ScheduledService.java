@@ -143,7 +143,7 @@ public class ScheduledService extends Service {
     }
 
     public String convertUTCTimeInToLocal(String dateString) {
-        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;
         String formattedDate = null;
@@ -159,7 +159,7 @@ public class ScheduledService extends Service {
 
     public SimpleDateFormat getLocalTime() {
         //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy / h:mm a");
-        SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy / h:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         Calendar calendar = Calendar.getInstance();
         //sdf = sdf.format(calendar.getTime());
         return sdf;
@@ -365,9 +365,13 @@ public class ScheduledService extends Service {
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
+                                String won = arr.getJSONObject(i).getString("Won");
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
-
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                                 if(gameList.size() > 0) {
                                     for (int j = 0; j < gameList.size(); j++) {
                                         Game game = gameList.get(j);
@@ -377,9 +381,17 @@ public class ScheduledService extends Service {
                                         Calendar calendar = Calendar.getInstance();
                                         String currentTime = getLocalTime().format(calendar.getTime());
                                         //calendar = getLocalTime().getCalendar();
-                                        calendar.setTime(getLocalTime().parse(currentTime));
+                                        try {
+                                            calendar.setTime(getLocalTime().parse(currentTime));
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                         Calendar gameCalendar = Calendar.getInstance();
-                                        gameCalendar.setTime(getLocalTime().parse(gamedate));
+                                        try {
+                                            gameCalendar.setTime(getLocalTime().parse(gamedate));
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
                                         System.out.println("Game Calendar: " + gameCalendar.getTime());
                                         System.out.println("Current Calendar: " + calendar.getTime());
 
@@ -388,6 +400,8 @@ public class ScheduledService extends Service {
 
                                         System.out.println("Game Time: " + gamedate);
                                         System.out.println("Current Time: " + currentTime);
+
+
 
                                             if (gamedate.equals(currentTime) || (calendar.get(Calendar.HOUR) == gameCalendar.get(Calendar.HOUR) && calendar.get(Calendar.AM_PM) == gameCalendar.get(Calendar.AM_PM) && ((calendar.get(Calendar.MINUTE) - gameCalendar.get(Calendar.MINUTE) <= 10) && (calendar.get(Calendar.MINUTE) - gameCalendar.get(Calendar.MINUTE) >= 0)) && calendar.get(Calendar.DATE) == gameCalendar.get(Calendar.DATE) && calendar.get(Calendar.MONTH) == gameCalendar.get(Calendar.MONTH) && calendar.get(Calendar.YEAR) == gameCalendar.get(Calendar.YEAR))) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
@@ -409,9 +423,16 @@ public class ScheduledService extends Service {
                                                         }
                                                     }
                                                 }
-                                                status = URLEncoder.encode("1st HALF", "UTF-8");
-                                                String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
-                                                sendGETUpdateGame(url);
+                                                String status = null;
+                                                try {
+                                                    status = URLEncoder.encode("1st HALF", "UTF-8");
+                                                    String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
+                                                    sendGETUpdateGame(url);
+                                                } catch (UnsupportedEncodingException e) {
+                                                    e.printStackTrace();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
 
                                         else {
@@ -424,31 +445,12 @@ public class ScheduledService extends Service {
                               //      cancelAlarm();
                                 }
 
-                             /*   if(!schoolNames.contains(homeSchoolName)) {
-                                    schoolNames.add(homeSchoolName);
-                                }
-                                if(!schoolNames.contains(awaySchoolName)) {
-                                    schoolNames.add(awaySchoolName);
-                                } */
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
                         }
-                      //  System.out.println("Size: " + schoolNames.size());
                     }
                     else {
                         stopSelf();
                     //    cancelAlarm();
                     }
-                }
             }
         }
         HttpGetAsyncTask httpGetAsyncTask = new HttpGetAsyncTask();
@@ -591,7 +593,8 @@ public class ScheduledService extends Service {
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
+                                String won = arr.getJSONObject(i).getString("Won");
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -786,7 +789,8 @@ public class ScheduledService extends Service {
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
+                                String won = arr.getJSONObject(i).getString("Won");
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
 
                                 if(score.equals(originalGame.getScore())) {

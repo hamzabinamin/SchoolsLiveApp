@@ -23,6 +23,7 @@ public class Game {
     private String lastUpdateTime;
     private String homeSchoolImageURL;
     private String awaySchoolImageURL;
+    private String whoWon;
     private boolean selectedForNotification;
 
     public Game() {
@@ -41,10 +42,11 @@ public class Game {
         this.score = "";
         this.lastUpdateBy = "";
         this.lastUpdateTime = "";
+        this.whoWon = "";
         this.selectedForNotification = false;
     }
 
-    public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String field, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL) {
+    public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String field, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL, String whoWon) {
         this.gameID = gameID;
         this.homeSchoolName = homeSchoolName;
         this.awaySchoolName = awaySchoolName;
@@ -62,6 +64,7 @@ public class Game {
         this.lastUpdateTime = lastUpdateTime;
         this.homeSchoolImageURL = homeSchoolImageURL;
         this.awaySchoolImageURL = awaySchoolImageURL;
+        this.whoWon = whoWon;
         this.selectedForNotification = false;
     }
 
@@ -86,6 +89,8 @@ public class Game {
     }
 
     public void setLastUpdateTime(String lastUpdateTime) { this.lastUpdateTime = lastUpdateTime; }
+
+    public void setWhoWon(String whoWon) { this.whoWon = whoWon; }
 
     public void setSelectedForNotification(boolean selectedForNotification) { this.selectedForNotification = selectedForNotification; }
 
@@ -144,6 +149,8 @@ public class Game {
     public String getHomeSchoolImageURL() { return this.homeSchoolImageURL; }
 
     public String getAwaySchoolImageURL() { return this.awaySchoolImageURL; }
+
+    public String getWhoWon() { return this.whoWon; }
 
     public boolean getSelectedForNotification() { return this.selectedForNotification; }
 

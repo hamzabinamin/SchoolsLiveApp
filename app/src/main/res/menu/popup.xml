@@ -25,4 +25,7 @@
     <item android:id="@+id/waterpolo_menu_item"
         android:title="WATERPOLO" />
 
+    <item android:id="@+id/sevens_menu_item"
+        android:title="SEVENS" />
+
 </menu>

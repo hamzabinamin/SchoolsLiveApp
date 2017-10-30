@@ -1,9 +1,12 @@
 package com.hamzabinamin.schoolsliveapp;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,6 +15,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -33,6 +43,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,8 +61,9 @@ import java.util.List;
 public class ChangeSchoolActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button changeSchoolButton;
+    TextView tempTextView;
     ImageView imageView;
-    Spinner changeSchoolSpinner;
+    SearchableSpinner changeSchoolSpinner;
     ProgressDialog progressDialog;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
@@ -76,7 +88,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_change_school_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_change_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -86,7 +98,9 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         adView.loadAd(adRequest);
 
         changeSchoolButton = (Button) findViewById(R.id.changeSchoolButton);
-        changeSchoolSpinner = (Spinner) findViewById(R.id.schoolNameSpinner);
+        tempTextView = (TextView) findViewById(R.id.tempTextView);
+        changeSchoolSpinner = (SearchableSpinner) findViewById(R.id.schoolNameSpinner);
+        changeSchoolSpinner.setTitle("Choose a School");
         progressDialog = new ProgressDialog(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActionBarToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open , R.string.navigation_drawer_close);
@@ -97,9 +111,19 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -116,6 +140,15 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                         finish();
                         startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
                         break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
+                        break;
                 }
                 return false;
             }
@@ -127,6 +160,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -166,6 +200,16 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchMarket() {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        }
+        catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     public boolean getSchoolSharedPreferences() {
@@ -255,8 +299,12 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                                 schoolFacebook = arr.getJSONObject(i).getString("School_Facebook");
                                 schoolLocation = arr.getJSONObject(i).getString("School_Location");
                                 schoolLogo = arr.getJSONObject(i).getString("School_Logo");
-                                list.add(schoolName);
 
+                               // SpannableStringBuilder str = new SpannableStringBuilder("Your awesome text");
+                              //  str.setSpan(new android.text.style.StyleSpan(Typeface.BOLD_ITALIC), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+                                list.add(schoolName + " " + "(" + schoolType + ")");
                                 School school = new School(schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation, schoolLogo);
                                 schoolList.add(school);
                             } catch (JSONException e) {

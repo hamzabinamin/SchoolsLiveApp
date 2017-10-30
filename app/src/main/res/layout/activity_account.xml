@@ -9,7 +9,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/frameLayout">
 
         <Button
             android:id="@+id/backButton"
@@ -33,13 +34,13 @@
         android:id="@+id/headingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="18dp"
         android:gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:text="Please write your Name to go along with your mobile number."
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:layout_below="@+id/frameLayout"
+        android:layout_centerHorizontal="true" />
 
 
     <ImageView

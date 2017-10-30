@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/navigation_action_manage_schools"
+        <include layout="@layout/navigation_action_change_school"
             android:id="@+id/navigation_action"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
@@ -35,6 +35,7 @@
             android:background="@color/colorGray">
 
             <TextView
+                android:id="@+id/tempTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -45,13 +46,13 @@
 
         </FrameLayout>
 
-        <Spinner
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/schoolNameSpinner"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@id/schoolNameFrameLayout"
             android:hint="Enter School Name">
-        </Spinner>
+        </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
         <Button
             android:id="@+id/changeSchoolButton"

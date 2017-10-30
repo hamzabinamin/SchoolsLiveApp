@@ -3,6 +3,7 @@ package com.hamzabinamin.schoolsliveapp;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -132,7 +133,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_update_game_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_update_game);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -179,9 +180,19 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -197,6 +208,15 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     case R.id.settings:
                         finish();
                         startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
+                        break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
                         break;
                 }
                 return false;
@@ -233,6 +253,12 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
             if (getGameSharedPreferences() && getSchoolSharedPreferences()) {
+
+                if(game.getStatus().equals("ENDED")) {
+                    statusTextView.setEnabled(false);
+                    updateWeatherButton.setEnabled(false);
+                }
+
                 schoolTypeTextView.setText(school.getSchoolType());
                 schoolNameTextView.setText(school.getSchoolName());
                 schoolLocationTextView.setText(school.getSchoolLocation());
@@ -264,6 +290,18 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     batbowlTextView.setVisibility(View.INVISIBLE);
                     batbowl2TextView.setVisibility(View.INVISIBLE);
                     currentOverTextView.setVisibility(View.INVISIBLE);
+                }
+
+                if(game.getStatus().equals("ENDED") && game.getSport().equals("Cricket")) {
+                    String store = game.getWhoWon();
+                    if(store.equals(schoolName1TextView.getText().toString())) {
+                        batbowl2TextView.setText("WON");
+                        batbowlTextView.setText("LOST");
+                    }
+                    else {
+                        batbowlTextView.setText("WON");
+                        batbowl2TextView.setText("LOST");
+                    }
                 }
 
                 //scoreTextView.setText(game.getScore());
@@ -300,7 +338,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             }
 
             if (getUserSharedPreferences()) {
-                lastUpdateByTextView.setText(user.getName());
+                lastUpdateByTextView.setText(game.getLastUpdateBy());
             } else {
                 Toast.makeText(getBaseContext(), "Please Login First", Toast.LENGTH_SHORT).show();
                 finish();
@@ -322,6 +360,16 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchMarket() {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        }
+        catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     @Override
@@ -348,7 +396,12 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 if(!statusTextView.getText().toString().equals("HALF TIME")) {
                     if(!statusTextView.getText().toString().equals("NOT STARTED")) {
                         if (game.getSport().equals("Cricket")) {
-                            numberPickerDialogScoreCricket();
+                            if(!statusTextView.getText().toString().equals("ENDED")) {
+                                numberPickerDialogScoreCricket();
+                            }
+                            else {
+                                numberPickerDialogScoreEndedCricket();
+                            }
                         } else {
                             numberPickerDialogScore();
                         }
@@ -514,7 +567,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     }
 
     public String convertUTCTimeInToLocal(String dateString) {
-        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;
         String formattedDate = null;
@@ -530,7 +583,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
 
     public static String GetUTCdatetimeAsString() {
         final String DATEFORMAT = "yyyy-MM-dd HH:mm:ss";
-        final String DATEFORMAT2 = "M-d-yyyy / hh:mm a";
+        final String DATEFORMAT2 = "d-M-yyyy / hh:mm a";
         final SimpleDateFormat sdf = new SimpleDateFormat(DATEFORMAT2);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         final String utcTime = sdf.format(new Date());
@@ -547,7 +600,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     }
     
     public String getLocalTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         Calendar calendar = Calendar.getInstance();
         String time = sdf.format(calendar.getTime());
         return time;
@@ -569,7 +622,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             game.setScore(score);
             saveGameSharedPreferences(game);
         }
-        String updateBy = lastUpdateByTextView.getText().toString();
+        String updateBy = user.getName();
         String updateTime = utcTime;
         try {
             weather = URLEncoder.encode(weather, "UTF-8");
@@ -734,7 +787,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     game.setStatus(status);
                     saveGameSharedPreferences(game);
                     status = URLEncoder.encode(status, "UTF-8");
-                    String updateBy = URLEncoder.encode(lastUpdateByTextView.getText().toString(), "UTF-8");
+                    String updateBy = URLEncoder.encode(user.getName(), "UTF-8");
                     String updateTime = URLEncoder.encode(utcTime, "UTF-8");
                     String url = String.format("http://www.schools-live.com/updateGameStatus.php?id=%s&status=%s&updateby=%s&updatetime=%s", game.getGameID(), status,updateBy, updateTime);
                     sendGETUpdateGame(url);
@@ -820,7 +873,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    String updateBy = URLEncoder.encode(lastUpdateByTextView.getText().toString(), "UTF-8");
+                    String updateBy = URLEncoder.encode(user.getName(), "UTF-8");
                     String updateTime = URLEncoder.encode(utcTime, "UTF-8");
                     String weather = URLEncoder.encode(weather2TextView.getText().toString(), "UTF-8");
                     String temperature = URLEncoder.encode(temperatureTextView.getText().toString(), "UTF-8");
@@ -984,6 +1037,81 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
                 //statusTextView.setText(gameStatus);
                 updateGame();
+                d.dismiss();
+            }
+        });
+
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+            }
+        });
+
+        d.show();
+    }
+
+
+    public void numberPickerDialogScoreEndedCricket() {
+
+        final Dialog d = new Dialog(UpdateGameActivity.this);
+        d.setTitle("Update Score");
+        d.setContentView(R.layout.end_dialog);
+        Button b1 = (Button) d.findViewById(R.id.button1);
+        Button b2 = (Button) d.findViewById(R.id.button2);
+        final Spinner teamSpinner = (Spinner) d.findViewById(R.id.teamSpinner);
+
+
+        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { game.getHomeSchoolName(), game.getAwaySchoolName()});
+        teamSpinner.setAdapter(adapter);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utcTime = GetUTCdatetimeAsString();
+                lastUpdateTimeTextView.setText(convertUTCTimeInToLocal(GetUTCdatetimeAsString()));
+                String score = "";
+
+                if(game.getScore().split("/").length == 5) {
+                    String homeTeam = game.getScore().split("/")[2].trim();
+                    String oversStore = game.getScore().split("/")[4];
+                    if(teamSpinner.getSelectedItem() != null) {
+                        game.setWhoWon(teamSpinner.getSelectedItem().toString());
+                        score = game.getWhoWon();
+                        System.out.println("Won: " + game.getWhoWon());
+                        if (game.getWhoWon().equals(schoolName1TextView.getText().toString())) {
+                            batbowl2TextView.setText("WON");
+                            batbowlTextView.setText("LOST");
+                        } else {
+                            batbowl2TextView.setText("LOST");
+                            batbowlTextView.setText("WON");
+                        }
+
+                        try {
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setCancelable(false);
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.show();
+                            utcTime = GetUTCdatetimeAsString();
+                            score = URLEncoder.encode(score, "UTF-8");
+                            String updateBy = URLEncoder.encode(user.getName(), "UTF-8");
+                            String updateTime = URLEncoder.encode(utcTime, "UTF-8");
+                            String url = String.format("http://www.schools-live.com/updateEndGameScore.php?id=%s&score=%s&update=%s&updatetime=%s", game.getGameID(), score, updateBy, updateTime);
+                            sendGETUpdateGame(url);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "No Score to determine who won", Toast.LENGTH_SHORT).show();
+
+                }
+
                 d.dismiss();
             }
         });
@@ -1231,9 +1359,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                             }
                         }
                         saveUserSharedPreferences(user);
+                        lastUpdateByTextView.setText(user.getName());
                         progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "Game updated successfully", Toast.LENGTH_SHORT).show();
-
                     }
                     else {
                         progressDialog.dismiss();

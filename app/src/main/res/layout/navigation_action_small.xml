@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
     android:id="@+id/navigation_action"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp">
+        android:layout_marginBottom="35dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/schoolTypeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:text="HIGH SCHOOL"
             android:textSize="12dp"
             android:textColor="@color/colorWhite"/>
@@ -25,37 +35,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:layout_below="@id/schoolTypeTextView"
             android:layout_marginTop="5dp"
             android:text="PAARL GYMNASIUM"
             android:textSize="18dp"
             android:textColor="@color/colorWhite"/>
 
-        <TextView
-            android:id="@+id/schoolLocationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="50dp"
-            android:layout_below="@id/schoolNameTextView"
-            android:text="Paarl, South Africa"
-            android:textSize="12dp"
-            android:textColor="@color/colorWhite"/>
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/schoolLinkTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/schoolNameTextView"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="50dp"
-            android:text="www.paarlgim.com"
-            android:textSize="12dp"
-            android:textColor="@color/colorWhite"/>
+    <TextView
+        android:id="@+id/schoolLocationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginTop="60dp"
+        android:text="Paarl, South Africa"
+        android:textSize="11dp"
+        android:textColor="@color/colorWhite"/>
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/schoolLinkTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:text="www.paarlgim.com"
+        android:textSize="11dp"
+        android:textColor="@color/colorWhite"/>
 
 
 </android.support.v7.widget.Toolbar>

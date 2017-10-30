@@ -2,20 +2,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:id="@+id/manageSchools"
-        android:title="Manage Schools"
-        android:icon="@drawable/university"/>
+    <item android:id="@+id/game"
+        android:title="Games"
+        android:icon="@drawable/medal"/>
+
+    <item android:id="@+id/changeSchool"
+        android:title="Change School"
+        android:icon="@drawable/change"/>
+
+    <item android:id="@+id/editSchool"
+        android:title="Edit School"
+        android:icon="@drawable/edit"/>
+
+    <item android:id="@+id/addSchool"
+        android:title="Add School"
+        android:icon="@drawable/addschool"/>
 
     <item android:id="@+id/notifications"
         android:title="Notifications"
-        android:icon="@drawable/notification"/>
+        android:icon="@drawable/notificationtwo"/>
 
     <item android:id="@+id/leaderboard"
         android:title="Leaderboard"
-        android:icon="@drawable/leaderboard"/>
+        android:icon="@drawable/star"/>
 
     <item android:id="@+id/settings"
         android:title="User Settings"
-        android:icon="@drawable/user"/>
+        android:icon="@drawable/usersettings"/>
+
+    <item android:id="@+id/share"
+        android:title="Get in Touch"
+        android:icon="@drawable/mail"/>
 
 </menu>

@@ -3,6 +3,7 @@ package com.hamzabinamin.schoolsliveapp;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -127,7 +129,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_edit_school_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_edit_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -145,9 +147,19 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -164,6 +176,15 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         finish();
                         startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
                         break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
+                        break;
                 }
                 return false;
             }
@@ -174,6 +195,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -233,6 +255,16 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchMarket() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            startActivity(myAppLinkToMarket);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Unable to find the market app", Toast.LENGTH_LONG).show();
+        }
     }
 
  /*   @Override

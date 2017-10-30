@@ -80,12 +80,12 @@
                     android:textColor="@color/colorBlack"/>
             </FrameLayout>
 
-            <Spinner
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:id="@+id/schoolASpinner"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/schoolAFrameLayout">
-            </Spinner>
+            </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
             <FrameLayout
                 android:id="@+id/schoolBFrameLayout"
@@ -105,12 +105,12 @@
 
             </FrameLayout>
 
-            <Spinner
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                 android:id="@+id/schoolBSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/schoolBFrameLayout">
-            </Spinner>
+            </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
             <FrameLayout
                 android:id="@+id/fieldFrameLayout"
@@ -177,7 +177,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
                         android:text="AGE GROUP"
-                        android:textSize="18dp"
+                        android:textSize="17dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="1"/>
 
@@ -194,7 +194,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
                         android:text="TEAM"
-                        android:textSize="18dp"
+                        android:textSize="17dp"
                         android:textColor="@color/colorBlack"
                         android:layout_weight="1"/>
 
@@ -233,7 +233,7 @@
                 android:layout_below="@id/startTimeFrameLayout">
 
                 <NumberPicker
-                    android:id="@+id/monthNumberPicker"
+                    android:id="@+id/dateNumberPicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/startTimeFrameLayout"
@@ -241,7 +241,7 @@
                 </NumberPicker>
 
                 <NumberPicker
-                    android:id="@+id/dateNumberPicker"
+                    android:id="@+id/monthNumberPicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/startTimeFrameLayout"

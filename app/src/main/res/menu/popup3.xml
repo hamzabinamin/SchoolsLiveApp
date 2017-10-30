@@ -4,8 +4,8 @@
     <item android:id="@+id/thisweek_menu_item"
         android:title="THIS WEEK" />
 
-    <item android:id="@+id/nextweek_menu_item"
-        android:title="NEXT WEEK" />
+    <item android:id="@+id/lastweek_menu_item"
+        android:title="LAST WEEK" />
 
     <item android:id="@+id/customweek_menu_item"
         android:title="C.D. RANGE" />

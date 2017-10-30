@@ -2,9 +2,11 @@ package com.hamzabinamin.schoolsliveapp;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -95,7 +97,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_results_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_results);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -128,9 +130,19 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -147,6 +159,15 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         finish();
                         startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
                         break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
+                        break;
                 }
                 return false;
             }
@@ -158,6 +179,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -212,6 +234,16 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchMarket() {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        }
+        catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     public String getLocalTime() {
@@ -506,7 +538,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
+                                String won = arr.getJSONObject(i).getString("Won");
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won ));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
                                     schoolNames.add(homeSchoolName);
@@ -548,7 +581,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 PopupMenu popup = new PopupMenu(ResultsActivity.this, weekDropDown);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater()
-                        .inflate(R.menu.popup2, popup.getMenu());
+                        .inflate(R.menu.popup3, popup.getMenu());
 
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -751,7 +784,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.facebookTextView:
                 if(school.getSchoolFacebook().length() > 0) {
                     System.out.println("Result: " + school.getSchoolFacebook());
-                    String newValue = school.getSchoolTwitter();
+                    String newValue = school.getSchoolFacebook();
                     Intent intent = new Intent(getApplicationContext(), FacebookActivity.class);
                     intent.putExtra("mUrl", newValue);
                     startActivity(intent);

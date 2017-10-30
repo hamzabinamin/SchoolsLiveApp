@@ -50,7 +50,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_account_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_account);
 
         backButton = (Button) findViewById(R.id.backButton);

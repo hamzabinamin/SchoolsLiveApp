@@ -49,143 +49,147 @@
 
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/school1Logo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/menuFrameLayout"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp" />
-
-    <TextView
-        android:id="@+id/schoolTypeTextView"
-        android:layout_width="120dp"
+    <RelativeLayout
+        android:id="@+id/selectRelativeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/school1Logo"
-        android:gravity="left|center"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="HIGH SCHOOL"
-        android:textSize="12dp"
-        android:textColor="@color/colorBlack"/>
+        android:layout_below="@id/menuFrameLayout">
 
-    <TextView
-        android:id="@+id/schoolNameTextView"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:gravity="left|center"
-        android:layout_below="@id/schoolTypeTextView"
-        android:layout_marginLeft="10dp"
-        android:text="Pretoria Boys"
-        android:textSize="14dp"
-        android:textColor="@color/colorBlack"/>
+        <ImageView
+            android:id="@+id/school1Logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp" />
 
+        <TextView
+            android:id="@+id/schoolTypeTextView"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/school1Logo"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="-15dp"
+            android:text="HIGH SCHOOL"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
 
-    <ImageView
-        android:id="@+id/school2Logo"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/menuFrameLayout"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"/>
-
-    <TextView
-        android:id="@+id/schoolType2TextView"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/school1Logo"
-        android:layout_alignParentRight="true"
-        android:gravity="right|center"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:text="HIGH SCHOOL"
-        android:textSize="12dp"
-        android:textColor="@color/colorBlack" />
-
-    <TextView
-        android:id="@+id/schoolName2TextView"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:gravity="right|center"
-        android:layout_below="@id/schoolTypeTextView"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="Afrikaans Boys"
-        android:textSize="14dp"
-        android:textColor="@color/colorBlack"/>
-
-    <ImageView
-        android:id="@+id/verifiedImageView"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/menuFrameLayout"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/verified"/>
-
-    <TextView
-        android:id="@+id/batbowl2TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@id/menuFrameLayout"
-        android:layout_toLeftOf="@+id/verifiedImageView"
-        android:layout_centerHorizontal="true"
-        android:text="(Bowling)"
-        android:textSize="12dp"
-        android:textColor="@color/colorBlack"/>
+        <TextView
+            android:id="@+id/schoolNameTextView"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@id/schoolTypeTextView"
+            android:layout_marginLeft="-5dp"
+            android:text="Pretoria Boys"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"/>
 
 
-    <TextView
-        android:id="@+id/scoreTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_below="@id/verifiedImageView"
-        android:layout_centerHorizontal="true"
-        android:text="0 - 0"
-        android:textSize="30dp"
-        android:textColor="@color/colorBlack"/>
+        <ImageView
+            android:id="@+id/school2Logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"/>
 
-    <TextView
-        android:id="@+id/batbowlTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@id/menuFrameLayout"
-        android:layout_toRightOf="@+id/verifiedImageView"
-        android:layout_centerHorizontal="true"
-        android:text="(Batting)"
-        android:textSize="12dp"
-        android:textColor="@color/colorBlack"/>
+        <TextView
+            android:id="@+id/schoolType2TextView"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/school1Logo"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="-15dp"
+            android:text="HIGH SCHOOL"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack" />
 
-    <TextView
-        android:id="@+id/timeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scoreTextView"
-        android:layout_centerHorizontal="true"
-        android:text="TIME: 14:00 HKT"
-        android:textSize="12dp"
-        android:textColor="@color/colorBlack"/>
+        <TextView
+            android:id="@+id/schoolName2TextView"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@id/schoolTypeTextView"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="-5dp"
+            android:text="Afrikaans Boys"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"/>
 
-    <TextView
-        android:id="@+id/updateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_below="@id/timeTextView"
-        android:layout_centerHorizontal="true"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="UPDATE NOW"
-        android:textSize="12dp"
-        android:textColor="@color/colorWhite"
-        android:background="@drawable/blackrectangle"/>
+        <TextView
+            android:id="@+id/verifiedImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text=""
+            android:textSize="12dp"
+            android:textColor="@color/colorRed"/>
 
+        <TextView
+            android:id="@+id/batbowl2TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/verifiedImageView"
+            android:layout_centerHorizontal="true"
+            android:text="(Bowling)"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
+
+
+        <TextView
+            android:id="@+id/scoreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_below="@id/verifiedImageView"
+            android:layout_centerHorizontal="true"
+            android:text="0 - 0"
+            android:textSize="30dp"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/batbowlTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/verifiedImageView"
+            android:layout_centerHorizontal="true"
+            android:text="(Batting)"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/scoreTextView"
+            android:layout_centerHorizontal="true"
+            android:text="TIME: 14:00 HKT"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/updateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/timeTextView"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="UPDATE NOW"
+            android:textSize="12dp"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/blackrectangle"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

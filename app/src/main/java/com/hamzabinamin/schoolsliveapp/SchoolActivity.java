@@ -8,11 +8,13 @@ import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
@@ -34,6 +36,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -97,6 +100,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
     ListView listView;
     ProgressDialog progressDialog;
     List arrayList;
+    List<Game> gameListStore = new ArrayList<>();
     CustomAdapter customAdapter;
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
@@ -124,7 +128,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_school_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_school);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -164,9 +168,19 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                 int id = item.getItemId();
 
                 switch (id) {
-                    case R.id.manageSchools:
+                    case R.id.addSchool:
                         finish();
-                        startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AddSchoolActivity.class));
+                        break;
+
+                    case R.id.editSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSelectSchoolActivity.class));
+                        break;
+
+                    case R.id.changeSchool:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
                         break;
 
                     case R.id.notifications:
@@ -183,6 +197,15 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         finish();
                         startActivity(new Intent(getBaseContext(), UpdateAccountActivity.class));
                         break;
+
+                    case R.id.share:
+                        launchMarket();
+                        break;
+
+                    case R.id.game:
+                        finish();
+                        startActivity(new Intent(getBaseContext(), SchoolActivity.class));
+                        break;
                 }
                 return false;
             }
@@ -194,6 +217,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         mNavigationView.setItemIconTintList(null);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -206,8 +230,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         resultsTextView.setOnClickListener(this);
         facebookTextView.setOnClickListener(this);
         twitterTextView.setOnClickListener(this);
-        //addGameTextView.setOnClickListener(this);
-        //weekTextView.setOnClickListener(this);
+        addGameTextView.setOnClickListener(this);
+        weekTextView.setOnClickListener(this);
 
         if(getSchoolSharedPreferences()) {
             progressDialog.setMessage("Please Wait");
@@ -228,8 +252,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
             schoolTypeTextView.setText(school.getSchoolType());
             schoolNameTextView.setText(school.getSchoolName());
-            schoolLocationTextView.setText(school.getSchoolLocation());
-            schoolLinkTextView.setText(school.getSchoolWebsite());
+            //schoolLocationTextView.setText(school.getSchoolLocation());
+            //schoolLinkTextView.setText(school.getSchoolWebsite());
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
@@ -241,6 +265,20 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
+
+  /*      listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           int position, long arg3) {
+
+                customAdapter.remove(arrayList.remove()[position]);
+                customAdapter.notifyDataSetChanged();
+
+                return false;
+            }
+
+        }); */
 
         //scheduleNotification(getNotification("u16A vs u17A"), 5000);
     }
@@ -261,6 +299,16 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
         return false;
+    }
+
+    private void launchMarket() {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        }
+        catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     private void scheduleNotification(Notification notification, int delay) {
@@ -916,7 +964,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL));
+                                String won = arr.getJSONObject(i).getString("Won");
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
                                     schoolNames.add(homeSchoolName);
@@ -1029,6 +1078,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
         else {
+            Toast.makeText(getBaseContext(), "Either add a new School or Select existing one from  Change School", Toast.LENGTH_SHORT).show();
+            finish();
             startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
         }
     }

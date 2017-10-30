@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,8 +49,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
     Button backButton;
     Button addGameButton;
-    Spinner schoolASpinner;
-    Spinner schoolBSpinner;
+    SearchableSpinner schoolASpinner;
+    SearchableSpinner schoolBSpinner;
     Spinner fieldSpinner;
     Spinner sportSpinner;
     Spinner ageGroupSpinner;
@@ -89,7 +90,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         double screenInches = Math.sqrt(x + y);
         if (screenInches <= 4)
             setContentView(R.layout.activity_add_game_small);
-        else if (screenInches >= 4)
+        else if (screenInches > 4)
             setContentView(R.layout.activity_add_game);
 
         AdView adView = (AdView) findViewById(R.id.addView);
@@ -100,8 +101,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         backButton = (Button) findViewById(R.id.backButton);
         addGameButton = (Button) findViewById(R.id.addGameButton);
-        schoolASpinner = (Spinner) findViewById(R.id.schoolASpinner);
-        schoolBSpinner = (Spinner) findViewById(R.id.schoolBSpinner);
+        schoolASpinner = (SearchableSpinner) findViewById(R.id.schoolASpinner);
+        schoolBSpinner = (SearchableSpinner) findViewById(R.id.schoolBSpinner);
         fieldSpinner = (Spinner) findViewById(R.id.fieldSpinner);
         sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
         ageGroupSpinner = (Spinner) findViewById(R.id.ageGroupSpinner);
@@ -120,7 +121,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         schoolAArray = new String[]{ "Select School" };
         schoolBArray = new String[]{ "Select School" };
         fieldArray = new String[]{ "School A", "School B" };
-        sportArray = new String[]{ "Basketball", "Rugby", "Cricket", "Hockey", "Netball", "Soccer", "Water polo" };
+        sportArray = new String[]{ "Basketball", "Rugby", "Cricket", "Hockey", "Netball", "Soccer", "Water polo", "Sevens" };
         ageGroupArray = new String[]{"U/6", "U/7", "U/8", "U/9", "U/10", "U/11", "U/12", "U/13", "U/14", "U/15", "U/16", "U/17", "U/18", "U/19"};
         teamArray = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
 
@@ -285,7 +286,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                                 schoolLogo = arr.getJSONObject(i).getString("School_Logo");
                                 System.out.println("School Image Logo: " + schoolLogo);
                                 schoolList.add(new School(schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation, schoolLogo));
-                                list.add(schoolName);
+                                list.add(schoolName + " " + "(" + schoolType + ")");
                                 schoolTypeList.add(schoolType);
                                 schoolIDList.add(schoolID);
                             } catch (JSONException e) {
@@ -376,7 +377,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
     public static String GetUTCdatetimeAsString() {
         final String DATEFORMAT = "yyyy-MM-dd HH:mm:ss";
-        final String DATEFORMAT2 = "M-d-yyyy / hh:mm a";
+        final String DATEFORMAT2 = "d-M-yyyy / hh:mm a";
         final SimpleDateFormat sdf = new SimpleDateFormat(DATEFORMAT2);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         final String utcTime = sdf.format(new Date());
@@ -403,9 +404,34 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    String schoolA =  schoolASpinner.getSelectedItem().toString();
-                    String schoolB =  schoolBSpinner.getSelectedItem().toString();
-                   String schoolsType = "";
+                    String schoolA = "";
+                    String schoolB = "";
+                    if(schoolASpinner.getSelectedItem().toString().contains("High School")) {
+                        schoolA =  schoolASpinner.getSelectedItem().toString().replace("(High School)", "").trim();
+                    }
+                    else if(schoolASpinner.getSelectedItem().toString().contains("Primary School")) {
+                        schoolA =  schoolASpinner.getSelectedItem().toString().replace("(Primary School)", "").trim();
+                    }
+                    else if(schoolASpinner.getSelectedItem().toString().contains("College")) {
+                        schoolA =  schoolASpinner.getSelectedItem().toString().replace("(College)", "").trim();
+                    }
+                    else if(schoolASpinner.getSelectedItem().toString().contains("Pri-High School")) {
+                        schoolA =  schoolASpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim();
+                    }
+
+                    if(schoolBSpinner.getSelectedItem().toString().contains("High School")) {
+                        schoolB =  schoolBSpinner.getSelectedItem().toString().replace("(High School)", "").trim();
+                    }
+                    else if(schoolBSpinner.getSelectedItem().toString().contains("Primary School")) {
+                        schoolB =  schoolBSpinner.getSelectedItem().toString().replace("(Primary School)", "").trim();
+                    }
+                    else if(schoolBSpinner.getSelectedItem().toString().contains("College")) {
+                        schoolB =  schoolBSpinner.getSelectedItem().toString().replace("(College)", "").trim();
+                    }
+                    else if(schoolBSpinner.getSelectedItem().toString().contains("Pri-High School")) {
+                        schoolB =  schoolBSpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim();
+                    }
+                    String schoolsType = "";
                     schoolsType = schoolTypeList.get(schoolASpinner.getSelectedItemPosition()) + "/" + schoolTypeList.get(schoolBSpinner.getSelectedItemPosition());
                     String field = fieldSpinner.getSelectedItem().toString();
                     String sport = sportSpinner.getSelectedItem().toString();
@@ -418,7 +444,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     else if(ampmNumberPicker.getValue() == 1) {
                         ampm = "PM";
                     }
-                    String starttime = String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
+                    String starttime =  String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
                     starttime = convertStringIntoUTC(starttime);
                     String weather = "";
                     String temperature = "";
@@ -483,7 +509,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public String convertStringIntoUTC(String dateString) {
-        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         df.setTimeZone( TimeZone.getDefault());
         Date date = null;
         String formattedDate = null;
@@ -523,7 +549,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         String sport = sportSpinner.getSelectedItem().toString();
         String agegroup = ageGroupSpinner.getSelectedItem().toString();
         String team = teamSpinner.getSelectedItem().toString();
-        SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         String ampm = "";
         if(ampmNumberPicker.getValue() == 0) {
             ampm = "AM";
@@ -534,7 +560,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
 
         if(schoolA.length() > 0 && schoolB.length() > 0 && field.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
-            String starttime = String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
+            String starttime =  String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
             Calendar selectedCalendar = Calendar.getInstance();
             try {
                 selectedCalendar.setTime(sdf.parse(starttime));
@@ -542,6 +568,11 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
                 if(selectedCalendar.before(currentCalendar)) {
                     Toast.makeText(getBaseContext(), "You can't select a date older than the current date", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+                if(schoolA.equals(schoolB)) {
+                    Toast.makeText(getBaseContext(), "School A and B can't be same", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
