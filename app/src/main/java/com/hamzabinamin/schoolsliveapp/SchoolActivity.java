@@ -199,7 +199,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -252,8 +252,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
             schoolTypeTextView.setText(school.getSchoolType());
             schoolNameTextView.setText(school.getSchoolName());
-            //schoolLocationTextView.setText(school.getSchoolLocation());
-            //schoolLinkTextView.setText(school.getSchoolWebsite());
+            schoolLocationTextView.setText(school.getSchoolLocation().trim());
+            schoolLinkTextView.setText(school.getSchoolWebsite().trim());
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
                     .cacheOnDisk(true).resetViewBeforeLoading(true)
@@ -299,6 +299,25 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
         return false;
+    }
+
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchMarket() {
@@ -436,11 +455,12 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                            String sport = URLEncoder.encode(gameTextView.getText().toString(), "UTF-8");
                            range1 = URLEncoder.encode(date1, "UTF-8");
                            String range2 = URLEncoder.encode(date2, "UTF-8");
-                           if(sport.contains("ALL GAMES")) {
+                           if(sport.contains("ALL+GAMES")) {
                                String url = String.format("http://schools-live.com/getAllFixtureGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
                                sendGETforGames(url);
                            }
                            else {
+                               System.out.println("Why you came here: " + sport);
                                String url = String.format("http://schools-live.com/getFixtureGamesInRange.php?home=%s&away=%s&sport=%s&range1=%s&range2=%s", schoolName, schoolName, sport, range1, range2);
                                sendGETforGames(url);
                            }

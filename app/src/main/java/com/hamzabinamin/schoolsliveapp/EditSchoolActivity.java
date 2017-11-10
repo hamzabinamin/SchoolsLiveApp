@@ -178,7 +178,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -228,7 +228,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
         if(getEditSchoolSharedPreferences()) {
             try {
-                schoolName = URLEncoder.encode(schoolName, "UTF-8");
+                schoolName = URLEncoder.encode(schoolName.trim(), "UTF-8");
                 String url = String.format("http://schools-live.com/getOneSchool.php?name=%s", schoolName);
 
                 progressDialog.setMessage("Please Wait");
@@ -255,6 +255,25 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchMarket() {
@@ -337,6 +356,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         if (sharedPreferences.getString("School Name", null) != null) {
             schoolName = sharedPreferences.getString("School Name", null);
             schoolNameStore = sharedPreferences.getString("School Name", null);
+            schoolNameStore = schoolNameStore.trim();
             return true;
         }
         else
@@ -419,12 +439,12 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                                 e.printStackTrace();
                             }
                         }
-                        schoolNameEditText.setText(schoolName);
+                        schoolNameEditText.setText(schoolName.trim());
                         schoolLocationEditText.setText(schoolLocation);
                         schoolWebsiteEditText.setText(schoolWebsite);
                         schoolTwitterEditText.setText(schoolTwitter);
                         schoolFacebookEditText.setText(schoolFacebook);
-                        String[] schoolTypeArray = new String[] { "Primary School" , "High School" };
+                        String[] schoolTypeArray = new String[] { "Primary School", "High School", "Pri-High School", "College"  };
                         ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, schoolTypeArray);
                         schoolTypeSpinner.setAdapter(adapter);
 
@@ -433,6 +453,12 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         }
                         else if(scholType.equals("Primary School")) {
                             schoolTypeSpinner.setSelection(0);
+                        }
+                        else if(scholType.equals("Pri-High School")) {
+                            schoolTypeSpinner.setSelection(2);
+                        }
+                        else if(scholType.equals("College")) {
+                            schoolTypeSpinner.setSelection(3);
                         }
 
                         httpDownloadImages task = new httpDownloadImages();
@@ -468,7 +494,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                     progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    String schoolName = schoolNameEditText.getText().toString();
+                    String schoolName = schoolNameEditText.getText().toString().trim();
                     String schoolLocation = schoolLocationEditText.getText().toString();
                     String schoolWebsite = schoolWebsiteEditText.getText().toString();
                     String schoolTwitter = schoolTwitterEditText.getText().toString();
@@ -615,7 +641,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 imageView.setImageBitmap(bm);
-                schoolName = schoolNameEditText.getText().toString();
+                schoolName = schoolNameEditText.getText().toString().trim();
                 isImageChosen = true;
                 bitmapImage = bm;
             } catch (IOException e) {
@@ -672,8 +698,8 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 //       for(int i=1; i<=10; i++){
                    // schoolName = URLEncoder.encode(schoolName, "UTF-8");
                  //URLEncoder.encode(schoolName, "UTF-8").replace("+","%20").replace("B","0")
-                    String src = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8") + ".png";
-                System.out.println("URL: " + "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName, "UTF-8") + ".png" );
+                    String src = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName.trim(), "UTF-8") + ".png";
+                System.out.println("URL: " + "http://schools-live.com/school-images/" + URLEncoder.encode(schoolName.trim(), "UTF-8") + ".png" );
                     java.net.URL url = new java.net.URL(src);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
@@ -700,7 +726,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progressDialog.dismiss();
-            System.out.println("Got the logo: " + s);
+            //System.out.println("Got the logo: " + s);
             imageView.setImageBitmap(StringToBitMap(s));
 
         }
@@ -769,12 +795,12 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
 
                 try {
-                    String store = URLEncoder.encode(schoolName, "UTF-8");
+                    String store = URLEncoder.encode(schoolName.trim(), "UTF-8");
                     HashMapParams.put(ImageTag, store);
 
                     HashMapParams.put(ImageName, ConvertImage);
 
-                    HashMapParams.put(SchoolName, schoolName);
+                    HashMapParams.put(SchoolName, schoolName.trim());
 
                     String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
 
@@ -915,7 +941,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                     if(result.contains("Record updated successfully")) {
                         //progressDialog.hide();
                         //Toast.makeText(getBaseContext(), "New record created successfully", Toast.LENGTH_SHORT).show();
-                        schoolName = schoolNameEditText.getText().toString();
+                        schoolName = schoolNameEditText.getText().toString().trim();
                         //schoolName = URLEncoder.encode(schoolName, "UTF-8");
                         UploadImageToServer(StringToBitMap(bm));
                     }

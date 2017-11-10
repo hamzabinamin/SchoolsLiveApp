@@ -211,7 +211,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -228,6 +228,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         imageView = (ImageView) hView.findViewById(R.id.profile_image);
         mToolBar = (Toolbar) findViewById(R.id.navigation_action);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
 
@@ -267,7 +268,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 String[] splitArray = game.getSchoolsType().split("/");
                 schoolType1TextView.setText(splitArray[0]);
                 schoolName1TextView.setText(game.getHomeSchoolName());
-                schoolType2TextView.setText(splitArray[0]);
+                schoolType2TextView.setText(splitArray[1]);
                 schoolName2TextView.setText(game.getAwaySchoolName());
                 teamNameTextView.setText(game.getSport() + " " + game.getAgeGroup() + "/" + game.getTeam());
                 temperatureTextView.setText(game.getTemperature());
@@ -360,6 +361,25 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchMarket() {

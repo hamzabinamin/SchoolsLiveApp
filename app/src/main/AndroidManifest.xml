@@ -36,7 +36,8 @@
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -59,58 +60,77 @@
         <activity android:name=".FacebookVerificationActivity" />
         <activity
             android:name=".LogInActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".NumberRegistrationActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".VerificationActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".SchoolActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".AddGameActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".UpdateGameActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".LearderboardActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".ManageSchoolsActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".AddSchoolActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".EditSchoolActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".ChangeSchoolActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".EditSelectSchoolActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".AccountActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".UpdateAccountActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".LiveNowActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
             android:name=".ResultsActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
-            android:name=".TwitterActivity" />
+            android:name=".TwitterActivity" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
         <activity
-            android:name=".FacebookActivity" />
+            android:name=".FacebookActivity" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"  />
 
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".NotificationActivity" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" ></activity>
     </application>
 
 </manifest>

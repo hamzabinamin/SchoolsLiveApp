@@ -142,7 +142,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -200,6 +200,25 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchMarket() {

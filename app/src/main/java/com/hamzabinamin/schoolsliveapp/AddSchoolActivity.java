@@ -203,7 +203,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -247,6 +247,25 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void launchMarket() {
@@ -339,7 +358,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                     progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    String schoolName = schoolNameEditText.getText().toString();
+                    String schoolName = schoolNameEditText.getText().toString().trim();
                     String schoolLocation = schoolLocationEditText.getText().toString();
                     String schoolWebsite = schoolWebsiteEditText.getText().toString();
                     String schoolTwitter = schoolTwitterEditText.getText().toString();
@@ -488,7 +507,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 imageView2.setImageBitmap(bm);
-                schoolName = schoolNameEditText.getText().toString();
+                schoolName = schoolNameEditText.getText().toString().trim();
                 isImageChosen = true;
                 bitmapImage = bm;
             } catch (IOException e) {
@@ -554,10 +573,10 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                 Toast.makeText(AddSchoolActivity.this, "School Added Successfully", Toast.LENGTH_LONG).show();
                 System.out.println("String1: " + string1 );
 
-                School school = new School(schoolNameEditText.getText().toString(), schoolTypeSpinner.getSelectedItem().toString(), schoolWebsiteEditText.getText().toString(), schoolTwitterEditText.getText().toString(), schoolFacebookEditText.getText().toString(), schoolLocationEditText.getText().toString());
+                School school = new School(schoolNameEditText.getText().toString().trim(), schoolTypeSpinner.getSelectedItem().toString(), schoolWebsiteEditText.getText().toString(), schoolTwitterEditText.getText().toString(), schoolFacebookEditText.getText().toString(), schoolLocationEditText.getText().toString());
                 String image = null;
                 try {
-                    image = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolNameEditText.getText().toString(), "UTF-8") + ".png";
+                    image = "http://schools-live.com/school-images/" + URLEncoder.encode(schoolNameEditText.getText().toString().trim(), "UTF-8") + ".png";
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -582,12 +601,12 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
 
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
                 try {
-                    String store = URLEncoder.encode(schoolName, "UTF-8");
+                    String store = URLEncoder.encode(schoolName.trim(), "UTF-8");
                     HashMapParams.put(ImageTag, store);
 
                     HashMapParams.put(ImageName, ConvertImage);
 
-                    HashMapParams.put(SchoolName, schoolName);
+                    HashMapParams.put(SchoolName, schoolName.trim());
 
                     String FinalData = imageProcessClass.ImageHttpRequest(ServerUploadPath, HashMapParams);
 
@@ -728,7 +747,7 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                     if(result.contains("New record created successfully")) {
                         //progressDialog.hide();
                         //Toast.makeText(getBaseContext(), "New record created successfully", Toast.LENGTH_SHORT).show();
-                        schoolName = schoolNameEditText.getText().toString();
+                        schoolName = schoolNameEditText.getText().toString().trim();
                         //schoolName = URLEncoder.encode(schoolName, "UTF-8");
 
                         UploadImageToServer(StringToBitMap(bm));

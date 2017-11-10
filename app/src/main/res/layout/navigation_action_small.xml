@@ -15,7 +15,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="15dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical">
@@ -42,27 +42,32 @@
             android:textSize="18dp"
             android:textColor="@color/colorWhite"/>
 
+        <TextView
+            android:id="@+id/schoolLocationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_below="@id/schoolTypeTextView"
+            android:layout_marginTop="5dp"
+            android:text="Paarl, South Africa"
+            android:textSize="11dp"
+            android:textColor="@color/colorWhite"/>
+
+        <TextView
+            android:id="@+id/schoolLinkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_below="@id/schoolTypeTextView"
+            android:layout_marginTop="5dp"
+            android:text="www.paarl.com"
+            android:textSize="11dp"
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/schoolLocationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginTop="60dp"
-        android:text="Paarl, South Africa"
-        android:textSize="11dp"
-        android:textColor="@color/colorWhite"/>
 
-    <TextView
-        android:id="@+id/schoolLinkTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:text="www.paarlgim.com"
-        android:textSize="11dp"
-        android:textColor="@color/colorWhite"/>
 
 
 </android.support.v7.widget.Toolbar>

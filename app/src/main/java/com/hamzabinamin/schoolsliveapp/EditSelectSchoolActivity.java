@@ -129,7 +129,7 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
                         break;
 
                     case R.id.share:
-                        launchMarket();
+                        sendEmail();
                         break;
 
                     case R.id.game:
@@ -177,6 +177,25 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
         }
     }
 
+    protected void sendEmail() {
+        String[] TO = {"info@schools-live.com"};
+        String[] CC = {""};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_CC, CC);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Schools-Live");
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getBaseContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -184,25 +203,32 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
             case R.id.editSchoolButton:
                 if(schoolNameSpinner.getSelectedItem() != null) {
-                    if(schoolNameSpinner.getSelectedItem().toString().contains("High School")) {
+                     if(schoolNameSpinner.getSelectedItem().toString().contains("Pri-High School")) {
+                        System.out.println("Pre-High School: " + schoolNameSpinner.getSelectedItem().toString());
+                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim());
+                        finish();
+                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    }
+                    else if(schoolNameSpinner.getSelectedItem().toString().contains("High School")) {
+                        System.out.println("High School: " + schoolNameSpinner.getSelectedItem().toString());
                         saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(High School)", "").trim());
                         finish();
                         startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
                     }
                     else if(schoolNameSpinner.getSelectedItem().toString().contains("Primary School")) {
+                        System.out.println("Primary School: " + schoolNameSpinner.getSelectedItem().toString());
                         saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(Primary School)", "").trim());
                         finish();
                         startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
                     }
                     else if(schoolNameSpinner.getSelectedItem().toString().contains("College")) {
+                        System.out.println("College: " + schoolNameSpinner.getSelectedItem().toString());
                         saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(College)", "").trim());
                         finish();
                         startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
                     }
-                    else if(schoolNameSpinner.getSelectedItem().toString().contains("Pri-High School")) {
-                        saveEditSchoolSharedPreferences(schoolNameSpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim());
-                        finish();
-                        startActivity(new Intent(getBaseContext(), EditSchoolActivity.class));
+                    else {
+                        System.out.println("Got in Else");
                     }
 
                 }

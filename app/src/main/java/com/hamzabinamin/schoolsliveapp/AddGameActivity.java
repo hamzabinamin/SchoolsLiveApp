@@ -51,7 +51,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     Button addGameButton;
     SearchableSpinner schoolASpinner;
     SearchableSpinner schoolBSpinner;
-    Spinner fieldSpinner;
+    //Spinner fieldSpinner;
     Spinner sportSpinner;
     Spinner ageGroupSpinner;
     Spinner teamSpinner;
@@ -103,7 +103,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         addGameButton = (Button) findViewById(R.id.addGameButton);
         schoolASpinner = (SearchableSpinner) findViewById(R.id.schoolASpinner);
         schoolBSpinner = (SearchableSpinner) findViewById(R.id.schoolBSpinner);
-        fieldSpinner = (Spinner) findViewById(R.id.fieldSpinner);
+       // fieldSpinner = (Spinner) findViewById(R.id.fieldSpinner);
         sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
         ageGroupSpinner = (Spinner) findViewById(R.id.ageGroupSpinner);
         teamSpinner = (Spinner) findViewById(R.id.teamSpinner);
@@ -133,9 +133,9 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 android.R.layout.simple_dropdown_item_1line, schoolBArray);
         schoolBSpinner.setAdapter(adapter);
 
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, fieldArray);
-        fieldSpinner.setAdapter(adapter);
+        //adapter = new ArrayAdapter<String>(this,
+              //  android.R.layout.simple_dropdown_item_1line, fieldArray);
+        //fieldSpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, sportArray);
@@ -433,7 +433,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     String schoolsType = "";
                     schoolsType = schoolTypeList.get(schoolASpinner.getSelectedItemPosition()) + "/" + schoolTypeList.get(schoolBSpinner.getSelectedItemPosition());
-                    String field = fieldSpinner.getSelectedItem().toString();
+                    //String field = fieldSpinner.getSelectedItem().toString();
+                    String field = "NONE";
                     String sport = sportSpinner.getSelectedItem().toString();
                     String agegroup = ageGroupSpinner.getSelectedItem().toString();
                     String team = teamSpinner.getSelectedItem().toString();
@@ -461,6 +462,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     }
 
                     try {
+                        System.out.println("School A: " + schoolA);
+                        System.out.println("School B: " + schoolB);
                         if(getSchoolItem(schoolList, schoolA) != null) {
                             homeSchoolURL = getSchoolItem(schoolList, schoolA).getSchoolImage();
                         }
@@ -527,7 +530,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         for(int i=0; i<schoolList.size(); i++) {
 
-            if(schoolList.get(i).getSchoolName().equals(name)) {
+            if(schoolList.get(i).getSchoolName().contains(name)) {
                 System.out.println("Got Inside If");
                 System.out.println("String Name Inside If: " + name);
                 System.out.println("School Name Inside If: " + schoolList.get(i).getSchoolName());
@@ -545,7 +548,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         String schoolA = schoolASpinner.getSelectedItem().toString();
         String schoolB = schoolBSpinner.getSelectedItem().toString();
-        String field = fieldSpinner.getSelectedItem().toString();
+        //String field = fieldSpinner.getSelectedItem().toString();
         String sport = sportSpinner.getSelectedItem().toString();
         String agegroup = ageGroupSpinner.getSelectedItem().toString();
         String team = teamSpinner.getSelectedItem().toString();
@@ -559,7 +562,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         }
 
 
-        if(schoolA.length() > 0 && schoolB.length() > 0 && field.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
+        if(schoolA.length() > 0 && schoolB.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
             String starttime =  String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
             Calendar selectedCalendar = Calendar.getInstance();
             try {

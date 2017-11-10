@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
-                    android:text="SCHOOL A"
+                    android:text="HOME SCHOOL"
                     android:textSize="18dp"
                     android:textColor="@color/colorBlack"/>
             </FrameLayout>
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
-                    android:text="SCHOOL B"
+                    android:text="AWAY SCHOOL"
                     android:textSize="18dp"
                     android:textColor="@color/colorBlack"/>
 
@@ -112,7 +112,7 @@
                 android:layout_below="@id/schoolBFrameLayout">
             </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
-            <FrameLayout
+        <!--    <FrameLayout
                 android:id="@+id/fieldFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
@@ -134,13 +134,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/fieldFrameLayout">
-            </Spinner>
+            </Spinner> -->
 
             <FrameLayout
                 android:id="@+id/sportFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_below="@id/fieldSpinner"
+                android:layout_below="@id/schoolBSpinner"
                 android:background="@color/colorGray">
 
                 <TextView
