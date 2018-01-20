@@ -26,7 +26,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="Please write your Name to go along with your mobile number."
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"/>
 
 
     <ImageView

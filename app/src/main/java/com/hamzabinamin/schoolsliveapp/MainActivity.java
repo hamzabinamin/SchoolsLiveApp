@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-//import com.testfairy.TestFairy;
+// import com.testfairy.TestFairy;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.getInstance().init(config);
         // END - UNIVERSAL IMAGE LOADER SETUP
 
-   //     TestFairy.begin(this, "e63fbf99fcb75ae55861a0b6a676aa2b6f0dba5a");
+    //    TestFairy.begin(this, "e63fbf99fcb75ae55861a0b6a676aa2b6f0dba5a");
 
         new Handler().postDelayed(new Runnable() {
 

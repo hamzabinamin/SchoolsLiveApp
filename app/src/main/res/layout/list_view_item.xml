@@ -16,6 +16,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
             android:text="RUGBY U/19D"
+            android:textSize="12dp"
             android:textColor="@color/colorBlack"/>
 
         <TextView

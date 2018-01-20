@@ -43,12 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,11 +72,11 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
     private static final int STATE_SIGNIN_FAILED = 5;
     private static final int STATE_SIGNIN_SUCCESS = 6;
     public static int APP_REQUEST_CODE = 99;
-    private FirebaseAuth mAuth;
+   // private FirebaseAuth mAuth;
     private boolean mVerificationInProgress = false;
     private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    //private PhoneAuthProvider.ForceResendingToken mResendToken;
+    //private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private static final String USER_AGENT = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
 
     Button nextButton;
@@ -151,7 +146,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
         });
 
 
-        mAuth = FirebaseAuth.getInstance();
+ /*       mAuth = FirebaseAuth.getInstance();
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -221,7 +216,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
                 // [END_EXCLUDE]
             }
         };
-        // [END phone_auth_callbacks]
+        // [END phone_auth_callbacks] */
     }
 
     public void initAccountKitSmsFlow() {
@@ -360,7 +355,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
      //   }
     }
 
-    @Override
+ /*   @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -372,7 +367,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
             startPhoneNumberVerification(phoneNumberEditText.getText().toString());
         }
         // [END_EXCLUDE]
-    }
+    } */
     // [END on_start_check_user]
 
     @Override
@@ -400,12 +395,12 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
             case R.id.nextButton:
                 //finish();
                 //startActivity(new Intent(getBaseContext(), VerificationActivity.class));
-                startPhoneNumberVerification(phoneNumberEditText.getText().toString());
+               // startPhoneNumberVerification(phoneNumberEditText.getText().toString());
                // verifyPhoneNumberWithCode(mVerificationId, countryCodeEditText.getText().toString());
                 break;
         }
     }
-
+/*
     private void startPhoneNumberVerification(String phoneNumber) {
         // [START start_phone_auth]
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -417,8 +412,9 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
         // [END start_phone_auth]
 
         mVerificationInProgress = true;
-    }
+    }*/
 
+/*
     private void updateUI(int uiState) {
         updateUI(uiState, mAuth.getCurrentUser(), null);
     }
@@ -503,7 +499,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
 //            mDetailText.setText(getString(R.string.firebase_status_fmt, user.getUid()));
         }
     }
-
+*/
 
     private boolean validatePhoneNumber() {
         String phoneNumber = phoneNumberEditText.getText().toString();
@@ -527,7 +523,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
         }
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+ /*   private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -575,7 +571,7 @@ public class NumberRegistrationActivity extends AppCompatActivity implements Vie
                 this,               // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 token);             // ForceResendingToken from callbacks
-    }
+    } */
 
     public void sendGET(String paramURL) throws IOException {
 

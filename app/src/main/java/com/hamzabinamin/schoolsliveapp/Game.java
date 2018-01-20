@@ -10,7 +10,7 @@ public class Game {
     private String homeSchoolName;
     private String awaySchoolName;
     private String schoolsType;
-    private String field;
+    private String category;
     private String sport;
     private String ageGroup;
     private String team;
@@ -31,7 +31,7 @@ public class Game {
         this.homeSchoolName = "";
         this.awaySchoolName = "";
         this.schoolsType = "";
-        this.field = "";
+        this.category = "";
         this.sport = "";
         this.ageGroup = "";
         this.team = "";
@@ -46,12 +46,12 @@ public class Game {
         this.selectedForNotification = false;
     }
 
-    public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String field, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL, String whoWon) {
+    public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String category, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL, String whoWon) {
         this.gameID = gameID;
         this.homeSchoolName = homeSchoolName;
         this.awaySchoolName = awaySchoolName;
         this.schoolsType = schoolsType;
-        this.field = field;
+        this.category = category;
         this.sport = sport;
         this.ageGroup = ageGroup;
         this.team = team;
@@ -107,6 +107,8 @@ public class Game {
     public String getSchoolsType() {
         return this.schoolsType;
     }
+
+    public String getCategory() { return this.category; }
 
     public String getSport() {
         return this.sport;

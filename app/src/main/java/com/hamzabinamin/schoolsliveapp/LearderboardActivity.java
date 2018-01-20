@@ -319,7 +319,7 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
                         }
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                int j=0;
+                                int j = 0;
                                 String name = arr.getJSONObject(i).getString("Name");
                                 String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
                                 String totalUpdates = arr.getJSONObject(i).getString("Total_Updates");

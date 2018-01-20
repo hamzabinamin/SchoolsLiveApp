@@ -338,7 +338,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:text="RUGBY U/19D"
-                android:textSize="13dp"
+                android:textSize="12dp"
                 android:textColor="@color/colorBlack"/>
 
             <TextView

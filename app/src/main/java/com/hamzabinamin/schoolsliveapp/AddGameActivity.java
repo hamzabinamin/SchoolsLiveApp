@@ -51,7 +51,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     Button addGameButton;
     SearchableSpinner schoolASpinner;
     SearchableSpinner schoolBSpinner;
-    //Spinner fieldSpinner;
+    Spinner categorySpinner;
     Spinner sportSpinner;
     Spinner ageGroupSpinner;
     Spinner teamSpinner;
@@ -70,7 +70,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
     private String[] schoolAArray;
     private String[] schoolBArray;
-    private String[] fieldArray;
+    private String[] categoryArray;
     private String[] sportArray;
     private String[] ageGroupArray;
     private String[] teamArray;
@@ -103,7 +103,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         addGameButton = (Button) findViewById(R.id.addGameButton);
         schoolASpinner = (SearchableSpinner) findViewById(R.id.schoolASpinner);
         schoolBSpinner = (SearchableSpinner) findViewById(R.id.schoolBSpinner);
-       // fieldSpinner = (Spinner) findViewById(R.id.fieldSpinner);
+        categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
         sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
         ageGroupSpinner = (Spinner) findViewById(R.id.ageGroupSpinner);
         teamSpinner = (Spinner) findViewById(R.id.teamSpinner);
@@ -120,7 +120,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         schoolAArray = new String[]{ "Select School" };
         schoolBArray = new String[]{ "Select School" };
-        fieldArray = new String[]{ "School A", "School B" };
+        categoryArray = new String[]{ "Boys", "Girls" };
         sportArray = new String[]{ "Basketball", "Rugby", "Cricket", "Hockey", "Netball", "Soccer", "Water polo", "Sevens" };
         ageGroupArray = new String[]{"U/6", "U/7", "U/8", "U/9", "U/10", "U/11", "U/12", "U/13", "U/14", "U/15", "U/16", "U/17", "U/18", "U/19"};
         teamArray = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
@@ -133,9 +133,9 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 android.R.layout.simple_dropdown_item_1line, schoolBArray);
         schoolBSpinner.setAdapter(adapter);
 
-        //adapter = new ArrayAdapter<String>(this,
-              //  android.R.layout.simple_dropdown_item_1line, fieldArray);
-        //fieldSpinner.setAdapter(adapter);
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, categoryArray);
+        categorySpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, sportArray);
@@ -406,7 +406,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     progressDialog.show();
                     String schoolA = "";
                     String schoolB = "";
-                    if(schoolASpinner.getSelectedItem().toString().contains("High School")) {
+                    if(schoolASpinner.getSelectedItem().toString().contains("High School") && !schoolASpinner.getSelectedItem().toString().contains("Pri-High") ) {
+                        Toast.makeText(getBaseContext(), "Got Here", Toast.LENGTH_SHORT).show();
                         schoolA =  schoolASpinner.getSelectedItem().toString().replace("(High School)", "").trim();
                     }
                     else if(schoolASpinner.getSelectedItem().toString().contains("Primary School")) {
@@ -419,7 +420,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         schoolA =  schoolASpinner.getSelectedItem().toString().replace("(Pri-High School)", "").trim();
                     }
 
-                    if(schoolBSpinner.getSelectedItem().toString().contains("High School")) {
+                    if(schoolBSpinner.getSelectedItem().toString().contains("High School") && !schoolBSpinner.getSelectedItem().toString().contains("Pri-High") ) {
                         schoolB =  schoolBSpinner.getSelectedItem().toString().replace("(High School)", "").trim();
                     }
                     else if(schoolBSpinner.getSelectedItem().toString().contains("Primary School")) {
@@ -433,8 +434,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     String schoolsType = "";
                     schoolsType = schoolTypeList.get(schoolASpinner.getSelectedItemPosition()) + "/" + schoolTypeList.get(schoolBSpinner.getSelectedItemPosition());
-                    //String field = fieldSpinner.getSelectedItem().toString();
-                    String field = "NONE";
+                    String category = categorySpinner.getSelectedItem().toString();
                     String sport = sportSpinner.getSelectedItem().toString();
                     String agegroup = ageGroupSpinner.getSelectedItem().toString();
                     String team = teamSpinner.getSelectedItem().toString();
@@ -474,7 +474,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         schoolA = URLEncoder.encode(schoolA, "UTF-8");
                         schoolB = URLEncoder.encode(schoolB, "UTF-8");
                         schoolsType = URLEncoder.encode(schoolsType, "UTF-8");
-                        field = URLEncoder.encode(field, "UTF-8");
+                        category = URLEncoder.encode(category, "UTF-8");
                         sport = URLEncoder.encode(sport, "UTF-8");
                         agegroup = URLEncoder.encode(agegroup, "UTF-8");
                         team = URLEncoder.encode(team, "UTF-8");
@@ -499,7 +499,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                         e.printStackTrace();
                     }
 
-                    String url = String.format("http://www.schools-live.com/insertGame.php?homeschool=%s&awayschool=%s&schoolstype=%s&field=%s&sport=%s&agegroup=%s&team=%s&starttime=%s&weather=%s&temperature=%s&status=%s&score=%s&updateby=%s&updatetime=%s&homeschoollogo=%s&awayschoollogo=%s", schoolA, schoolB, schoolsType, field, sport, agegroup, team, starttime, weather, temperature, status, score, updateBy, updateTime, homeSchoolURL, awaySchoolURL);
+                    String url = String.format("http://www.schools-live.com/insertGame.php?homeschool=%s&awayschool=%s&schoolstype=%s&category=%s&sport=%s&agegroup=%s&team=%s&starttime=%s&weather=%s&temperature=%s&status=%s&score=%s&updateby=%s&updatetime=%s&homeschoollogo=%s&awayschoollogo=%s", schoolA, schoolB, schoolsType, category, sport, agegroup, team, starttime, weather, temperature, status, score, updateBy, updateTime, homeSchoolURL, awaySchoolURL);
 
                     try {
                         sendGETAddGame(url);
@@ -548,7 +548,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         String schoolA = schoolASpinner.getSelectedItem().toString();
         String schoolB = schoolBSpinner.getSelectedItem().toString();
-        //String field = fieldSpinner.getSelectedItem().toString();
+        String category = categorySpinner.getSelectedItem().toString();
         String sport = sportSpinner.getSelectedItem().toString();
         String agegroup = ageGroupSpinner.getSelectedItem().toString();
         String team = teamSpinner.getSelectedItem().toString();
@@ -562,7 +562,7 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         }
 
 
-        if(schoolA.length() > 0 && schoolB.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
+        if(schoolA.length() > 0 && schoolB.length() > 0 && category.length() > 0 && sport.length() > 0 && agegroup.length() > 0 && team.length()> 0) {
             String starttime =  String.valueOf(dateNumberPicker.getValue()) + "-" + String.valueOf(monthNumberPicker.getValue()) + "-" + String.valueOf(yearNumberPicker.getValue()) + " / " + String.valueOf(hourNumberPicker.getValue()) + ":" + String.valueOf(String.format("%02d", minNumberPicker.getValue())) + " " + ampm;
             Calendar selectedCalendar = Calendar.getInstance();
             try {
@@ -570,12 +570,13 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 Calendar currentCalendar = Calendar.getInstance();
 
                 if(selectedCalendar.before(currentCalendar)) {
+                    // currentCalendar.getTimeInMillis() - selectedCalendar.getTimeInMillis() > 1209600000
                     Toast.makeText(getBaseContext(), "You can't select a date older than the current date", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
                 if(schoolA.equals(schoolB)) {
-                    Toast.makeText(getBaseContext(), "School A and B can't be same", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Home & Away Schools can't be same", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 

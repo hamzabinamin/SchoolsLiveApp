@@ -137,10 +137,34 @@
             </Spinner> -->
 
             <FrameLayout
-                android:id="@+id/sportFrameLayout"
+                android:id="@+id/categoryFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/schoolBSpinner"
+                android:background="@color/colorGray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="GAME CATEGORY"
+                    android:textSize="18dp"
+                    android:textColor="@color/colorBlack"/>
+            </FrameLayout>
+
+            <Spinner
+                android:id="@+id/categorySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@id/categoryFrameLayout">
+            </Spinner>
+
+            <FrameLayout
+                android:id="@+id/sportFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@id/categorySpinner"
                 android:background="@color/colorGray">
 
                 <TextView

@@ -157,7 +157,16 @@ public class CustomAdapter extends BaseAdapter {
             holder.currentOver.setVisibility(View.INVISIBLE);
             holder.batbowlTextView.setVisibility(View.INVISIBLE);
             holder.batbowl2TextView.setVisibility(View.INVISIBLE);
-            holder.gameType.setText(list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
+
+            String category = "";
+            if(list.get(position).getCategory().trim().equals("Boys")) {
+                category = "(B)";
+            }
+            else if(list.get(position).getCategory().equals("Girls")) {
+                category = "(G)";
+            }
+
+            holder.gameType.setText(category + " " + list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
             holder.homeTeamSchoolName.setText(list.get(position).getHomeSchoolName());
             holder.halfTextView.setText(list.get(position).getStatus());
             String[] splitArray = list.get(position).getSchoolsType().split("/");
@@ -182,7 +191,16 @@ public class CustomAdapter extends BaseAdapter {
             holder.currentOver.setVisibility(View.VISIBLE);
             holder.batbowlTextView.setVisibility(View.VISIBLE);
             holder.batbowl2TextView.setVisibility(View.VISIBLE);
-            holder.gameType.setText(list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
+
+            String category = "";
+            if(list.get(position).getCategory().trim().equals("Boys")) {
+                category = "(B)";
+            }
+            else if(list.get(position).getCategory().trim().equals("Girls")) {
+                category = "(G)";
+            }
+
+            holder.gameType.setText(category + " " + list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
             holder.homeTeamSchoolName.setText(list.get(position).getHomeSchoolName());
             String[] splitArray = list.get(position).getSchoolsType().split("/");
             holder.homeTeamSchoolType.setText(splitArray[0]);
@@ -193,7 +211,7 @@ public class CustomAdapter extends BaseAdapter {
             holder.halfTextView.setText(list.get(position).getStatus());
             String[] stringArray = list.get(position).getScore().split("/");
             if(stringArray.length == 5) {
-                holder.currentOver.setText("C. Over: " + stringArray[4]);
+                holder.currentOver.setText(" C.O. : " + stringArray[4]);
                 holder.teamScore.setText(stringArray[0].trim() + "/" + stringArray[1].trim());
                 if (list.get(position).getHomeSchoolName().equals(stringArray[2])) {
                     holder.batbowl2TextView.setText("(Bat)");
@@ -337,7 +355,7 @@ public class CustomAdapter extends BaseAdapter {
    }
 
     public String convertUTCTimeInToLocal(String dateString) {
-        SimpleDateFormat df = new SimpleDateFormat("M-d-yyyy / hh:mm a");
+        SimpleDateFormat df = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = null;
         String formattedDate = null;

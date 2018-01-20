@@ -676,10 +676,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(new Intent(getBaseContext(), AddGameActivity.class));
                 break;
 
-        /*    case R.id.addGameTextView:
+            case R.id.addGameTextView:
                 finish();
                 startActivity(new Intent(getBaseContext(), AddGameActivity.class));
-                break; */
+                break;
 
             case R.id.liveNowTextView:
                 finish();
@@ -971,7 +971,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
                                 String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
                                 String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String field = arr.getJSONObject(i).getString("Field");
+                                String category = arr.getJSONObject(i).getString("Category");
                                 String sport = arr.getJSONObject(i).getString("Sport");
                                 String ageGroup = arr.getJSONObject(i).getString("Age_Group");
                                 String team = arr.getJSONObject(i).getString("Team");
@@ -985,7 +985,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
                                 String won = arr.getJSONObject(i).getString("Won");
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, field, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
                                     schoolNames.add(homeSchoolName);
@@ -1082,7 +1082,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         sendGETforGames(url);
                     }
                 }
-                else if(weekTextView.toString().equals("C.D. RANGE")) {
+                else if(weekTextView.getText().toString().equals("C.D. RANGE")) {
+                    progressDialog.dismiss();
                     openCalendar();
                 }
 

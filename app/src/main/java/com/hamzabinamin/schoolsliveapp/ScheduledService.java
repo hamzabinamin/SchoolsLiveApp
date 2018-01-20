@@ -351,7 +351,7 @@ public class ScheduledService extends Service {
                                 String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
                                 String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
                                 String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String field = arr.getJSONObject(i).getString("Field");
+                                String field = arr.getJSONObject(i).getString("Category");
                                 String sport = arr.getJSONObject(i).getString("Sport");
                                 String ageGroup = arr.getJSONObject(i).getString("Age_Group");
                                 String team = arr.getJSONObject(i).getString("Team");
@@ -406,18 +406,18 @@ public class ScheduledService extends Service {
                                             if (gamedate.equals(currentTime) || (calendar.get(Calendar.HOUR) == gameCalendar.get(Calendar.HOUR) && calendar.get(Calendar.AM_PM) == gameCalendar.get(Calendar.AM_PM) && ((calendar.get(Calendar.MINUTE) - gameCalendar.get(Calendar.MINUTE) <= 10) && (calendar.get(Calendar.MINUTE) - gameCalendar.get(Calendar.MINUTE) >= 0)) && calendar.get(Calendar.DATE) == gameCalendar.get(Calendar.DATE) && calendar.get(Calendar.MONTH) == gameCalendar.get(Calendar.MONTH) && calendar.get(Calendar.YEAR) == gameCalendar.get(Calendar.YEAR))) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     if(!game.getSport().equals("Cricket")) {
-                                                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
+                                                        String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
                                                         //scheduleNotification(getNotification(text), 0);
                                                         showNotificationLive("Live Game Right Now!", text);
                                                     }
                                                     else {
                                                         if(game.getScore().split("/").length == 5) {
-                                                            String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
+                                                            String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
                                                             //scheduleNotification(getNotification(text), 0);
                                                             showNotificationLive("Live Game Right Now!", text);
                                                         }
                                                         else {
-                                                            String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
+                                                            String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
                                                             //scheduleNotification(getNotification(text), 0);
                                                             showNotificationLive("Live Game Right Now!", text);
                                                         }
@@ -579,7 +579,7 @@ public class ScheduledService extends Service {
                                 String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
                                 String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
                                 String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String field = arr.getJSONObject(i).getString("Field");
+                                String field = arr.getJSONObject(i).getString("Category");
                                 String sport = arr.getJSONObject(i).getString("Sport");
                                 String ageGroup = arr.getJSONObject(i).getString("Age_Group");
                                 String team = arr.getJSONObject(i).getString("Team");
@@ -633,12 +633,12 @@ public class ScheduledService extends Service {
                                             if(game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(5)) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     if(game.getScore().split("/").length == 5) {
-                                                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
+                                                        String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
                                                         //scheduleNotification(getNotification2(text), 0);
                                                         showNotificationEnded("Game Ended!", text);
                                                     }
                                                     else {
-                                                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
+                                                        String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
                                                         //scheduleNotification(getNotification2(text), 0);
                                                         showNotificationEnded("Game Ended!", text);
                                                     }
@@ -668,7 +668,7 @@ public class ScheduledService extends Service {
                                             }
                                             else if (!game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(2)) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
-                                                    String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
+                                                    String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
                                                     //scheduleNotification(getNotification2(text), 0);
                                                     showNotificationEnded("Game Ended!", text);
                                                     System.out.println("Got Here Twise");
@@ -775,7 +775,7 @@ public class ScheduledService extends Service {
                                 String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
                                 String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
                                 String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String field = arr.getJSONObject(i).getString("Field");
+                                String field = arr.getJSONObject(i).getString("Category");
                                 String sport = arr.getJSONObject(i).getString("Sport");
                                 String ageGroup = arr.getJSONObject(i).getString("Age_Group");
                                 String team = arr.getJSONObject(i).getString("Team");
@@ -801,19 +801,19 @@ public class ScheduledService extends Service {
                                     System.out.println("New Score: " + score);
                                     if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                         if(!sport.equals("Cricket")) {
-                                            String text = sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("-")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("-")[1];
+                                            String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("-")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("-")[1];
                                             //showNotification("Score Update!", text);
                                             //scheduleNotification(getNotification3(text), 0);
                                             showNotificationScoreUpdate("Score Update!", text);
                                         }
                                         else {
                                             if(score.split("/").length == 5) {
-                                                String text = sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + score.split("/")[0].trim() + "/" + score.split("/")[1].trim() + " " +  " " + "Overs: " + score.split("/")[4];
+                                                String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + score.split("/")[0].trim() + "/" + score.split("/")[1].trim() + " " +  " " + "Overs: " + score.split("/")[4];
                                                 //scheduleNotification(getNotification3(text), 0);
                                                 showNotificationScoreUpdate("Score Update!", text);
                                             }
                                             else {
-                                                String text = sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("/")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("/")[1];
+                                                String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("/")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("/")[1];
                                                 //scheduleNotification(getNotification3(text), 0);
                                                 showNotificationScoreUpdate("Score Update!", text);
                                             }

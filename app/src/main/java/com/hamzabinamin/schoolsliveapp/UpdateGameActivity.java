@@ -270,13 +270,23 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 schoolName1TextView.setText(game.getHomeSchoolName());
                 schoolType2TextView.setText(splitArray[1]);
                 schoolName2TextView.setText(game.getAwaySchoolName());
-                teamNameTextView.setText(game.getSport() + " " + game.getAgeGroup() + "/" + game.getTeam());
+
+                String category = "";
+                if(game.getCategory().trim().equals("Boys")) {
+                    category = "(B)";
+                }
+                else if(game.getCategory().trim().equals("Girls")) {
+                    category = "(G)";
+                }
+
+
+                teamNameTextView.setText(category + " " + game.getSport() + " " + game.getAgeGroup() + "/" + game.getTeam());
                 temperatureTextView.setText(game.getTemperature());
                 timeTextView.setText(convertUTCTimeInToLocal(game.getStartTime()));
                 weather2TextView.setText(game.getWeather());
                 String[] stringArray = game.getScore().split("/");
                 if(stringArray.length == 5) {
-                    currentOverTextView.setText("C. Over: " + stringArray[4]);
+                    currentOverTextView.setText(" C.O. : " + stringArray[4]);
                     scoreTextView.setText(stringArray[0].trim() + "/" + stringArray[1].trim());
                     if (schoolName1TextView.getText().toString().equals(stringArray[2])) {
                         batbowl2TextView.setText("(Bat)");
@@ -480,16 +490,22 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.uploadImageView:
+                //String playstoreLink = "<a href=\"https://play.google.com/store/apps/details?id=com.hamzabinamin.schoolsliveapp\">Playstore Link</a>";
+               // String playstoreLink = "https://play.google.com/store/apps/details?id=com.hamzabinamin.schoolsliveapp";
+              //  String playstoreLink = "";
+
                 if(!game.getSport().equals("Cricket")) {
-                    showShareDialog(game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + game.getStatus() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1]);
+
+                    showShareDialog(game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + game.getStatus() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1] + " via @SchoolsLive ");
                 }
                 else {
                     if(game.getScore().split("/").length == 5) {
-                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
+
+                        String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4] + " via @SchoolsLive ";
                         showShareDialog(text);
                     }
                     else {
-                        String text = game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1];
+                        String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("/")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("/")[1] + " via @SchoolsLive ";
                         showShareDialog(text);
                     }
                 }
@@ -505,6 +521,8 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                String playstoreLink = "http://bit.ly/2izUpjm";
+
                 switch (which) {
 
                     case 0:
@@ -513,7 +531,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         break;
 
                     case 1:
-                        shareGame(shareText, "Others");
+                        shareGame(shareText  + playstoreLink, "Others");
                         dialog.dismiss();
                         break;
 
@@ -578,7 +596,8 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 shareLinkContent = new ShareLinkContent.Builder()
                         .setQuote(shareText)
                         //   .setImageUrl(Uri.parse("https://lh3.googleusercontent.com/jUej7mN6M6iulmuwmW6Mk28PrzXgl-Ebn-MpTmkmwtOfj5f0hvnuw8j0NEzK0GuKoDE=w300-rw"))
-                        .setContentUrl(Uri.parse("http://schools-live.com"))
+                        //.setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.hamzabinamin.schoolsliveapp"))
+                        .setContentUrl(Uri.parse("http://bit.ly/2izUpjm"))
                         .build();
 
                 shareDialog.show(shareLinkContent);
@@ -981,7 +1000,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         //final Spinner gameStatusSpinner = (Spinner) d.findViewById(R.id.gameStatusSpinner);
         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
 
-        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50"  });
+        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37" , "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50"  });
         currentOverSpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter(getBaseContext(), android.R.layout.simple_dropdown_item_1line, new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"});
@@ -1041,7 +1060,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                 batting = battingSpinner.getSelectedItem().toString();
                 bowling = bowlingSpinner.getSelectedItem().toString();
                 currentOverTextView.setVisibility(View.VISIBLE);
-                currentOverTextView.setText("C. Over: " + overs);
+                currentOverTextView.setText(" C.O. : " + overs);
                 batbowlTextView.setVisibility(View.VISIBLE);
                 batbowl2TextView.setVisibility(View.VISIBLE);
                 if (schoolName1TextView.getText().toString().equals(batting)) {
@@ -1381,7 +1400,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                         saveUserSharedPreferences(user);
                         lastUpdateByTextView.setText(user.getName());
                         progressDialog.dismiss();
-                        Toast.makeText(getBaseContext(), "Game updated successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Game Updated Successfully", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         progressDialog.dismiss();
