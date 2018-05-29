@@ -235,7 +235,7 @@ public class UpdateAccountActivity extends AppCompatActivity implements View.OnC
             case R.id.saveButton:
                 if(nameEditText.getText().toString().length() > 0 && phoneNumberTextView.getText().toString().length() > 0) {
                     try {
-                        String name = nameEditText.getText().toString();
+                        String name = nameEditText.getText().toString().trim();
                         name = URLEncoder.encode(name, "UTF-8");
                         String phoneNumber = phoneNumberTextView.getText().toString();
                         phoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");

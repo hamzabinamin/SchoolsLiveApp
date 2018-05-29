@@ -630,7 +630,7 @@ public class ScheduledService extends Service {
                                         System.out.println("Game Time: " + gamedate);
                                         System.out.println("Current Time: " + currentTime);
 
-                                            if(game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(5)) {
+                                            if(game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(9)) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     if(game.getScore().split("/").length == 5) {
                                                         String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getScore().split("/")[2] + " " + "(Bat)" + "-" + " " + game.getScore().split("/")[3] + " " + "(Bowl)" + "-" + " " + game.getScore().split("/")[0].trim() + "/" + game.getScore().split("/")[1].trim() + " " +  " " + "Overs: " + game.getScore().split("/")[4];
@@ -648,7 +648,7 @@ public class ScheduledService extends Service {
                                                 }
                                                 String status = null;
                                                 try {
-                                                    status = URLEncoder.encode("ENDED", "UTF-8");
+                                                    status = URLEncoder.encode("FULL TIME", "UTF-8");
                                                     String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
                                                     sendGETUpdateGame(url);
                                                 } catch (UnsupportedEncodingException e) {
@@ -666,7 +666,7 @@ public class ScheduledService extends Service {
                                                 }
 
                                             }
-                                            else if (!game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(2)) {
+                                            else if (!game.getSport().equals("Cricket") && calendar.getTimeInMillis() - gameCalendar.getTimeInMillis() >  TimeUnit.HOURS.toMillis(4)) {
                                                 if(getNotificationSharedPreferences() != null && getNotificationSharedPreferences().equals("Checked")) {
                                                     String text = game.getCategory() + " " + game.getSport() + " " + game.getAgeGroup() + game.getTeam() + " " + "-" + " " + game.getHomeSchoolName() + " " + game.getScore().split("-")[0] + " " + "-" + " " + game.getAwaySchoolName() + " " + game.getScore().split("-")[1];
                                                     //scheduleNotification(getNotification2(text), 0);
@@ -675,7 +675,7 @@ public class ScheduledService extends Service {
                                                 }
                                                 String status = null;
                                                 try {
-                                                    status = URLEncoder.encode("ENDED", "UTF-8");
+                                                    status = URLEncoder.encode("FULL TIME", "UTF-8");
                                                     String url = String.format("http://www.schools-live.com/updateGameStatusService.php?id=%s&status=%s", gameid, status);
                                                     sendGETUpdateGame(url);
                                                 } catch (UnsupportedEncodingException e) {
@@ -807,14 +807,23 @@ public class ScheduledService extends Service {
                                             showNotificationScoreUpdate("Score Update!", text);
                                         }
                                         else {
-                                            if(score.split("/").length == 5) {
-                                                String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + score.split("/")[0].trim() + "/" + score.split("/")[1].trim() + " " +  " " + "Overs: " + score.split("/")[4];
-                                                //scheduleNotification(getNotification3(text), 0);
-                                                showNotificationScoreUpdate("Score Update!", text);
+                                            if(score.contains("*")) {
+                                                String homeScore = score.split("\\*")[0];
+                                                String awayScore = score.split("\\*")[1];
+                                                String homeScore2[] = homeScore.split("/");
+                                                String awayScore2[] = awayScore.split("/");
+
+                                                if (homeSchoolName.trim().equals(homeScore2[2].trim())) {
+                                                    String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + homeScore2[0].trim() + "/" + homeScore2[1].trim() + " " +  " " + "Overs: " + homeScore2[4];
+                                                    showNotificationScoreUpdate("Score Update!", text);
+                                                }
+                                                else {
+                                                    String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + score.split("/")[2] + " " + "(Bat)" + "-" + " " + score.split("/")[3] + " " + "(Bowl)" + "-" + " " + awayScore2[0].trim() + "/" + awayScore2[1].trim() + " " +  " " + "Overs: " + awayScore2[4];
+                                                    showNotificationScoreUpdate("Score Update!", text);
+                                                }
                                             }
                                             else {
                                                 String text = field + " " + sport + " " + ageGroup + team + " " + "-" + " " + homeSchoolName + " " + score.split("/")[0] + " " + "-" + " " + awaySchoolName + " " + score.split("/")[1];
-                                                //scheduleNotification(getNotification3(text), 0);
                                                 showNotificationScoreUpdate("Score Update!", text);
                                             }
                                         }

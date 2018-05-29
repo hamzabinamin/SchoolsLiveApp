@@ -198,14 +198,22 @@
             ads:adUnitId="ca-app-pub-0229708555496599/9123381758">
         </com.google.android.gms.ads.AdView>
 
-        <ListView
-            android:id="@+id/listView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/addView"
             android:layout_below="@id/menuLinearLayout">
 
-        </ListView>
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
 
     </RelativeLayout>
 

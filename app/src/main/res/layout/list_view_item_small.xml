@@ -15,19 +15,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text="RUGBY U/19D"
+            android:text="WATER POLO"
             android:textSize="12dp"
             android:textColor="@color/colorBlack"/>
 
-        <TextView
-            android:id="@+id/currentOverTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/chatImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="85dp"
-            android:text="C. Over: 5"
-            android:textSize="12dp"
-            android:textColor="@color/colorBlack"/>
+            android:src="@drawable/chat"
+            android:layout_marginLeft="100dp"/>
+
 
 
         <ImageView
@@ -134,10 +133,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="40dp"
+            android:layout_below="@+id/ageGroupTeamHomeTextView"
+            android:layout_toLeftOf="@+id/verifiedImageView"
+            android:layout_centerHorizontal="true"
+            android:text="WON"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/ageGroupTeamHomeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/verifiedImageView"
             android:layout_centerHorizontal="true"
-            android:text="(Bowling)"
+            android:text="U/19/A"
             android:textSize="12dp"
             android:textColor="@color/colorBlack"/>
 
@@ -158,10 +170,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_below="@+id/ageGroupTeamAwayTextView"
+            android:layout_toRightOf="@+id/verifiedImageView"
+            android:layout_centerHorizontal="true"
+            android:text="LOST"
+            android:textSize="12dp"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/ageGroupTeamAwayTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/verifiedImageView"
             android:layout_centerHorizontal="true"
-            android:text="(Batting)"
+            android:text="U/19/A"
             android:textSize="12dp"
             android:textColor="@color/colorBlack"/>
 

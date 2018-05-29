@@ -82,7 +82,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.nextButton:
                 if(phoneNumberTextView.getText().toString().length() > 0 && nameEditText.getText().toString().length() > 0) {
                     try {
-                        String name = nameEditText.getText().toString();
+                        String name = nameEditText.getText().toString().trim();
                         name = URLEncoder.encode(name, "UTF-8");
                         String phoneNumber = phoneNumberTextView.getText().toString();
                         phoneNumber = URLEncoder.encode(phoneNumber, "UTF-8");

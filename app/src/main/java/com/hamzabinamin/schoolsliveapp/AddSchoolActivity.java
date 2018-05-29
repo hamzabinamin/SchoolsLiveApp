@@ -44,6 +44,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,7 +63,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -358,12 +363,14 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                     progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
+
                     String schoolName = schoolNameEditText.getText().toString().trim();
-                    String schoolLocation = schoolLocationEditText.getText().toString();
-                    String schoolWebsite = schoolWebsiteEditText.getText().toString();
-                    String schoolTwitter = schoolTwitterEditText.getText().toString();
-                    String schoolFacebook = schoolFacebookEditText.getText().toString();
-                    String schoolType = schoolTypeSpinner.getSelectedItem().toString();
+                    String schoolLocation = schoolLocationEditText.getText().toString().trim();
+                    String schoolWebsite = schoolWebsiteEditText.getText().toString().trim();
+                    String schoolTwitter = schoolTwitterEditText.getText().toString().trim();
+                    String schoolFacebook = schoolFacebookEditText.getText().toString().trim();
+                    String schoolType = schoolTypeSpinner.getSelectedItem().toString().trim();
+
 
                     try {
                         schoolName = URLEncoder.encode(schoolName, "UTF-8");
@@ -372,9 +379,9 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
                         schoolTwitter = URLEncoder.encode(schoolTwitter, "UTF-8");
                         schoolFacebook = URLEncoder.encode(schoolFacebook, "UTF-8");
                         schoolType = URLEncoder.encode(schoolType, "UTF-8");
-                        String url = String.format("http://schools-live.com/insertSchool.php?name=%s&type=%s&website=%s&twitter=%s&facebook=%s&location=%s", schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation);
+                        String url = String.format("http://schools-live.com/getSchools.php");
 
-                        sendGET(url, BitMapToString(bitmapImage));
+                        sendGETCheckSchool(url, schoolName, schoolLocation, schoolWebsite, schoolTwitter, schoolFacebook, schoolType);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -764,6 +771,115 @@ public class AddSchoolActivity extends AppCompatActivity implements View.OnClick
         // Parameter we pass in the execute() method is relate to the first generic type of the AsyncTask
         // We are passing the connectWithHttpGet() method arguments to that
         httpGetAsyncTask.execute(paramURL, bm);
+    }
+
+    public void sendGETCheckSchool(String paramURL, final String schoolName, final String schoolLocation, final String schoolWebsite, final String schoolTwitter, final String schoolFacebook, final String schoolType) throws IOException {
+
+        class HttpGetAsyncTask extends AsyncTask<String, Void, String> {
+            boolean isPresent = false;
+
+            @Override
+            protected String doInBackground(String... strings) {
+                String loginStatus = "";
+                try {
+                    String paramURL = strings[0];
+                    System.out.println("paramURL: " +paramURL );
+                    URL url = new URL(paramURL);
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("User-Agent", USER_AGENT);
+                    if(urlConnection.getResponseCode() < 400) {
+                        InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+                        StringBuilder builder = new StringBuilder();
+
+                        String inputString;
+                        while ((inputString = bufferedReader.readLine()) != null) {
+                            builder.append(inputString);
+                        }
+
+                        android.util.Log.e("Response 1: ", builder.toString());
+                        loginStatus = builder.toString();
+                        urlConnection.disconnect();
+
+                        return loginStatus;
+                    }
+                    else {
+                        System.out.println("Response Code: " + urlConnection.getResponseMessage());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                if(result != null) {
+                    System.out.println(result);
+                    if(result.contains("Got Result")) {
+                        result = result.replace("Got Result<br>","");
+                        JSONArray arr = null;
+                        try {
+                            arr = new JSONArray(result);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        String schoolNameOld = "";
+                        String schoolTypeOld = "";
+
+                        for (int i = 0; i < arr.length(); i++) {
+                            try {
+                                schoolNameOld = arr.getJSONObject(i).getString("School_Name").trim();
+                                schoolTypeOld = arr.getJSONObject(i).getString("School_Type").trim();
+
+                                try {
+                                    schoolNameOld = URLEncoder.encode(schoolNameOld, "UTF-8");
+                                    schoolTypeOld = URLEncoder.encode(schoolTypeOld, "UTF-8");
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                                if(schoolName.toLowerCase().equals(schoolNameOld.toLowerCase()) && schoolType.toLowerCase().equals(schoolTypeOld.toLowerCase())) {
+                                    System.out.println("School is Present: " + schoolName + "/" + schoolNameOld);
+                                    isPresent = true;
+                                    break;
+                                }
+                                else {
+                                    System.out.println("School is not Present: " + schoolName + "/" + schoolNameOld);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if(isPresent) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getBaseContext(), "This school already exists", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            String url = String.format("http://schools-live.com/insertSchool.php?name=%s&type=%s&website=%s&twitter=%s&facebook=%s&location=%s", schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation);
+                            try {
+                                sendGET(url, BitMapToString(bitmapImage));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    else {
+                        progressDialog.dismiss();
+                        Toast.makeText(getBaseContext(), "No Schools have been added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+        HttpGetAsyncTask httpGetAsyncTask = new HttpGetAsyncTask();
+        // Parameter we pass in the execute() method is relate to the first generic type of the AsyncTask
+        // We are passing the connectWithHttpGet() method arguments to that
+        httpGetAsyncTask.execute(paramURL);
     }
 
 

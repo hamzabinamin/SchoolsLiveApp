@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,14 +55,17 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     SearchableSpinner schoolBSpinner;
     Spinner categorySpinner;
     Spinner sportSpinner;
-    Spinner ageGroupSpinner;
-    Spinner teamSpinner;
+    Spinner ageGroupHomeSpinner;
+    Spinner teamHomeSpinner;
+    Spinner ageGroupAwaySpinner;
+    Spinner teamAwaySpinner;
     NumberPicker monthNumberPicker;
     NumberPicker dateNumberPicker;
     NumberPicker yearNumberPicker;
     NumberPicker hourNumberPicker;
     NumberPicker minNumberPicker;
     NumberPicker ampmNumberPicker;
+    CheckBox sameAsHomeCheckBox;
     ProgressDialog progressDialog;
     List<String> schoolIDList = new ArrayList<>();
     List<String> schoolTypeList = new ArrayList<>();
@@ -105,14 +110,17 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         schoolBSpinner = (SearchableSpinner) findViewById(R.id.schoolBSpinner);
         categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
         sportSpinner = (Spinner) findViewById(R.id.sportSpinner);
-        ageGroupSpinner = (Spinner) findViewById(R.id.ageGroupSpinner);
-        teamSpinner = (Spinner) findViewById(R.id.teamSpinner);
+        ageGroupHomeSpinner = (Spinner) findViewById(R.id.ageGroupHomeSpinner);
+        teamHomeSpinner = (Spinner) findViewById(R.id.teamHomeSpinner);
+        ageGroupAwaySpinner = (Spinner) findViewById(R.id.ageGroupAwaySpinner);
+        teamAwaySpinner = (Spinner) findViewById(R.id.teamAwaySpinner);
         monthNumberPicker = (NumberPicker) findViewById(R.id.monthNumberPicker);
         dateNumberPicker = (NumberPicker) findViewById(R.id.dateNumberPicker);
         yearNumberPicker = (NumberPicker) findViewById(R.id.yearNumberPicker);
         hourNumberPicker = (NumberPicker) findViewById(R.id.hourNumberPicker);
         minNumberPicker = (NumberPicker) findViewById(R.id.minNumberPicker);
         ampmNumberPicker = (NumberPicker) findViewById(R.id.ampmNumberPicker);
+        sameAsHomeCheckBox = (CheckBox) findViewById(R.id.sameAsHomeCheckBox);
         progressDialog = new ProgressDialog(this);
 
         backButton.setOnClickListener(this);
@@ -143,11 +151,13 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, ageGroupArray);
-        ageGroupSpinner.setAdapter(adapter);
+        ageGroupHomeSpinner.setAdapter(adapter);
+        ageGroupAwaySpinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, teamArray);
-        teamSpinner.setAdapter(adapter);
+        teamHomeSpinner.setAdapter(adapter);
+        teamAwaySpinner.setAdapter(adapter);
 
         monthNumberPicker.setMinValue(1);
         monthNumberPicker.setMaxValue(12);
@@ -175,12 +185,26 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         ampmNumberPicker.setMaxValue(1);
         ampmNumberPicker.setDisplayedValues(new String[]{"AM", "PM"});
 
+        Calendar store = Calendar.getInstance();
+        hourNumberPicker.setValue(store.get(Calendar.HOUR));
+        minNumberPicker.setValue(store.get(Calendar.MINUTE));
+        yearNumberPicker.setValue(store.get(Calendar.YEAR));
+        System.out.println("Month: " + store.get(Calendar.MONTH) + 1);
+        monthNumberPicker.setValue(store.get(Calendar.MONTH) + 1);
+        dateNumberPicker.setValue(store.get(Calendar.DATE));
+
+        if (store.get(Calendar.AM_PM) == 0) {
+            ampmNumberPicker.setValue(0);
+        }
+        else {
+            ampmNumberPicker.setValue(1);
+        }
+
         AdapterView.OnItemSelectedListener OnCatSpinnerCL = new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.BLUE);
                 ((TextView) parent.getChildAt(0)).setTextSize(5);
-
             }
 
             @Override
@@ -207,6 +231,26 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(getBaseContext(), LogInActivity.class));
         }
+
+        sameAsHomeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if(sameAsHomeCheckBox.isChecked()) {
+                    ageGroupAwaySpinner.setEnabled(false);
+                    ageGroupAwaySpinner.setAlpha(.5f);
+                    teamAwaySpinner.setEnabled(false);
+                    teamAwaySpinner.setAlpha(.5f);
+                }
+                else {
+                    ageGroupAwaySpinner.setEnabled(true);
+                    ageGroupAwaySpinner.setAlpha(1f);
+                    teamAwaySpinner.setEnabled(true);
+                    teamAwaySpinner.setAlpha(1f);
+                }
+
+            }
+        });
 
     }
 
@@ -276,13 +320,13 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
 
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                schoolID = arr.getJSONObject(i).getString("School_ID");
-                                schoolName = arr.getJSONObject(i).getString("School_Name");
-                                schoolType = arr.getJSONObject(i).getString("School_Type");
-                                schoolWebsite = arr.getJSONObject(i).getString("School_Website");
-                                schoolTwitter = arr.getJSONObject(i).getString("School_Twitter");
-                                schoolFacebook = arr.getJSONObject(i).getString("School_Facebook");
-                                schoolLocation = arr.getJSONObject(i).getString("School_Location");
+                                schoolID = arr.getJSONObject(i).getString("School_ID").trim();
+                                schoolName = arr.getJSONObject(i).getString("School_Name").trim();
+                                schoolType = arr.getJSONObject(i).getString("School_Type").trim();
+                                schoolWebsite = arr.getJSONObject(i).getString("School_Website").trim();
+                                schoolTwitter = arr.getJSONObject(i).getString("School_Twitter").trim();
+                                schoolFacebook = arr.getJSONObject(i).getString("School_Facebook").trim();
+                                schoolLocation = arr.getJSONObject(i).getString("School_Location").trim();
                                 schoolLogo = arr.getJSONObject(i).getString("School_Logo");
                                 System.out.println("School Image Logo: " + schoolLogo);
                                 schoolList.add(new School(schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation, schoolLogo));
@@ -407,7 +451,6 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     String schoolA = "";
                     String schoolB = "";
                     if(schoolASpinner.getSelectedItem().toString().contains("High School") && !schoolASpinner.getSelectedItem().toString().contains("Pri-High") ) {
-                        Toast.makeText(getBaseContext(), "Got Here", Toast.LENGTH_SHORT).show();
                         schoolA =  schoolASpinner.getSelectedItem().toString().replace("(High School)", "").trim();
                     }
                     else if(schoolASpinner.getSelectedItem().toString().contains("Primary School")) {
@@ -436,8 +479,16 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     schoolsType = schoolTypeList.get(schoolASpinner.getSelectedItemPosition()) + "/" + schoolTypeList.get(schoolBSpinner.getSelectedItemPosition());
                     String category = categorySpinner.getSelectedItem().toString();
                     String sport = sportSpinner.getSelectedItem().toString();
-                    String agegroup = ageGroupSpinner.getSelectedItem().toString();
-                    String team = teamSpinner.getSelectedItem().toString();
+                    String agegroup = "";
+                    String team = "";
+                    if(sameAsHomeCheckBox.isChecked()) {
+                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "/" + ageGroupHomeSpinner.getSelectedItem().toString();
+                        team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamHomeSpinner.getSelectedItem().toString();
+                    }
+                    else {
+                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "/" + ageGroupAwaySpinner.getSelectedItem().toString();
+                        team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamAwaySpinner.getSelectedItem().toString();
+                    }
                     String ampm = "";
                     if(ampmNumberPicker.getValue() == 0) {
                         ampm = "AM";
@@ -545,13 +596,23 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public boolean validation() {
-
         String schoolA = schoolASpinner.getSelectedItem().toString();
         String schoolB = schoolBSpinner.getSelectedItem().toString();
         String category = categorySpinner.getSelectedItem().toString();
         String sport = sportSpinner.getSelectedItem().toString();
-        String agegroup = ageGroupSpinner.getSelectedItem().toString();
-        String team = teamSpinner.getSelectedItem().toString();
+        String agegroup;
+        String team;
+
+        if(sameAsHomeCheckBox.isChecked()) {
+            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "/" + ageGroupHomeSpinner.getSelectedItem().toString();
+            team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamHomeSpinner.getSelectedItem().toString();
+
+        }
+        else {
+            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "/" + ageGroupAwaySpinner.getSelectedItem().toString();
+            team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamAwaySpinner.getSelectedItem().toString();
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-yyyy / hh:mm a");
         String ampm = "";
         if(ampmNumberPicker.getValue() == 0) {
@@ -569,7 +630,8 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                 selectedCalendar.setTime(sdf.parse(starttime));
                 Calendar currentCalendar = Calendar.getInstance();
 
-                if(selectedCalendar.before(currentCalendar)) {
+                if(currentCalendar.getTimeInMillis() - selectedCalendar.getTimeInMillis() > 86400000) {
+                    // selectedCalendar.before(currentCalendar)
                     // currentCalendar.getTimeInMillis() - selectedCalendar.getTimeInMillis() > 1209600000
                     Toast.makeText(getBaseContext(), "You can't select a date older than the current date", Toast.LENGTH_SHORT).show();
                     return false;

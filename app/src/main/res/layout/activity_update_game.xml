@@ -116,10 +116,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@+id/ageGroupTeamHomeTextView"
+                    android:layout_toLeftOf="@+id/scoreTextView"
+                    android:layout_centerHorizontal="true"
+                    android:text="LOST"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/ageGroupTeamHomeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="0dp"
                     android:layout_toLeftOf="@+id/scoreTextView"
                     android:layout_centerHorizontal="true"
-                    android:text="(Bowling)"
+                    android:text="U/19/A"
                     android:textSize="12dp"
                     android:textColor="@color/colorBlack"/>
 
@@ -128,10 +141,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_below="@+id/ageGroupTeamAwayTextView"
+                    android:layout_toRightOf="@+id/scoreTextView"
+                    android:layout_centerHorizontal="true"
+                    android:text="LOST"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/ageGroupTeamAwayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="0dp"
                     android:layout_toRightOf="@+id/scoreTextView"
                     android:layout_centerHorizontal="true"
-                    android:text="(Batting)"
+                    android:text="U/19/A"
                     android:textSize="12dp"
                     android:textColor="@color/colorBlack"/>
 
@@ -340,6 +366,14 @@
                 android:text="RUGBY U/19D"
                 android:textSize="12dp"
                 android:textColor="@color/colorBlack"/>
+
+            <ImageView
+                android:id="@+id/chatImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/chat"
+                android:layout_marginLeft="100dp"/>
 
             <TextView
                 android:id="@+id/currentOverTextView"

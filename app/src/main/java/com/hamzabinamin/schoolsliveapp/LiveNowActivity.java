@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +62,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
     TextView facebookTextView;
     TextView twitterTextView;
     ImageView imageView;
+    SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
     ProgressDialog progressDialog;
     CustomAdapter customAdapter;
@@ -103,6 +106,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
         liveNowTextView = (TextView) findViewById(R.id.liveNowTextView);
         twitterTextView = (TextView) findViewById(R.id.twitterTextView);
         facebookTextView = (TextView) findViewById(R.id.facebookTextView);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         listView = (ListView) findViewById(R.id.listView);
         progressDialog = new ProgressDialog(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -173,6 +177,15 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
         facebookTextView.setOnClickListener(this);
         twitterTextView.setOnClickListener(this);
 
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorButton,
+                R.color.colorButton, R.color.colorButton, R.color.colorButton);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+
         if(getSchoolSharedPreferences()) {
           /*  progressDialog.setMessage("Please Wait");
             progressDialog.show();
@@ -216,6 +229,15 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
+    }
+
+    private void refreshContent(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshLiveGames();
+            }
+        }, 100);
     }
 
     @Override
@@ -417,24 +439,24 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                         List<Game> gameList = new ArrayList<Game>();
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                String gameID = arr.getJSONObject(i).getString("Game_ID");
-                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
-                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
-                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String category = arr.getJSONObject(i).getString("Category");
-                                String sport = arr.getJSONObject(i).getString("Sport");
-                                String ageGroup = arr.getJSONObject(i).getString("Age_Group");
-                                String team = arr.getJSONObject(i).getString("Team");
-                                String startTime = arr.getJSONObject(i).getString("Start_Time");
-                                String weather = arr.getJSONObject(i).getString("Weather");
-                                String temperature = arr.getJSONObject(i).getString("Temperature");
-                                String status = arr.getJSONObject(i).getString("Status");
-                                String score = arr.getJSONObject(i).getString("Score");
-                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By");
-                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
+                                String gameID = arr.getJSONObject(i).getString("Game_ID").trim();
+                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name").trim();
+                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name").trim();
+                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type").trim();
+                                String category = arr.getJSONObject(i).getString("Category").trim();
+                                String sport = arr.getJSONObject(i).getString("Sport").trim();
+                                String ageGroup = arr.getJSONObject(i).getString("Age_Group").trim();
+                                String team = arr.getJSONObject(i).getString("Team").trim();
+                                String startTime = arr.getJSONObject(i).getString("Start_Time").trim();
+                                String weather = arr.getJSONObject(i).getString("Weather").trim();
+                                String temperature = arr.getJSONObject(i).getString("Temperature").trim();
+                                String status = arr.getJSONObject(i).getString("Status").trim();
+                                String score = arr.getJSONObject(i).getString("Score").trim();
+                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By").trim();
+                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time").trim();
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                String won = arr.getJSONObject(i).getString("Won");
+                                String won = arr.getJSONObject(i).getString("Won").trim();
                                 gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
@@ -459,6 +481,10 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
                         progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
+                }
+
+                if(swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
         }
@@ -505,10 +531,7 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+    public void refreshLiveGames() {
         if(getSchoolSharedPreferences()) {
             customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
             listView.setAdapter(customAdapter);
@@ -530,7 +553,13 @@ public class LiveNowActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
         else {
-            startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+            startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshLiveGames();
     }
 }

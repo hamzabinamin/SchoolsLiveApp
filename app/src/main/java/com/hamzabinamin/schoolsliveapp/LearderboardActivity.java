@@ -196,9 +196,9 @@ public class LearderboardActivity extends AppCompatActivity implements View.OnCl
             }
         }
         else {
-            Toast.makeText(getBaseContext(), "Either add a new School or Select existing one from  Change School", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getBaseContext(), "Either add a new School or Select existing one from  Change School", Toast.LENGTH_SHORT).show();
             finish();
-            startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+            startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
         }
     }
 

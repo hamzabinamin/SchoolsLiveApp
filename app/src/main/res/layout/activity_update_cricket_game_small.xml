@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/navigation_action_small"
+        <include layout="@layout/navigation_action"
             android:id="@+id/navigation_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -26,100 +26,6 @@
             ads:adSize="SMART_BANNER"
             ads:adUnitId="ca-app-pub-0229708555496599/9123381758">
         </com.google.android.gms.ads.AdView>
-
-        <FrameLayout
-            android:id="@+id/menuFrameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_below="@id/navigation_action"
-            android:background="@color/colorGray">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/teamNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:text="RUGBY U/19D"
-                android:textSize="12dp"
-                android:textColor="@color/colorBlack"/>
-
-            <ImageView
-                android:id="@+id/chatImageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/chat"
-                android:layout_marginLeft="100dp"/>
-
-            <TextView
-                android:id="@+id/currentOverTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="90dp"
-                android:text="C. Over: 5"
-                android:textSize="12dp"
-                android:textColor="@color/colorBlack"/>
-
-            <ImageView
-                android:id="@+id/uploadImageView"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/upload"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true">
-
-                <TextView
-                    android:id="@+id/temperature1TextView"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginRight="-10dp"
-                    android:gravity="center"
-                    android:text="18°C"
-                    android:textSize="12dp"
-                    android:textColor="@color/colorBlack"
-                    android:layout_weight="1"/>
-
-                <ImageView
-                    android:id="@+id/weatherImageView"
-                    android:layout_width="30dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="-5dp"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/weather2TextView"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center|right"
-                    android:text="Partly Cloudy"
-                    android:textSize="12dp"
-                    android:textColor="@color/colorBlack"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-         </RelativeLayout>
-
-        </FrameLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -196,13 +102,62 @@
                     android:textColor="@color/colorBlack"/>
 
                 <TextView
-                    android:id="@+id/scoreTextView"
+                    android:id="@+id/homeScoreTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@+id/school1Logo"
+                    android:layout_below="@+id/ageGroupTeamHomeTextView"
+                    android:layout_marginLeft="5dp"
+                    android:text="500/10"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/homeOverTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_toRightOf="@+id/school1Logo"
+                    android:layout_below="@+id/homeScoreTextView"
+                    android:layout_marginLeft="20dp"
+                    android:text="Over: 150"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/dividerTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@+id/ageGroupTeamHomeTextView"
                     android:layout_centerHorizontal="true"
-                    android:text="0 - 0"
-                    android:textSize="30dp"
+                    android:text="-"
+                    android:textSize="22dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/awayScoreTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_toLeftOf="@+id/school2Logo"
+                    android:layout_below="@+id/ageGroupTeamAwayTextView"
+                    android:layout_marginRight="5dp"
+                    android:text="500/10"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:id="@+id/awayOverTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_toLeftOf="@+id/school2Logo"
+                    android:layout_below="@+id/awayScoreTextView"
+                    android:layout_marginRight="20dp"
+                    android:text="Over: 150"
+                    android:textSize="12dp"
                     android:textColor="@color/colorBlack"/>
 
                 <TextView
@@ -210,11 +165,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/school1Logo"
                     android:layout_below="@+id/ageGroupTeamHomeTextView"
-                    android:layout_toLeftOf="@+id/scoreTextView"
                     android:layout_centerHorizontal="true"
-                    android:text="LOST"
+                    android:text="(Bowling)"
                     android:textSize="12dp"
                     android:textColor="@color/colorBlack"/>
 
@@ -223,8 +178,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/scoreTextView"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/school1Logo"
                     android:layout_centerHorizontal="true"
                     android:text="U/19/A"
                     android:textSize="12dp"
@@ -235,11 +190,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/school2Logo"
                     android:layout_below="@+id/ageGroupTeamAwayTextView"
-                    android:layout_toRightOf="@+id/scoreTextView"
                     android:layout_centerHorizontal="true"
-                    android:text="LOST"
+                    android:text="(Batting)"
                     android:textSize="12dp"
                     android:textColor="@color/colorBlack"/>
 
@@ -248,8 +203,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/scoreTextView"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/school2Logo"
                     android:layout_centerHorizontal="true"
                     android:text="U/19/A"
                     android:textSize="12dp"
@@ -259,8 +214,8 @@
                     android:id="@+id/timeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/scoreTextView"
-                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/homeOverTextView"
+                    android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:text="TIME: 14:00 HKT"
                     android:textSize="12dp"
@@ -270,7 +225,7 @@
                     android:id="@+id/matchStatusTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_below="@id/timeTextView"
                     android:layout_centerHorizontal="true"
                     android:text="Final"
@@ -294,6 +249,7 @@
                         android:textColor="@color/colorBlack"/>
 
                 </FrameLayout>
+
 
                 <ImageView
                     android:id="@+id/lastUpdateImageView"
@@ -374,15 +330,15 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/updateScoreAndWeatherFrameLayout">
 
-                <!--    <ImageView
-                        android:id="@+id/speakImageView"
-                        android:layout_width="40dp"
-                        android:layout_height="50dp"
-                        android:layout_below="@id/updateScoreAndWeatherFrameLayout"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/talk"
-                        android:layout_weight="0.2"/> -->
+                    <!--    <ImageView
+                            android:id="@+id/speakImageView"
+                            android:layout_width="40dp"
+                            android:layout_height="50dp"
+                            android:layout_below="@id/updateScoreAndWeatherFrameLayout"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/talk"
+                            android:layout_weight="0.2"/> -->
 
                     <EditText
                         android:id="@+id/chatEditText"
@@ -433,12 +389,95 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/communityBoardFrameLayout">
-
                 </ListView>
 
             </RelativeLayout>
 
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/menuFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_below="@id/navigation_action"
+            android:background="@color/colorGray">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/teamNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="RUGBY U/19D"
+                android:textSize="12dp"
+                android:textColor="@color/colorBlack"/>
+
+            <ImageView
+               android:id="@+id/chatImageView"
+               android:layout_width="25dp"
+               android:layout_height="25dp"
+               android:layout_gravity="center_vertical"
+               android:src="@drawable/chat"
+               android:layout_marginLeft="100dp"/>
+
+            <ImageView
+                android:id="@+id/uploadImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/upload"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/uploadImageView"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/temperature1TextView"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="0dp"
+                    android:gravity="center"
+                    android:text="18°C"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_weight="1"/>
+
+                <ImageView
+                    android:id="@+id/weatherImageView"
+                    android:layout_width="30dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/weather2TextView"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center|right"
+                    android:text="Partly Cloudy"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+         </RelativeLayout>
+
+        </FrameLayout>
 
     </RelativeLayout>
 

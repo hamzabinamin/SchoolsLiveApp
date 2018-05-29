@@ -323,9 +323,9 @@ public class EditSelectSchoolActivity extends AppCompatActivity implements View.
 
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                schoolName = arr.getJSONObject(i).getString("School_Name");
+                                schoolName = arr.getJSONObject(i).getString("School_Name").trim();
                                 schoolID = arr.getJSONObject(i).getString("School_ID");
-                                schoolType = arr.getJSONObject(i).getString("School_Type");
+                                schoolType = arr.getJSONObject(i).getString("School_Type").trim();
                                 list.add(schoolName + " " + "(" + schoolType + ")");
                             } catch (JSONException e) {
                                 e.printStackTrace();

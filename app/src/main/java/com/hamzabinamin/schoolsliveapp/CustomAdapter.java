@@ -107,44 +107,98 @@ public class CustomAdapter extends BaseAdapter {
         return position;
     }
 
+    @Override
+    public int getViewTypeCount() { return 2; }
+
+
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final ViewHolder holder;
-        if (convertView == null) {
-            if(getScreenSize() <= 4)
-                convertView = mInflater.inflate(R.layout.list_view_item_small, parent, false);
-            else
-                convertView = mInflater.inflate(R.layout.list_view_item, parent, false);
-            holder = new ViewHolder();
-            holder.gameType = (TextView)convertView.findViewById(R.id.teamNameTextView);
-            holder.homeTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolNameTextView);
-            holder.homeTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolTypeTextView);
-            holder.homeTeamLogo = (ImageView) convertView.findViewById(R.id.school1Logo);
-            holder.awayTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolName2TextView);
-            holder.awayTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolType2TextView);
-            holder.awayTeamLogo = (ImageView) convertView.findViewById(R.id.school2Logo);
-            holder.teamScore = (TextView) convertView.findViewById(R.id.scoreTextView);
-            holder.lastUpdateBy = (TextView) convertView.findViewById(R.id.lastupdateTextView);
-            holder.time = (TextView) convertView.findViewById(R.id.timeTextView);
-            holder.updateGame = (TextView) convertView.findViewById(R.id.updateTextView);
-            holder.currentOver = (TextView) convertView.findViewById(R.id.currentOverTextView);
-            holder.batbowlTextView = (TextView) convertView.findViewById(R.id.batbowlTextView);
-            holder.batbowl2TextView = (TextView) convertView.findViewById(R.id.batbowl2TextView);
-            holder.halfTextView = (TextView) convertView.findViewById(R.id.verifiedImageView);
-            holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
-            holder.selectRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.selectRelativeLayout);
-            convertView.setTag(holder);
-        } else {
-
-            holder = (ViewHolder) convertView.getTag();
+        ViewHolder holder;
+        holder = new ViewHolder();
+        if(list.get(position).getSport().equals("Cricket")) {
+            if (convertView == null) {
+                if(getScreenSize() <= 4)
+                    convertView = mInflater.inflate(R.layout.list_view_cricket_item_small, parent, false);
+                else
+                    convertView = mInflater.inflate(R.layout.list_view_cricket_item, parent, false);
+                holder.gameType = (TextView)convertView.findViewById(R.id.teamNameTextView);
+                holder.homeTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolNameTextView);
+                holder.homeTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolTypeTextView);
+                holder.homeTeamLogo = (ImageView) convertView.findViewById(R.id.school1Logo);
+                holder.awayTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolName2TextView);
+                holder.awayTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolType2TextView);
+                holder.awayTeamLogo = (ImageView) convertView.findViewById(R.id.school2Logo);
+                holder.homeTeamScore = (TextView) convertView.findViewById(R.id.homeScoreTextView);
+                holder.awayTeamScore = (TextView) convertView.findViewById(R.id.awayScoreTextView);
+                holder.lastUpdateBy = (TextView) convertView.findViewById(R.id.lastupdateTextView);
+                holder.time = (TextView) convertView.findViewById(R.id.timeTextView);
+                holder.updateGame = (TextView) convertView.findViewById(R.id.updateTextView);
+                holder.homeTeamOver = (TextView) convertView.findViewById(R.id.homeOverTextView);
+                holder.awayTeamOver = (TextView) convertView.findViewById(R.id.awayOverTextView);
+                holder.batbowlTextView = (TextView) convertView.findViewById(R.id.batbowlTextView);
+                holder.batbowl2TextView = (TextView) convertView.findViewById(R.id.batbowl2TextView);
+                holder.halfTextView = (TextView) convertView.findViewById(R.id.verifiedImageView);
+                holder.ageGroupTeamHomeTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamHomeTextView);
+                holder.ageGroupTeamAwayTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamAwayTextView);
+                holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
+                holder.selectRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.selectRelativeLayout);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+        }
+        else {
+            if (convertView == null) {
+                if(getScreenSize() <= 4)
+                    convertView = mInflater.inflate(R.layout.list_view_item_small, parent, false);
+                else
+                    convertView = mInflater.inflate(R.layout.list_view_item, parent, false);
+                holder.gameType = (TextView)convertView.findViewById(R.id.teamNameTextView);
+                holder.homeTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolNameTextView);
+                holder.homeTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolTypeTextView);
+                holder.homeTeamLogo = (ImageView) convertView.findViewById(R.id.school1Logo);
+                holder.awayTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolName2TextView);
+                holder.awayTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolType2TextView);
+                holder.awayTeamLogo = (ImageView) convertView.findViewById(R.id.school2Logo);
+                holder.teamScore = (TextView) convertView.findViewById(R.id.scoreTextView);
+                holder.lastUpdateBy = (TextView) convertView.findViewById(R.id.lastupdateTextView);
+                holder.time = (TextView) convertView.findViewById(R.id.timeTextView);
+                holder.updateGame = (TextView) convertView.findViewById(R.id.updateTextView);
+                holder.currentOver = (TextView) convertView.findViewById(R.id.currentOverTextView);
+                holder.batbowlTextView = (TextView) convertView.findViewById(R.id.batbowlTextView);
+                holder.batbowl2TextView = (TextView) convertView.findViewById(R.id.batbowl2TextView);
+                holder.halfTextView = (TextView) convertView.findViewById(R.id.verifiedImageView);
+                holder.ageGroupTeamHomeTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamHomeTextView);
+                holder.ageGroupTeamAwayTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamAwayTextView);
+                holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
+                holder.selectRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.selectRelativeLayout);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
         }
 
-        if(list.get(position).getStatus().equals("ENDED")) {
+
+
+        if(list.get(position).getStatus().equals("FULL TIME")) {
            // holder.updateGame.setVisibility(View.INVISIBLE);
             holder.updateGame.setText("Game Details");
             holder.addtoNotificationImageView.setVisibility(View.INVISIBLE);
+        }
+
+        if(list.get(position).getAgeGroup().contains("/") && list.get(position).getTeam().contains("/")) {
+            Game game = list.get(position);
+            String[] ageGroupArray = game.getAgeGroup().split("/");
+            String[] teamArray = game.getTeam().split("/");
+            holder.ageGroupTeamHomeTextView.setText(ageGroupArray[0] + "/" + teamArray[0]);
+            holder.ageGroupTeamAwayTextView.setText(ageGroupArray[1] + "/" + teamArray[1]);
+        }
+        else {
+            Game game = list.get(position);
+            holder.ageGroupTeamHomeTextView.setText(game.getAgeGroup() + "/" + game.getTeam());
+            holder.ageGroupTeamAwayTextView.setText(game.getAgeGroup() + "/" + game.getTeam());
         }
 
         if(getGameListSharedPreferences()) {
@@ -154,7 +208,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         if(!list.get(position).getSport().equals("Cricket")) {
-            holder.currentOver.setVisibility(View.INVISIBLE);
+//            holder.currentOver.setVisibility(View.INVISIBLE);
             holder.batbowlTextView.setVisibility(View.INVISIBLE);
             holder.batbowl2TextView.setVisibility(View.INVISIBLE);
 
@@ -166,7 +220,7 @@ public class CustomAdapter extends BaseAdapter {
                 category = "(G)";
             }
 
-            holder.gameType.setText(category + " " + list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
+            holder.gameType.setText(category + " " + list.get(position).getSport());
             holder.homeTeamSchoolName.setText(list.get(position).getHomeSchoolName());
             holder.halfTextView.setText(list.get(position).getStatus());
             String[] splitArray = list.get(position).getSchoolsType().split("/");
@@ -188,7 +242,6 @@ public class CustomAdapter extends BaseAdapter {
             holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
         }
         else {
-            holder.currentOver.setVisibility(View.VISIBLE);
             holder.batbowlTextView.setVisibility(View.VISIBLE);
             holder.batbowl2TextView.setVisibility(View.VISIBLE);
 
@@ -210,10 +263,23 @@ public class CustomAdapter extends BaseAdapter {
             holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
             holder.halfTextView.setText(list.get(position).getStatus());
             String[] stringArray = list.get(position).getScore().split("/");
-            if(stringArray.length == 5) {
-                holder.currentOver.setText(" C.O. : " + stringArray[4]);
-                holder.teamScore.setText(stringArray[0].trim() + "/" + stringArray[1].trim());
-                if (list.get(position).getHomeSchoolName().equals(stringArray[2])) {
+            if(list.get(position).getScore().contains("*") && list.get(position).getSport().equals("Cricket")) {
+                Game game = list.get(position);
+                String homeScore = game.getScore().split("\\*")[0];
+                String awayScore = game.getScore().split("\\*")[1];
+                String homeScore2[] = homeScore.split("/");
+                String awayScore2[] = awayScore.split("/");
+
+                System.out.println("Home Score: " + homeScore);
+                System.out.println("Away Score: " + awayScore);
+
+                if(holder.homeTeamOver != null) {
+                    holder.homeTeamOver.setText("Over: " + homeScore2[4]);
+                    holder.homeTeamScore.setText(homeScore2[0].trim() + "/" + homeScore2[1].trim());
+                    holder.awayTeamOver.setText("Over: " + awayScore2[4]);
+                    holder.awayTeamScore.setText(awayScore2[0].trim() + "/" + awayScore2[1].trim());
+                }
+                if (list.get(position).getHomeSchoolName().equals(homeScore2[2])) {
                     holder.batbowl2TextView.setText("(Bat)");
                     holder.batbowlTextView.setText("(Bowl)");
                 } else {
@@ -221,29 +287,73 @@ public class CustomAdapter extends BaseAdapter {
                     holder.batbowlTextView.setText("(Bat)");
                 }
 
-                if(list.get(position).getStatus().equals("ENDED") && list.get(position).getSport().equals("Cricket")) {
-                    String store = list.get(position).getWhoWon();
-                    System.out.println("Who Won: " + store);
-                    if(store.equals(holder.homeTeamSchoolName.getText().toString())) {
+                if(list.get(position).getStatus().equals("FULL TIME") && list.get(position).getSport().equals("Cricket")) {
+                    String store = list.get(position).getWhoWon().trim();
+                    holder.batbowlTextView.setVisibility(View.VISIBLE);
+                    holder.batbowl2TextView.setVisibility(View.VISIBLE);
+
+                    if(store.equals(holder.homeTeamSchoolName.getText().toString().trim())) {
                         System.out.println("Got in If");
                         holder.batbowl2TextView.setText("WON");
                         holder.batbowlTextView.setText("LOST");
                     }
-                    else {
+                    else if(store.equals(holder.awayTeamSchoolName.getText().toString().trim())) {
                         System.out.println("Got in Else");
                         holder.batbowlTextView.setText("WON");
                         holder.batbowl2TextView.setText("LOST");
                     }
+                    else if(store.equals("Draw")) {
+                        holder.batbowlTextView.setText("Draw");
+                        holder.batbowl2TextView.setText("Draw");
+                    }
+                    else if(store.equals("Tie")) {
+                        holder.batbowlTextView.setText("Tie");
+                        holder.batbowl2TextView.setText("Tie");
+                    }
                 }
                 else {
-                    System.out.println("Nothing");
+                    holder.batbowlTextView.setVisibility(View.INVISIBLE);
+                    holder.batbowl2TextView.setVisibility(View.INVISIBLE);
+
                 }
             }
             else {
-                holder.teamScore.setText(list.get(position).getScore());
+                holder.homeTeamScore.setText("0/0");
+                holder.awayTeamScore.setText("0/0");
                 holder.batbowlTextView.setVisibility(View.INVISIBLE);
                 holder.batbowl2TextView.setVisibility(View.INVISIBLE);
-                holder.currentOver.setVisibility(View.INVISIBLE);
+                holder.homeTeamOver.setText("Over: 0");
+                holder.awayTeamOver.setText("Over: 0");
+
+                if(list.get(position).getStatus().equals("FULL TIME") && list.get(position).getSport().equals("Cricket")) {
+                    String store = list.get(position).getWhoWon().trim();
+                    holder.batbowlTextView.setVisibility(View.VISIBLE);
+                    holder.batbowl2TextView.setVisibility(View.VISIBLE);
+
+                    if(store.equals(holder.homeTeamSchoolName.getText().toString().trim())) {
+                        System.out.println("Got in If");
+                        holder.batbowl2TextView.setText("WON");
+                        holder.batbowlTextView.setText("LOST");
+                    }
+                    else if(store.equals(holder.awayTeamSchoolName.getText().toString().trim())) {
+                        System.out.println("Got in Else");
+                        holder.batbowlTextView.setText("WON");
+                        holder.batbowl2TextView.setText("LOST");
+                    }
+                    else if(store.equals("Draw")) {
+                        holder.batbowlTextView.setText("Draw");
+                        holder.batbowl2TextView.setText("Draw");
+                    }
+                    else if(store.equals("Tie")) {
+                        holder.batbowlTextView.setText("Tie");
+                        holder.batbowl2TextView.setText("Tie");
+                    }
+                }
+                else {
+                    holder.batbowlTextView.setVisibility(View.INVISIBLE);
+                    holder.batbowl2TextView.setVisibility(View.INVISIBLE);
+
+                }
             }
 
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
@@ -263,14 +373,22 @@ public class CustomAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Game game = list.get(position);
                 saveGameSharedPreferences(game);
-                Intent intent = new Intent(context, UpdateGameActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //context.startActivity(new Intent(context, UpdateGameActivity.class));
-                context.startActivity(intent);
+                if(!game.getSport().equals("Cricket")) {
+                    Intent intent = new Intent(context, UpdateGameActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(context, UpdateCricketGameActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    System.out.println("Opening Cricket Update");
+                    context.startActivity(intent);
+                }
 
             }
         });
 
+        final ViewHolder finalHolder = holder;
         holder.addtoNotificationImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,7 +396,7 @@ public class CustomAdapter extends BaseAdapter {
 
                 if (getGameListSharedPreferences()) {
                     if(notificationGameList.indexOf(game) != -1) {
-                        holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclock);
+                        finalHolder.addtoNotificationImageView.setImageResource(R.drawable.alarmclock);
                         int index = notificationGameList.indexOf(game);
                         notificationGameList.remove(index);
                         saveGameListSharedPreferences(notificationGameList);
@@ -291,7 +409,7 @@ public class CustomAdapter extends BaseAdapter {
                         }
                     }
                     else {
-                        holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
+                        finalHolder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
                         game.setSelectedForNotification(true);
                         notificationGameList.add(game);
                         saveGameListSharedPreferences(notificationGameList);
@@ -304,7 +422,8 @@ public class CustomAdapter extends BaseAdapter {
                         }
                     }
                 } else {
-                    holder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
+                    finalHolder.addtoNotificationImageView.setImageResource(R.drawable.alarmclockselected);
+                    game.setSelectedForNotification(true);
                     notificationGameList.add(game);
                     saveGameListSharedPreferences(notificationGameList);
                     Toast.makeText(context, "Game Added to Notifications", Toast.LENGTH_SHORT).show();
@@ -313,10 +432,11 @@ public class CustomAdapter extends BaseAdapter {
         });
 
         final View finalConvertView = convertView;
+        final ViewHolder finalHolder1 = holder;
         holder.selectRelativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
            @Override
            public boolean onLongClick(View v) {
-               PopupMenu popup = new PopupMenu(finalConvertView.getContext(), holder.time);
+               PopupMenu popup = new PopupMenu(finalConvertView.getContext(), finalHolder1.time);
                popup.getMenuInflater()
                        .inflate(R.menu.deletegame, popup.getMenu());
 
@@ -378,13 +498,19 @@ public class CustomAdapter extends BaseAdapter {
         TextView awayTeamSchoolType;
         ImageView awayTeamLogo;
         TextView teamScore;
+        TextView homeTeamScore;
+        TextView awayTeamScore;
         TextView lastUpdateBy;
         TextView time;
         TextView updateGame;
         TextView currentOver;
+        TextView homeTeamOver;
+        TextView awayTeamOver;
         TextView batbowlTextView;
         TextView batbowl2TextView;
         TextView halfTextView;
+        TextView ageGroupTeamHomeTextView;
+        TextView ageGroupTeamAwayTextView;
         ImageView addtoNotificationImageView;
         RelativeLayout selectRelativeLayout;
     }

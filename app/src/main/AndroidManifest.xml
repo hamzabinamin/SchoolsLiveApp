@@ -131,6 +131,9 @@
 
         <activity android:name=".NotificationActivity" android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" ></activity>
+
+        <activity android:name=".UpdateCricketGameActivity" android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" ></activity>
     </application>
 
 </manifest>

@@ -43,6 +43,8 @@ import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
+import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +92,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
     String ImageName = "image_data" ;
     String SchoolName = "school_name";
     String ServerUploadPath ="http://schools-live.com/school-images/insertImage.php" ;
+    String oldImagePath = "";
     ByteArrayOutputStream byteArrayOutputStream ;
     byte[] byteArray ;
     String ConvertImage ;
@@ -424,6 +427,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         String schoolTwitter = "";
                         String schoolFacebook = "";
                         String schoolLocation = "";
+                        String schoolLogo = "";
 
 
                         for (int i = 0; i < arr.length(); i++) {
@@ -435,6 +439,7 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                                 schoolTwitter = arr.getJSONObject(i).getString("School_Twitter");
                                 schoolFacebook = arr.getJSONObject(i).getString("School_Facebook");
                                 schoolLocation = arr.getJSONObject(i).getString("School_Location");
+                                schoolLogo = arr.getJSONObject(i).getString("School_Logo");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -461,8 +466,21 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                             schoolTypeSpinner.setSelection(3);
                         }
 
-                        httpDownloadImages task = new httpDownloadImages();
-                        task.execute();
+                        MemoryCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getMemoryCache());
+                        DiskCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getDiscCache());
+
+                        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                                .cacheOnDisk(true).resetViewBeforeLoading(true)
+                                .showImageForEmptyUri(R.drawable.placeholder)
+                                .showImageOnFail(R.drawable.placeholder)
+                                .showImageOnLoading(R.drawable.placeholder).build();
+
+                        ImageLoader imageLoader = ImageLoader.getInstance();
+                        imageLoader.init(ImageLoaderConfiguration.createDefault(getBaseContext()));
+                        imageLoader.displayImage(schoolLogo, imageView, options);
+                        oldImagePath = schoolLogo;
+                        //httpDownloadImages task = new httpDownloadImages();
+                        //task.execute();
                     }
                     else {
                         progressDialog.dismiss();
@@ -495,11 +513,11 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
                     String schoolName = schoolNameEditText.getText().toString().trim();
-                    String schoolLocation = schoolLocationEditText.getText().toString();
-                    String schoolWebsite = schoolWebsiteEditText.getText().toString();
-                    String schoolTwitter = schoolTwitterEditText.getText().toString();
-                    String schoolFacebook = schoolFacebookEditText.getText().toString();
-                    String schoolType = schoolTypeSpinner.getSelectedItem().toString();
+                    String schoolLocation = schoolLocationEditText.getText().toString().trim();
+                    String schoolWebsite = schoolWebsiteEditText.getText().toString().trim();
+                    String schoolTwitter = schoolTwitterEditText.getText().toString().trim();
+                    String schoolFacebook = schoolFacebookEditText.getText().toString().trim();
+                    String schoolType = schoolTypeSpinner.getSelectedItem().toString().trim();
 
                     try {
                         schoolName = URLEncoder.encode(schoolName, "UTF-8");
@@ -514,6 +532,8 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                             sendGET(url, BitMapToString(bitmapImage));
                         }
                         else {
+                            System.out.println("Got here, no new image selected");
+                            System.out.println("Old Image: " + oldImagePath);
                             BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
                             Bitmap bitmap = drawable.getBitmap();
                             sendGET(url, BitMapToString(bitmap));
@@ -544,7 +564,6 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         }
 
         if(schoolNameEditText.getText().toString().length() > 0 && schoolLocationEditText.getText().toString().length() > 0 && schoolWebsiteEditText.getText().toString().length() > 0 && schoolTwitterEditText.getText().toString().length() > 0 && schoolFacebookEditText.getText().toString().length() > 0 && schoolType.length() > 0) {
-
 
             if(imageView.getDrawable() == null) {
                 Toast.makeText(getBaseContext(), "Please choose an Image first", Toast.LENGTH_SHORT);
@@ -778,10 +797,47 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
 
 
                 if(schoolStore.getSchoolName().equals(schoolNameStore)) {
-                    Toast.makeText(getBaseContext(), "You Updated your current selected School. Please select it again from Change School Settings to reapply the update on the app.", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getBaseContext(), "You Updated your current selected School. Please select it again from Change School Settings to reapply the update on the app.", Toast.LENGTH_SHORT).show();
+
+                    String schoolName = schoolNameEditText.getText().toString().trim();
+                    String schoolLocation = schoolLocationEditText.getText().toString().trim();
+                    String schoolWebsite = schoolWebsiteEditText.getText().toString().trim();
+                    String schoolTwitter = schoolTwitterEditText.getText().toString().trim();
+                    String schoolFacebook = schoolFacebookEditText.getText().toString().trim();
+                    String schoolType = schoolTypeSpinner.getSelectedItem().toString().trim();
+
+                    School schoolUpdated = new School(schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation);
+
+                    if(oldImagePath.length() > 0) {
+                        schoolUpdated.setSchoolImage(oldImagePath);
+                    }
+                    else {
+                        schoolUpdated.setSchoolImage("http://schools-live.com/school-images/" + schoolName);
+                    }
+                    saveSchoolSharedPreferences(schoolUpdated);
+                    Toast.makeText(EditSchoolActivity.this, "School Updated Successfully", Toast.LENGTH_LONG).show();
+                    oldImagePath = "";
                 }
                 else {
+                    String schoolName = schoolNameEditText.getText().toString().trim();
+                    String schoolLocation = schoolLocationEditText.getText().toString().trim();
+                    String schoolWebsite = schoolWebsiteEditText.getText().toString().trim();
+                    String schoolTwitter = schoolTwitterEditText.getText().toString().trim();
+                    String schoolFacebook = schoolFacebookEditText.getText().toString().trim();
+                    String schoolType = schoolTypeSpinner.getSelectedItem().toString().trim();
+
+                    School schoolUpdated = new School(schoolName, schoolType, schoolWebsite, schoolTwitter, schoolFacebook, schoolLocation);
+
+                    if(oldImagePath.length() > 0) {
+                        schoolUpdated.setSchoolImage(oldImagePath);
+                    }
+                    else {
+                        schoolUpdated.setSchoolImage("http://schools-live.com/school-images/" + schoolName);
+                    }
+
+                    saveSchoolSharedPreferences(schoolUpdated);
                     Toast.makeText(EditSchoolActivity.this, "School Updated Successfully", Toast.LENGTH_LONG).show();
+                    oldImagePath = "";
                 }
 
                 System.out.println("String1: " + string1 );
@@ -795,8 +851,13 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
 
                 try {
-                    String store = URLEncoder.encode(schoolName.trim(), "UTF-8");
-                    HashMapParams.put(ImageTag, store);
+                    if(oldImagePath.length() > 0) {
+                        HashMapParams.put(ImageTag, oldImagePath.replace("http://schools-live.com/school-images/", ""));
+                    }
+                    else {
+                        String store = URLEncoder.encode(schoolName.trim(), "UTF-8");
+                        HashMapParams.put(ImageTag, store);
+                    }
 
                     HashMapParams.put(ImageName, ConvertImage);
 
@@ -813,6 +874,13 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
         }
         AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
         AsyncTaskUploadClassOBJ.execute();
+    }
+
+    public void saveSchoolSharedPreferences(School school) {
+        Gson gson = new Gson();
+        String serviceProviderString = gson.toJson(school);
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("com.hamzabinamin.schoolsliveapp", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("School String", serviceProviderString).commit();
     }
 
     public class ImageProcessClass {
@@ -865,7 +933,6 @@ public class EditSchoolActivity extends AppCompatActivity implements View.OnClic
                         stringBuilder.append(RC2);
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

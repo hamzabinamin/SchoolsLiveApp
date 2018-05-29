@@ -17,11 +17,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -75,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static java.security.AccessController.getContext;
 
@@ -97,6 +100,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
     TextView gameTextView;
     TextView weekTextView;
     ImageView imageView;
+    SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
     ProgressDialog progressDialog;
     List arrayList;
@@ -153,6 +157,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         addGameTextView = (TextView) findViewById(R.id.addGameTextView);
         gameTextView = (TextView) findViewById(R.id.gameTextView);
         weekTextView = (TextView) findViewById(R.id.weekTextView);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         listView = (ListView) findViewById(R.id.listView);
         progressDialog = new ProgressDialog(this);
         Bitmap bitmapImage = BitmapFactory.decodeResource(getResources(),R.drawable.logopaarl);
@@ -233,6 +238,15 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         addGameTextView.setOnClickListener(this);
         weekTextView.setOnClickListener(this);
 
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorButton,
+                R.color.colorButton, R.color.colorButton, R.color.colorButton);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+
         if(getSchoolSharedPreferences()) {
             progressDialog.setMessage("Please Wait");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -265,22 +279,15 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
+    }
 
-  /*      listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
+    private void refreshContent(){
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           int position, long arg3) {
-
-                customAdapter.remove(arrayList.remove()[position]);
-                customAdapter.notifyDataSetChanged();
-
-                return false;
+            public void run() {
+                refreshGames();
             }
-
-        }); */
-
-        //scheduleNotification(getNotification("u16A vs u17A"), 5000);
+        }, 100);
     }
 
     private void setNextSchedule(long interval) {
@@ -388,19 +395,38 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         return time;
     }
 
+    public String getLocalTimeFirstDayOfNextWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH) + 1);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimeLastDayOfNextWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH) + 1);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+      //  calendar.add(Calendar.DATE, 7);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
     public String getLocalTimeFirstDayOfCurrentWeek() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         String time = sdf.format(calendar.getTime());
         return time;
     }
 
     public String getLocalTimeLastDayOfCurrentWeek() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendar.add(Calendar.DATE, 7);
+       // calendar.add(Calendar.DATE, 7);
         String time = sdf.format(calendar.getTime());
         return time;
     }
@@ -552,8 +578,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 progressDialog.setCancelable(false);
                                 progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
-                                String range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
-                                String range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+                                String range1 = URLEncoder.encode(getLocalTimeFirstDayOfNextWeek(), "UTF-8");
+                                String range2 = URLEncoder.encode(getLocalTimeLastDayOfNextWeek(), "UTF-8");
                                 System.out.println("Sport: " + sport);
                                 if(sport.contains("ALL+GAMES")) {
                                     String url = String.format("http://schools-live.com/getAllFixtureGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -638,8 +664,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 }
                             }
                             else if(weekTextView.getText().toString().equals("NEXT WEEK")) {
-                                range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
-                                range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+                                range1 = URLEncoder.encode(getLocalTimeFirstDayOfNextWeek(), "UTF-8");
+                                range2 = URLEncoder.encode(getLocalTimeLastDayOfNextWeek(), "UTF-8");
 
                                 if(sport.contains("ALL+GAMES")) {
                                     String url = String.format("http://schools-live.com/getAllFixtureGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -967,24 +993,24 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         List<Game> gameList = new ArrayList<Game>();
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                String gameID = arr.getJSONObject(i).getString("Game_ID");
-                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
-                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
-                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String category = arr.getJSONObject(i).getString("Category");
-                                String sport = arr.getJSONObject(i).getString("Sport");
-                                String ageGroup = arr.getJSONObject(i).getString("Age_Group");
-                                String team = arr.getJSONObject(i).getString("Team");
-                                String startTime = arr.getJSONObject(i).getString("Start_Time");
-                                String weather = arr.getJSONObject(i).getString("Weather");
-                                String temperature = arr.getJSONObject(i).getString("Temperature");
-                                String status = arr.getJSONObject(i).getString("Status");
-                                String score = arr.getJSONObject(i).getString("Score");
-                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By");
-                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
+                                String gameID = arr.getJSONObject(i).getString("Game_ID").trim();
+                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name").trim();
+                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name").trim();
+                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type").trim();
+                                String category = arr.getJSONObject(i).getString("Category").trim();
+                                String sport = arr.getJSONObject(i).getString("Sport").trim();
+                                String ageGroup = arr.getJSONObject(i).getString("Age_Group").trim();
+                                String team = arr.getJSONObject(i).getString("Team").trim();
+                                String startTime = arr.getJSONObject(i).getString("Start_Time").trim();
+                                String weather = arr.getJSONObject(i).getString("Weather").trim();
+                                String temperature = arr.getJSONObject(i).getString("Temperature").trim();
+                                String status = arr.getJSONObject(i).getString("Status").trim();
+                                String score = arr.getJSONObject(i).getString("Score").trim();
+                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By").trim();
+                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time").trim();
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                String won = arr.getJSONObject(i).getString("Won");
+                                String won = arr.getJSONObject(i).getString("Won").trim();
                                 gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
@@ -1010,6 +1036,10 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
                 }
+
+                if(swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         }
         HttpGetAsyncTask httpGetAsyncTask = new HttpGetAsyncTask();
@@ -1018,10 +1048,7 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
         httpGetAsyncTask.execute(paramURL);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+    public void refreshGames() {
         if(getSchoolSharedPreferences()) {
             customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
             listView.setAdapter(customAdapter);
@@ -1033,10 +1060,6 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             try {
-            /*    String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
-                String url = String.format("http://schools-live.com/getAllFixturesGames.php?home=%s&away=%s", schoolName, schoolName);
-                sendGETforGames(url); */
-
                 String schoolName = URLEncoder.encode(school.getSchoolName(), "UTF-8");
                 String sport = URLEncoder.encode(gameTextView.getText().toString(), "UTF-8");
                 String range1 = "";
@@ -1046,6 +1069,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                     range1 = URLEncoder.encode(getLocalTimeFirstDayOfCurrentWeek(), "UTF-8");
                     range2 = URLEncoder.encode(getLocalTimeLastDayOfCurrentWeek(), "UTF-8");
 
+                    System.out.println("Range 1 of Current Week: " + range1);
+                    System.out.println("Range 2 of Current Week: " + range2);
 
                     if(sport.contains("ALL+GAMES")) {
                         String url = String.format("http://schools-live.com/getAllFixtureGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -1070,8 +1095,9 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 }
                 else if(weekTextView.getText().toString().equals("NEXT WEEK")) {
-                    range1 = URLEncoder.encode(getLocalTime(), "UTF-8");
-                    range2 = URLEncoder.encode(getLocalTimeNextWeek(), "UTF-8");
+                    range1 = URLEncoder.encode(getLocalTimeFirstDayOfNextWeek(), "UTF-8");
+                    range2 = URLEncoder.encode(getLocalTimeLastDayOfNextWeek(), "UTF-8");
+
 
                     if(sport.contains("ALL+GAMES")) {
                         String url = String.format("http://schools-live.com/getAllFixtureGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -1099,9 +1125,15 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
         else {
-            Toast.makeText(getBaseContext(), "Either add a new School or Select existing one from  Change School", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getBaseContext(), "Either add a new School or Select existing one from  Change School", Toast.LENGTH_SHORT).show();
             finish();
-            startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
+            startActivity(new Intent(getBaseContext(), ChangeSchoolActivity.class));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshGames();
     }
 }

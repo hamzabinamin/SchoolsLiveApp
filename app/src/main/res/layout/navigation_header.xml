@@ -14,6 +14,7 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/placeholder"
         app:border_color="@color/colorRing"
         app:border_width="3dp"/>

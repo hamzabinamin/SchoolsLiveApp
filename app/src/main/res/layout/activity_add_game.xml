@@ -88,10 +88,59 @@
             </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
             <FrameLayout
-                android:id="@+id/schoolBFrameLayout"
+                android:id="@+id/ageGroupANDTeamHomeFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/schoolASpinner"
+                android:background="@color/colorGray">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="AGE GROUP"
+                        android:textSize="17dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/ageGroupHomeSpinner"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="TEAM"
+                        android:textSize="17dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/teamHomeSpinner"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/schoolBFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@id/ageGroupANDTeamHomeFrameLayout"
                 android:background="@color/colorGray">
 
                 <TextView
@@ -112,35 +161,85 @@
                 android:layout_below="@id/schoolBFrameLayout">
             </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
 
-        <!--    <FrameLayout
-                android:id="@+id/fieldFrameLayout"
+            <FrameLayout
+                android:id="@+id/ageGroupANDTeamAwayFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_below="@id/schoolBSpinner"
                 android:background="@color/colorGray">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="AGE GROUP"
+                        android:textSize="17dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/ageGroupAwaySpinner"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:text="TEAM"
+                        android:textSize="17dp"
+                        android:textColor="@color/colorBlack"
+                        android:layout_weight="1"/>
+
+                    <Spinner
+                        android:id="@+id/teamAwaySpinner"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1">
+                    </Spinner>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/sameAsHomeFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@id/ageGroupANDTeamAwayFrameLayout"
+                android:background="@color/colorGray">
+
+                <CheckBox
+                    android:id="@+id/sameAsHomeCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@id/categoryFrameLayout">
+                </CheckBox>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:text="FIELD"
+                    android:layout_marginLeft="35dp"
+                    android:text="SAME AS HOME TEAM"
                     android:textSize="18dp"
                     android:textColor="@color/colorBlack"/>
-            </FrameLayout>
 
-            <Spinner
-                android:id="@+id/fieldSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_below="@id/fieldFrameLayout">
-            </Spinner> -->
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/categoryFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_below="@id/schoolBSpinner"
+                android:layout_below="@id/sameAsHomeFrameLayout"
                 android:background="@color/colorGray">
 
                 <TextView
@@ -185,59 +284,10 @@
             </Spinner>
 
             <FrameLayout
-                android:id="@+id/ageGroupANDTeamFrameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_below="@id/sportSpinner"
-                android:background="@color/colorGray">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:text="AGE GROUP"
-                        android:textSize="17dp"
-                        android:textColor="@color/colorBlack"
-                        android:layout_weight="1"/>
-
-                    <Spinner
-                        android:id="@+id/ageGroupSpinner"
-                        android:layout_width="100dp"
-                        android:layout_height="35dp"
-                        android:layout_weight="1">
-                    </Spinner>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:text="TEAM"
-                        android:textSize="17dp"
-                        android:textColor="@color/colorBlack"
-                        android:layout_weight="1"/>
-
-                    <Spinner
-                        android:id="@+id/teamSpinner"
-                        android:layout_width="100dp"
-                        android:layout_height="35dp"
-                        android:layout_weight="1">
-                    </Spinner>
-
-                </LinearLayout>
-
-            </FrameLayout>
-
-            <FrameLayout
                 android:id="@+id/startTimeFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_below="@id/ageGroupANDTeamFrameLayout"
+                android:layout_below="@id/sportSpinner"
                 android:background="@color/colorGray">
 
                 <TextView

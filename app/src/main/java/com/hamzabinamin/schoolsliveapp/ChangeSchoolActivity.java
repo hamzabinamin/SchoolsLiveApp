@@ -24,6 +24,7 @@ import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -154,6 +155,8 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
+        changeSchoolButton.setVisibility(View.INVISIBLE);
+
         changeSchoolButton.setOnClickListener(this);
         View hView = mNavigationView.getHeaderView(0);
         imageView = (ImageView) hView.findViewById(R.id.profile_image);
@@ -163,6 +166,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mDrawerLayout.addDrawerListener(mActionBarToggle);
         mActionBarToggle.syncState();
+        schoolList.add(new School("", "", "", "", "", ""));
 
         if(getSchoolSharedPreferences()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
@@ -190,6 +194,40 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
             e.printStackTrace();
         }
 
+
+        changeSchoolSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(changeSchoolSpinner != null) {
+                    if (changeSchoolSpinner.getSelectedItem().toString().length() > 0 && !changeSchoolSpinner.getSelectedItem().toString().equals("Select a School")) {
+
+                        School school = schoolList.get(changeSchoolSpinner.getSelectedItemPosition());
+
+                        MemoryCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getMemoryCache());
+                        DiskCacheUtils.removeFromCache(school.getSchoolImage(), ImageLoader.getInstance().getDiscCache());
+
+                        DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true)
+                                .cacheOnDisk(true).resetViewBeforeLoading(true)
+                                .showImageForEmptyUri(R.drawable.placeholder)
+                                .showImageOnFail(R.drawable.placeholder)
+                                .showImageOnLoading(R.drawable.placeholder).build();
+
+                        System.out.println("School Image Here: " + school.getSchoolImage());
+                        ImageLoader imageLoader = ImageLoader.getInstance();
+                        imageLoader.init(ImageLoaderConfiguration.createDefault(getBaseContext()));
+                        imageLoader.displayImage(school.getSchoolImage(), imageView, options);
+                        System.out.println("Change School: " + school.getSchoolImage());
+                        saveSchoolSharedPreferences(school);
+                        Toast.makeText(getBaseContext(), "School Changed Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -301,6 +339,7 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
                             e.printStackTrace();
                         }
                         List<String> list = new ArrayList<String>();
+                        list.add("Select a School");
                         String schoolName = "";
                         String schoolType = "";
                         String schoolWebsite = "";
@@ -311,12 +350,12 @@ public class ChangeSchoolActivity extends AppCompatActivity implements View.OnCl
 
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                schoolName = arr.getJSONObject(i).getString("School_Name");
-                                schoolType = arr.getJSONObject(i).getString("School_Type");
-                                schoolWebsite = arr.getJSONObject(i).getString("School_Website");
-                                schoolTwitter = arr.getJSONObject(i).getString("School_Twitter");
-                                schoolFacebook = arr.getJSONObject(i).getString("School_Facebook");
-                                schoolLocation = arr.getJSONObject(i).getString("School_Location");
+                                schoolName = arr.getJSONObject(i).getString("School_Name").trim();
+                                schoolType = arr.getJSONObject(i).getString("School_Type").trim();
+                                schoolWebsite = arr.getJSONObject(i).getString("School_Website").trim();
+                                schoolTwitter = arr.getJSONObject(i).getString("School_Twitter").trim();
+                                schoolFacebook = arr.getJSONObject(i).getString("School_Facebook").trim();
+                                schoolLocation = arr.getJSONObject(i).getString("School_Location").trim();
                                 schoolLogo = arr.getJSONObject(i).getString("School_Logo");
 
                                // SpannableStringBuilder str = new SpannableStringBuilder("Your awesome text");

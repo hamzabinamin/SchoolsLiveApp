@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ResultsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -69,6 +72,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     TextView twitterTextView;
     TextView addGameTextView;
     ImageView imageView;
+    SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
     ProgressDialog progressDialog;
     CustomAdapter customAdapter;
@@ -121,6 +125,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         twitterTextView = (TextView) findViewById(R.id.twitterTextView);
         facebookTextView = (TextView) findViewById(R.id.facebookTextView);
         addGameTextView = (TextView) findViewById(R.id.addGameTextView);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         listView = (ListView) findViewById(R.id.listView);
         progressDialog = new ProgressDialog(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -197,6 +202,15 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         twitterTextView.setOnClickListener(this);
         addGameTextView.setOnClickListener(this);
 
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorButton,
+                R.color.colorButton, R.color.colorButton, R.color.colorButton);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+
         if(getSchoolSharedPreferences()) {
            /* progressDialog.setMessage("Please Wait");
             progressDialog.show();
@@ -227,6 +241,15 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
             imageLoader.displayImage(school.getSchoolImage(), imageView, options);
 
         }
+    }
+
+    private void refreshContent(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refreshResultsGames();
+            }
+        }, 100);
     }
 
     @Override
@@ -283,6 +306,25 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         return time;
     }
 
+    public String getLocalTimeFirstDayOfPreviousWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH) - 1);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
+    public String getLocalTimeLastDayOfPreviousWeek() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH) - 1);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+       // calendar.add(Calendar.DATE, 7);
+        String time = sdf.format(calendar.getTime());
+        return time;
+    }
+
     public String getLocalTimeNextWeek() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
         Calendar calendar = Calendar.getInstance();
@@ -293,17 +335,16 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
 
     public String getLocalTimeFirstDayOfCurrentWeek() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         String time = sdf.format(calendar.getTime());
         return time;
     }
 
     public String getLocalTimeLastDayOfCurrentWeek() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(Locale.GERMANY);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendar.add(Calendar.DATE, 7);
         String time = sdf.format(calendar.getTime());
         return time;
     }
@@ -543,24 +584,24 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         List<Game> gameList = new ArrayList<Game>();
                         for (int i = 0; i < arr.length(); i++) {
                             try {
-                                String gameID = arr.getJSONObject(i).getString("Game_ID");
-                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name");
-                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name");
-                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type");
-                                String category = arr.getJSONObject(i).getString("Category");
-                                String sport = arr.getJSONObject(i).getString("Sport");
-                                String ageGroup = arr.getJSONObject(i).getString("Age_Group");
-                                String team = arr.getJSONObject(i).getString("Team");
-                                String startTime = arr.getJSONObject(i).getString("Start_Time");
-                                String weather = arr.getJSONObject(i).getString("Weather");
-                                String temperature = arr.getJSONObject(i).getString("Temperature");
-                                String status = arr.getJSONObject(i).getString("Status");
-                                String score = arr.getJSONObject(i).getString("Score");
-                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By");
-                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time");
+                                String gameID = arr.getJSONObject(i).getString("Game_ID").trim();
+                                String homeSchoolName = arr.getJSONObject(i).getString("Home_School_Name").trim();
+                                String awaySchoolName = arr.getJSONObject(i).getString("Away_School_Name").trim();
+                                String schoolsType = arr.getJSONObject(i).getString("Schools_Type").trim();
+                                String category = arr.getJSONObject(i).getString("Category").trim();
+                                String sport = arr.getJSONObject(i).getString("Sport").trim();
+                                String ageGroup = arr.getJSONObject(i).getString("Age_Group").trim();
+                                String team = arr.getJSONObject(i).getString("Team").trim();
+                                String startTime = arr.getJSONObject(i).getString("Start_Time").trim();
+                                String weather = arr.getJSONObject(i).getString("Weather").trim();
+                                String temperature = arr.getJSONObject(i).getString("Temperature").trim();
+                                String status = arr.getJSONObject(i).getString("Status").trim();
+                                String score = arr.getJSONObject(i).getString("Score").trim();
+                                String lastUpdateBy = arr.getJSONObject(i).getString("Last_Update_By").trim();
+                                String lastUpdateTime = arr.getJSONObject(i).getString("Last_Update_Time").trim();
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
-                                String won = arr.getJSONObject(i).getString("Won");
+                                String won = arr.getJSONObject(i).getString("Won").trim();
                                 gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won ));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
@@ -585,6 +626,10 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                         progressDialog.dismiss();
                         Toast.makeText(getBaseContext(), "No Games to display", Toast.LENGTH_SHORT).show();
                     }
+                }
+
+                if(swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
         }
@@ -652,8 +697,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                                 progressDialog.setCancelable(false);
                                 progressDialog.setCanceledOnTouchOutside(false);
                                 progressDialog.show();
-                                String range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
-                                String range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                                String range1 = URLEncoder.encode(getLocalTimeFirstDayOfPreviousWeek(), "UTF-8");
+                                String range2 = URLEncoder.encode(getLocalTimeLastDayOfPreviousWeek(), "UTF-8");
                                 System.out.println("Sport: " + sport);
                                 if(sport.contains("ALL+GAMES")) {
                                     String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -745,8 +790,9 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                                 }
                             }
                             else if(weekTextView.getText().toString().equals("LAST WEEK")) {
-                                range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
-                                range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                                range1 = URLEncoder.encode(getLocalTimeFirstDayOfPreviousWeek(), "UTF-8");
+                                range2 = URLEncoder.encode(getLocalTimeLastDayOfPreviousWeek(), "UTF-8");
+
 
                                 if(sport.contains("ALL+GAMES")) {
                                     String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -832,9 +878,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void refreshResultsGames() {
 
         if(getSchoolSharedPreferences()) {
             customAdapter = new CustomAdapter(getBaseContext(), new ArrayList<Game>());
@@ -867,8 +911,9 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
                 else if(weekTextView.getText().toString().equals("LAST WEEK")) {
-                    range1 = URLEncoder.encode(getLocalTimePreviousWeek(), "UTF-8");
-                    range2 = URLEncoder.encode(getLocalTime(), "UTF-8");
+                    range1 = URLEncoder.encode(getLocalTimeFirstDayOfPreviousWeek(), "UTF-8");
+                    range2 = URLEncoder.encode(getLocalTimeLastDayOfPreviousWeek(), "UTF-8");
+
 
                     if(sport.contains("ALL+GAMES")) {
                         String url = String.format("http://schools-live.com/getAllEndedGamesInRange.php?home=%s&away=%s&range1=%s&range2=%s", schoolName, schoolName, range1, range2);
@@ -909,5 +954,11 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         else {
             startActivity(new Intent(getBaseContext(), ManageSchoolsActivity.class));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshResultsGames();
     }
 }
