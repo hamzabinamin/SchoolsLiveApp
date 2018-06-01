@@ -101,6 +101,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
     ImageView school1Logo;
     ImageView school2Logo;
     ImageView uploadImageView;
+    ImageView chatImageView;
     ListView listView;
     CustomAdapterChat customAdapterChat;
     List<Chat> chatList = new ArrayList<Chat>();
@@ -173,6 +174,7 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
         school1Logo = (ImageView) findViewById(R.id.school1Logo);
         school2Logo = (ImageView) findViewById(R.id.school2Logo);
         uploadImageView = (ImageView) findViewById(R.id.uploadImageView);
+        chatImageView = (ImageView) findViewById(R.id.chatImageView);
         listView = (ListView) findViewById(R.id.chatListView);
         progressDialog = new ProgressDialog(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -264,6 +266,13 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     updateWeatherButton.setEnabled(false);
                 }
 
+                if(game.getChat().equals("Yes")) {
+                    chatImageView.setVisibility(View.VISIBLE);
+                }
+                else {
+                    chatImageView.setVisibility(View.INVISIBLE);
+                }
+
                 schoolTypeTextView.setText(school.getSchoolType());
                 schoolNameTextView.setText(school.getSchoolName());
                 schoolLocationTextView.setText(school.getSchoolLocation());
@@ -283,9 +292,9 @@ public class UpdateGameActivity extends AppCompatActivity implements View.OnClic
                     category = "(G)";
                 }
 
-                if(game.getAgeGroup().contains("/") && game.getTeam().contains("/")) {
-                    String[] ageGroupArray = game.getAgeGroup().split("/");
-                    String[] teamArray = game.getTeam().split("/");
+                if(game.getAgeGroup().contains("-") && game.getTeam().contains("-")) {
+                    String[] ageGroupArray = game.getAgeGroup().split("-");
+                    String[] teamArray = game.getTeam().split("-");
                     ageGroupTeamHomeTextView.setText(ageGroupArray[0] + "/" + teamArray[0]);
                     ageGroupTeamAwayTextView.setText(ageGroupArray[1] + "/" + teamArray[1]);
                 }

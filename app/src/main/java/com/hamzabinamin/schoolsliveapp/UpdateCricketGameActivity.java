@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -100,6 +101,7 @@ public class UpdateCricketGameActivity extends AppCompatActivity implements View
     ImageView school1Logo;
     ImageView school2Logo;
     ImageView uploadImageView;
+    ImageView chatImageView;
     ListView listView;
     CustomAdapterChat customAdapterChat;
     List<Chat> chatList = new ArrayList<Chat>();
@@ -174,6 +176,7 @@ public class UpdateCricketGameActivity extends AppCompatActivity implements View
         school1Logo = (ImageView) findViewById(R.id.school1Logo);
         school2Logo = (ImageView) findViewById(R.id.school2Logo);
         uploadImageView = (ImageView) findViewById(R.id.uploadImageView);
+        chatImageView = (ImageView) findViewById(R.id.chatImageView);
         listView = (ListView) findViewById(R.id.chatListView);
         progressDialog = new ProgressDialog(this);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -265,14 +268,21 @@ public class UpdateCricketGameActivity extends AppCompatActivity implements View
                     updateWeatherButton.setEnabled(false);
                 }
 
+                if(game.getChat().equals("Yes")) {
+                    chatImageView.setVisibility(View.VISIBLE);
+                }
+                else {
+                    chatImageView.setVisibility(View.INVISIBLE);
+                }
+
                 schoolTypeTextView.setText(school.getSchoolType());
                 schoolNameTextView.setText(school.getSchoolName());
                 schoolLocationTextView.setText(school.getSchoolLocation());
                 schoolLinkTextView.setText(school.getSchoolWebsite());
 
-                if(game.getAgeGroup().contains("/") && game.getTeam().contains("/")) {
-                    String[] ageGroupArray = game.getAgeGroup().split("/");
-                    String[] teamArray = game.getTeam().split("/");
+                if(game.getAgeGroup().contains("-") && game.getTeam().contains("-")) {
+                    String[] ageGroupArray = game.getAgeGroup().split("-");
+                    String[] teamArray = game.getTeam().split("-");
                     ageGroupTeamHomeTextView.setText(ageGroupArray[0] + "/" + teamArray[0]);
                     ageGroupTeamAwayTextView.setText(ageGroupArray[1] + "/" + teamArray[1]);
                 }

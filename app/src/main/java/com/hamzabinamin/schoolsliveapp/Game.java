@@ -24,6 +24,7 @@ public class Game {
     private String homeSchoolImageURL;
     private String awaySchoolImageURL;
     private String whoWon;
+    private String chat;
     private boolean selectedForNotification;
 
     public Game() {
@@ -43,6 +44,30 @@ public class Game {
         this.lastUpdateBy = "";
         this.lastUpdateTime = "";
         this.whoWon = "";
+        this.chat = "";
+        this.selectedForNotification = false;
+    }
+
+    public Game(String gameID, String homeSchoolName, String awaySchoolName, String schoolsType, String category, String sport, String ageGroup, String team, String startTime, String weather, String temperature, String status, String score, String lastUpdateBy, String lastUpdateTime, String homeSchoolImageURL, String awaySchoolImageURL, String whoWon, String chat) {
+        this.gameID = gameID;
+        this.homeSchoolName = homeSchoolName;
+        this.awaySchoolName = awaySchoolName;
+        this.schoolsType = schoolsType;
+        this.category = category;
+        this.sport = sport;
+        this.ageGroup = ageGroup;
+        this.team = team;
+        this.startTime = startTime;
+        this.weather = weather;
+        this.temperature = temperature;
+        this.status = status;
+        this.score = score;
+        this.lastUpdateBy = lastUpdateBy;
+        this.lastUpdateTime = lastUpdateTime;
+        this.homeSchoolImageURL = homeSchoolImageURL;
+        this.awaySchoolImageURL = awaySchoolImageURL;
+        this.whoWon = whoWon;
+        this.chat = chat;
         this.selectedForNotification = false;
     }
 
@@ -153,6 +178,8 @@ public class Game {
     public String getAwaySchoolImageURL() { return this.awaySchoolImageURL; }
 
     public String getWhoWon() { return this.whoWon; }
+
+    public String getChat() { return this.chat; }
 
     public boolean getSelectedForNotification() { return this.selectedForNotification; }
 

@@ -1011,7 +1011,8 @@ public class SchoolActivity extends AppCompatActivity implements View.OnClickLis
                                 String homeSchoolURL = arr.getJSONObject(i).getString("Home_School_Logo");
                                 String awaySchoolURL = arr.getJSONObject(i).getString("Away_School_Logo");
                                 String won = arr.getJSONObject(i).getString("Won").trim();
-                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won));
+                                String chat = "No";
+                                gameList.add(new Game(gameID, homeSchoolName, awaySchoolName, schoolsType, category, sport, ageGroup, team, startTime, weather, temperature, status, score, lastUpdateBy, lastUpdateTime, homeSchoolURL, awaySchoolURL, won, chat));
 
                                 if(!schoolNames.contains(homeSchoolName)) {
                                     schoolNames.add(homeSchoolName);

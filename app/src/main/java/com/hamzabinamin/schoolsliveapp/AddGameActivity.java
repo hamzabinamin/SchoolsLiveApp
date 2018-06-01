@@ -482,12 +482,12 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
                     String agegroup = "";
                     String team = "";
                     if(sameAsHomeCheckBox.isChecked()) {
-                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "/" + ageGroupHomeSpinner.getSelectedItem().toString();
-                        team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamHomeSpinner.getSelectedItem().toString();
+                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "-" + ageGroupHomeSpinner.getSelectedItem().toString();
+                        team = teamHomeSpinner.getSelectedItem().toString() + "-" + teamHomeSpinner.getSelectedItem().toString();
                     }
                     else {
-                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "/" + ageGroupAwaySpinner.getSelectedItem().toString();
-                        team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamAwaySpinner.getSelectedItem().toString();
+                        agegroup = ageGroupHomeSpinner.getSelectedItem().toString() + "-" + ageGroupAwaySpinner.getSelectedItem().toString();
+                        team = teamHomeSpinner.getSelectedItem().toString() + "-" + teamAwaySpinner.getSelectedItem().toString();
                     }
                     String ampm = "";
                     if(ampmNumberPicker.getValue() == 0) {
@@ -604,13 +604,13 @@ public class AddGameActivity extends AppCompatActivity implements View.OnClickLi
         String team;
 
         if(sameAsHomeCheckBox.isChecked()) {
-            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "/" + ageGroupHomeSpinner.getSelectedItem().toString();
-            team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamHomeSpinner.getSelectedItem().toString();
+            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "-" + ageGroupHomeSpinner.getSelectedItem().toString();
+            team = teamHomeSpinner.getSelectedItem().toString() + "-" + teamHomeSpinner.getSelectedItem().toString();
 
         }
         else {
-            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "/" + ageGroupAwaySpinner.getSelectedItem().toString();
-            team = teamHomeSpinner.getSelectedItem().toString() + "/" + teamAwaySpinner.getSelectedItem().toString();
+            agegroup = ageGroupHomeSpinner.getSelectedItem().toString() +  "-" + ageGroupAwaySpinner.getSelectedItem().toString();
+            team = teamHomeSpinner.getSelectedItem().toString() + "-" + teamAwaySpinner.getSelectedItem().toString();
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("d-M-yyyy / hh:mm a");

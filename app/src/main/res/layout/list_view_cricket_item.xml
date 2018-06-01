@@ -27,8 +27,6 @@
             android:src="@drawable/chat"
             android:layout_marginLeft="100dp"/>
 
-
-
         <ImageView
             android:id="@+id/addtoNotificationImageView"
             android:layout_width="20dp"
@@ -58,7 +56,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="30dp" />
+            android:layout_marginLeft="25dp" />
 
         <TextView
             android:id="@+id/schoolTypeTextView"
@@ -90,7 +88,7 @@
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="25dp"/>
 
         <TextView
             android:id="@+id/schoolType2TextView"
@@ -161,7 +159,7 @@
             android:layout_marginTop="0dp"
             android:layout_below="@id/batbowl2TextView"
             android:layout_toRightOf="@+id/school1Logo"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:text="500/10"
             android:textSize="24dp"
             android:textColor="@color/colorBlack"/>
@@ -173,7 +171,7 @@
             android:layout_marginTop="0dp"
             android:layout_below="@id/homeScoreTextView"
             android:layout_toRightOf="@+id/school1Logo"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="25dp"
             android:text="Over: 150"
             android:textSize="14dp"
             android:textColor="@color/colorBlack"/>
@@ -197,7 +195,7 @@
             android:layout_marginTop="0dp"
             android:layout_below="@id/batbowlTextView"
             android:layout_toLeftOf="@+id/school2Logo"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="10dp"
             android:text="500/10"
             android:textSize="24dp"
             android:textColor="@color/colorBlack"/>
@@ -209,7 +207,7 @@
             android:layout_marginTop="0dp"
             android:layout_below="@id/awayScoreTextView"
             android:layout_toLeftOf="@+id/school2Logo"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="25dp"
             android:text="Over: 150"
             android:textSize="14dp"
             android:textColor="@color/colorBlack"/>

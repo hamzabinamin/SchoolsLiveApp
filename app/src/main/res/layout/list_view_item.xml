@@ -57,7 +57,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="30dp" />
+            android:layout_marginLeft="20dp" />
 
         <TextView
             android:id="@+id/schoolTypeTextView"
@@ -89,7 +89,7 @@
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="20dp"/>
 
         <TextView
             android:id="@+id/schoolType2TextView"
@@ -145,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="15dp"
             android:layout_toLeftOf="@+id/verifiedImageView"
             android:layout_centerHorizontal="true"
             android:text="U/19/A"
@@ -182,7 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/verifiedImageView"
             android:layout_centerHorizontal="true"
             android:text="U/19/A"

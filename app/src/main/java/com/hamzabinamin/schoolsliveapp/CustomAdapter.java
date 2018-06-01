@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.widget.PopupMenu;
@@ -119,10 +120,14 @@ public class CustomAdapter extends BaseAdapter {
         holder = new ViewHolder();
         if(list.get(position).getSport().equals("Cricket")) {
             if (convertView == null) {
-                if(getScreenSize() <= 4)
+                if(getScreenSize() <= 4) {
+                    System.out.println("Got inside <=4");
                     convertView = mInflater.inflate(R.layout.list_view_cricket_item_small, parent, false);
-                else
+                }
+                else {
+                    System.out.println("Got inside >4");
                     convertView = mInflater.inflate(R.layout.list_view_cricket_item, parent, false);
+                }
                 holder.gameType = (TextView)convertView.findViewById(R.id.teamNameTextView);
                 holder.homeTeamSchoolName = (TextView) convertView.findViewById(R.id.schoolNameTextView);
                 holder.homeTeamSchoolType = (TextView) convertView.findViewById(R.id.schoolTypeTextView);
@@ -143,6 +148,7 @@ public class CustomAdapter extends BaseAdapter {
                 holder.ageGroupTeamHomeTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamHomeTextView);
                 holder.ageGroupTeamAwayTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamAwayTextView);
                 holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
+                holder.chatImageView = (ImageView) convertView.findViewById(R.id.chatImageView);
                 holder.selectRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.selectRelativeLayout);
                 convertView.setTag(holder);
             } else {
@@ -173,6 +179,7 @@ public class CustomAdapter extends BaseAdapter {
                 holder.ageGroupTeamHomeTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamHomeTextView);
                 holder.ageGroupTeamAwayTextView = (TextView) convertView.findViewById(R.id.ageGroupTeamAwayTextView);
                 holder.addtoNotificationImageView = (ImageView) convertView.findViewById(R.id.addtoNotificationImageView);
+                holder.chatImageView = (ImageView) convertView.findViewById(R.id.chatImageView);
                 holder.selectRelativeLayout = (RelativeLayout) convertView.findViewById(R.id.selectRelativeLayout);
                 convertView.setTag(holder);
             } else {
@@ -181,17 +188,26 @@ public class CustomAdapter extends BaseAdapter {
         }
 
 
-
-        if(list.get(position).getStatus().equals("FULL TIME")) {
+        if(list.get(position).getStatus().equals("NOT STARTED")) {
+            holder.chatImageView.setVisibility(View.INVISIBLE);
+        }
+        else if(list.get(position).getStatus().equals("FULL TIME")) {
            // holder.updateGame.setVisibility(View.INVISIBLE);
             holder.updateGame.setText("Game Details");
             holder.addtoNotificationImageView.setVisibility(View.INVISIBLE);
         }
 
-        if(list.get(position).getAgeGroup().contains("/") && list.get(position).getTeam().contains("/")) {
+        if(list.get(position).getChat().equals("Yes")) {
+            holder.chatImageView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.chatImageView.setVisibility(View.INVISIBLE);
+        }
+
+        if(list.get(position).getAgeGroup().contains("-") && list.get(position).getTeam().contains("-")) {
             Game game = list.get(position);
-            String[] ageGroupArray = game.getAgeGroup().split("/");
-            String[] teamArray = game.getTeam().split("/");
+            String[] ageGroupArray = game.getAgeGroup().split("-");
+            String[] teamArray = game.getTeam().split("-");
             holder.ageGroupTeamHomeTextView.setText(ageGroupArray[0] + "/" + teamArray[0]);
             holder.ageGroupTeamAwayTextView.setText(ageGroupArray[1] + "/" + teamArray[1]);
         }
@@ -208,6 +224,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         if(!list.get(position).getSport().equals("Cricket")) {
+            System.out.println("Not Cricket: " + list.get(position).getSport());
 //            holder.currentOver.setVisibility(View.INVISIBLE);
             holder.batbowlTextView.setVisibility(View.INVISIBLE);
             holder.batbowl2TextView.setVisibility(View.INVISIBLE);
@@ -237,7 +254,9 @@ public class CustomAdapter extends BaseAdapter {
             imageLoader2.displayImage("http" + list.get(position).getAwaySchoolImageURL(), holder.awayTeamLogo, options);
             holder.awayTeamSchoolName.setText(list.get(position).getAwaySchoolName());
             holder.awayTeamSchoolType.setText(splitArray[1]);
-            holder.teamScore.setText(list.get(position).getScore());
+            if(list.get(position).getScore() != null) {
+                holder.teamScore.setText(list.get(position).getScore());
+            }
             holder.lastUpdateBy.setText(list.get(position).getLastUpdateBy());
             holder.time.setText(convertUTCTimeInToLocal(list.get(position).getStartTime()));
         }
@@ -253,7 +272,7 @@ public class CustomAdapter extends BaseAdapter {
                 category = "(G)";
             }
 
-            holder.gameType.setText(category + " " + list.get(position).getSport() + " " + list.get(position).getAgeGroup() + "/" + list.get(position).getTeam());
+            holder.gameType.setText(category + " " + list.get(position).getSport());
             holder.homeTeamSchoolName.setText(list.get(position).getHomeSchoolName());
             String[] splitArray = list.get(position).getSchoolsType().split("/");
             holder.homeTeamSchoolType.setText(splitArray[0]);
@@ -512,6 +531,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView ageGroupTeamHomeTextView;
         TextView ageGroupTeamAwayTextView;
         ImageView addtoNotificationImageView;
+        ImageView chatImageView;
         RelativeLayout selectRelativeLayout;
     }
 
